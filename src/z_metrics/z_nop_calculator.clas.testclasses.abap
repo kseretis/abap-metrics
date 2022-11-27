@@ -14,26 +14,25 @@ class z_nop_calculator_test implementation.
 
   method setup.
     instance = new #( value #( ( `METHOD unit_method.` )
-                                  ( `` )
-                                  ( `z_class_test=>call_test_method( ).` )
-                                  ( `` )
+                                  ( `z_class_test=>call_test_method2( ) ##TEST.` )
+                                  ( `z_class_test=>call_test_method3( ). "#EC TEST` )
                                   ( `ENDMETHOD.` ) ) ).
   endmethod.
 
   method get_tokens.
     cl_abap_unit_assert=>assert_equals( act = lines( instance->get_tokens( ) )
-                                        exp = 5 ).
+                                        exp = 9 ).
   endmethod.
 
   method get_statements.
     cl_abap_unit_assert=>assert_equals( act = lines( instance->get_statements( ) )
-                                        exp = 3 ).
+                                        exp = 6 ).
   endmethod.
 
   method check_calculation.
     data(calc) = instance->calculate( ).
     cl_abap_unit_assert=>assert_equals( act = calc
-                                        exp = 0 ).
+                                        exp = 2 ).
   endmethod.
 
 endclass.

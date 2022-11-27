@@ -15,13 +15,13 @@ endclass.
 class z_nop_calculator implementation.
 
   method constructor.
-    super->constructor( scan_type   = z_code_scanner=>scan_type-with_comments
+    super->constructor( scan_type   = z_code_scanner=>scan_type-with_pragmas
                         source_code = source_code ).
   endmethod.
 
   method calculate.
     loop at get_tokens( ) reference into data(token)
-        where type = z_code_scanner=>token_type-pragma.
+        where type = z_code_scanner=>token_type-comment or type = z_code_scanner=>token_type-pragma.
 
       if token->str(1) = '"'.
         if token->str cp '"##AU *' or token->str cs '"#EC'.

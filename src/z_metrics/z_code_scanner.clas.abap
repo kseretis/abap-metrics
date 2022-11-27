@@ -17,6 +17,7 @@ class z_code_scanner definition public abstract create public.
                  none          type string value 'NONE',
                  simple        type string value 'SIMPLE',
                  with_comments type string value 'WITH_COMMENTS',
+                 with_pragmas  type string value 'WITH_PRAGMAS',
                  with_keywords type string value 'WITH_KEYWORDS',
                end of scan_type.
 

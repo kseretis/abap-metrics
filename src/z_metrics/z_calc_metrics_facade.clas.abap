@@ -37,6 +37,14 @@ class z_calc_metrics_facade implementation.
           "calculate NoS
           data(nos_calculator) = new z_nos_calculator( meth->method->get_source_code( ) ).
           meth->method->set_number_of_statements( nos_calculator->calculate( ) ).
+
+          "calculate complex
+          data(complex_calculator) = new z_complex_calculator( meth->method->get_source_code( ) ).
+          meth->method->set_complexity_of_conditions( complex_calculator->calculate( ) ).
+
+          "calculate complex weighted by decision
+          data(weighted_complex_calculator) = new z_weight_des_calculator( meth->method->get_source_code( ) ).
+          meth->method->set_complex_weighted_by_decisi( weighted_complex_calculator->calculate( ) ).
         endloop.
       catch zcx_flow_issue.
     endtry.
