@@ -15,7 +15,8 @@ endclass.
 class z_nop_calculator implementation.
 
   method constructor.
-    super->constructor( source_code ).
+    super->constructor( scan_type   = z_code_scanner=>scan_type-with_comments
+                        source_code = source_code ).
   endmethod.
 
   method calculate.

@@ -21,19 +21,16 @@ class z_loc_calculator_test implementation.
   endmethod.
 
   method get_tokens.
-    instance->scan_code( ).
     cl_abap_unit_assert=>assert_equals( act = lines( instance->get_tokens( ) )
                                         exp = 0 ).
   endmethod.
 
   method get_statements.
-    instance->scan_code( ).
     cl_abap_unit_assert=>assert_equals( act = lines( instance->get_statements( ) )
                                         exp = 0 ).
   endmethod.
 
   method check_calculation.
-    instance->scan_code( ).
     data(calc) = instance->calculate( ).
     cl_abap_unit_assert=>assert_equals( act = calc
                                         exp = 5 ).

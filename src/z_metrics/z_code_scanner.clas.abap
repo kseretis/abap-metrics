@@ -3,15 +3,26 @@ class z_code_scanner definition public abstract create public.
   public section.
     types tab_type_sstmnt type standard table of sstmnt initial size 100 with default key.
     types tab_type_stokes type standard table of stokes initial size 100 with default key.
-    types metric type i.
+    types: begin of scan_results,
+             statements type tab_type_sstmnt,
+             tokens     type tab_type_stokes,
+           end of scan_results.
 
     constants: begin of token_type,
                  comment type string value 'C',
                  pragma  type string value 'P',
                end of token_type.
 
+    constants: begin of scan_type,
+                 none          type string value 'NONE',
+                 simple        type string value 'SIMPLE',
+                 with_comments type string value 'WITH_COMMENTS',
+                 with_keywords type string value 'WITH_KEYWORDS',
+               end of scan_type.
+
     methods constructor
-      importing source_code type rswsourcet.
+      importing scan_type   type string
+                source_code type rswsourcet.
     methods get_source_code
       returning value(return) type rswsourcet.
     methods get_statements
@@ -22,7 +33,6 @@ class z_code_scanner definition public abstract create public.
       returning value(return) type tab_type_stokes.
     methods set_tokens
       importing tokens type tab_type_stokes.
-    methods scan_code.
     methods calculate abstract
       returning value(return) type i.
 
@@ -30,6 +40,7 @@ class z_code_scanner definition public abstract create public.
 
   private section.
     data source_code type rswsourcet.
+    data results type scan_results.
     data statements type tab_type_sstmnt.
     data tokens type tab_type_stokes.
 
@@ -39,12 +50,10 @@ class z_code_scanner implementation.
 
   method constructor.
     me->source_code = source_code.
-    scan_code( ).
-  endmethod.
-
-  method scan_code.
-    scan abap-source source_code tokens into tokens statements into statements
-       with comments.
+    me->results = z_code_scanner_factory=>factory( scan_type = scan_type
+                                                   source_code = source_code ).
+    me->tokens = me->results-tokens.
+    me->statements = me->results-statements.
   endmethod.
 
   method get_source_code.
