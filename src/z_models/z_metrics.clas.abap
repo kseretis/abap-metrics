@@ -37,6 +37,16 @@ class z_metrics definition public create public.
     methods set_complex_weighted_by_decisi
       importing value type i.
 
+    methods get_coupling_between_obj
+      returning value(return) type i.
+    methods set_coupling_between_obj
+      importing value type i.
+
+    methods get_lack_of_cohesion
+      returning value(return) type i.
+    methods set_lack_of_cohision
+      importing value type i.
+
   protected section.
 
   private section.
@@ -108,6 +118,22 @@ class z_metrics implementation.
 
   method set_complex_weighted_by_decisi.
     me->complex_weighted_by_decision = value.
+  endmethod.
+
+  method get_coupling_between_obj.
+    return = coupling_between_object.
+  endmethod.
+
+  method set_coupling_between_obj.
+    me->coupling_between_object = value.
+  endmethod.
+
+  method get_lack_of_cohesion.
+    return = lack_of_cohesion.
+  endmethod.
+
+  method set_lack_of_cohision.
+    me->lack_of_cohesion = value.
   endmethod.
 
 endclass.

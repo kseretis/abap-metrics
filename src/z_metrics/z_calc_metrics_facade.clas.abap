@@ -20,7 +20,7 @@ class z_calc_metrics_facade implementation.
 
   method calculate_metrics.
     try.
-        break-point.
+        "break-point.
         loop at class_stamp->get_methods( ) reference into data(meth).
           "calculate LoC
           data(loc_calculator) = new z_loc_calculator( meth->method->get_source_code( ) ).
@@ -45,6 +45,10 @@ class z_calc_metrics_facade implementation.
           "calculate complex weighted by decision
           data(weighted_complex_calculator) = new z_weight_des_calculator( meth->method->get_source_code( ) ).
           meth->method->set_complex_weighted_by_decisi( weighted_complex_calculator->calculate( ) ).
+
+          "calculate coupling between objects
+          data(coupling) = new z_cbo_calculator( meth->method->get_source_code( ) ).
+          meth->method->set_coupling_between_obj( coupling->calculate( ) ).
         endloop.
       catch zcx_flow_issue.
     endtry.
