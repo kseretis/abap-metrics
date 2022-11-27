@@ -22,12 +22,11 @@ class z_code_scanner definition public abstract create public.
       returning value(return) type tab_type_stokes.
     methods set_tokens
       importing tokens type tab_type_stokes.
-    methods scan_code abstract.
+    methods scan_code.
     methods calculate abstract
       returning value(return) type i.
 
   protected section.
-    data metric_result type metric.
 
   private section.
     data source_code type rswsourcet.
@@ -40,6 +39,12 @@ class z_code_scanner implementation.
 
   method constructor.
     me->source_code = source_code.
+    scan_code( ).
+  endmethod.
+
+  method scan_code.
+    scan abap-source source_code tokens into tokens statements into statements
+       with comments.
   endmethod.
 
   method get_source_code.

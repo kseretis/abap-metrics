@@ -3,7 +3,6 @@ class z_loc_calculator definition public create public inheriting from z_code_sc
   public section.
     methods constructor
       importing source_code type rswsourcet.
-    methods scan_code redefinition.
     methods calculate redefinition.
 
   protected section.
@@ -18,12 +17,8 @@ class z_loc_calculator implementation.
     super->constructor( source_code ).
   endmethod.
 
-  method scan_code.
-    metric_result = lines( get_source_code( ) ).
-  endmethod.
-
   method calculate.
-    return = metric_result. "probably - 2
+    return = lines( get_source_code( ) ). "probably - 2
   endmethod.
 
 endclass.
