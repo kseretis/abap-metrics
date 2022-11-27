@@ -31,6 +31,7 @@ class z_nop_calculator implementation.
         pragmas += 1.
       endif.
     endloop.
+    return = pragmas.
   endmethod.
 
 endclass.

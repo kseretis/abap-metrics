@@ -25,6 +25,7 @@ class z_noc_calculator implementation.
             or type = z_code_scanner=>token_type-pragma.
       comments += 1.
     endloop.
+    return = comments.
   endmethod.
 
 endclass.
