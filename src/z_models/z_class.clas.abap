@@ -16,11 +16,11 @@ class z_class definition public final create public.
       returning value(return) type string.
     methods get_methods
       returning value(return) type methods_tab_type
-      raising zcx_flow_issue.
+      raising   zcx_flow_issue.
     methods get_method
       importing name          type string
       returning value(return) type ref to z_method
-      raising zcx_flow_issue.
+      raising   zcx_flow_issue.
     methods set_methods
       importing unstructred_methods type z_class_manager=>class_stamp_tab_type.
 
@@ -50,8 +50,8 @@ class z_class implementation.
 
   method get_methods.
     if methods is initial.
-        raise exception new zcx_flow_issue( textid = zcx_flow_issue=>no_methods
-                                         value = me->name ).
+      raise exception new zcx_flow_issue( textid = zcx_flow_issue=>no_methods
+                                          value = me->name ).
     endif.
     return = methods.
   endmethod.
@@ -71,6 +71,7 @@ class z_class implementation.
     loop at unstructred_methods reference into data(meth).
       data(method) = new z_method( name        = conv #( meth->sub_name )
                                    source_code = meth->source ).
+      method->set_full_name( meth->sobj_name ).
       insert value #( method = method ) into table methods.
     endloop.
   endmethod.
