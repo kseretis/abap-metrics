@@ -5,6 +5,25 @@
 *&---------------------------------------------------------------------*
 report z_software_metrics.
 
+tables: tadir.
+constants: begin of c_sel_name,
+             complexity type string value 'C_MCCABE',
+             authors    type string value 'C_VRSD',
+             name       type string value 'S_NAME',
+           end of c_sel_name.
+constants: begin of c_kind,
+             param   type c value 'P',
+             sel_opt type c value 'S',
+           end of c_kind.
+constants: begin of c_sign,
+             inclu type c value 'I',
+             exlcy type c value 'E',
+           end of c_sign.
+constants: begin of c_option,
+             equal     type string value 'EQ',
+             not_equal type string value 'NE',
+           end of c_option.
+
 include z_software_metrics_screen.
 
 types: begin of class_struc,
@@ -20,24 +39,35 @@ data classes type classes_tab_type.
 data memory_id(60) type c.
 
 
-start-of-selection.
+initialization.
+  parameters = value #( ( selname = c_sel_name-complexity
+                            kind = c_kind-param
+                            sign = c_sign-inclu
+                            option = c_option-equal
+                            low = abap_true )
+                         ( selname = c_sel_name-authors
+                            kind = c_kind-param
+                            sign = c_sign-inclu
+                            option = c_option-equal
+                            low = abap_true ) ).
 
-  parameters = value #( ( selname = 'S_NAME'
-                            kind = 'S'
-                            sign = 'I'
-                            option = 'EQ'
-                            low = 'ZCL_UTILITIES' ) ). "'ZCL_LOCAL_KS' )
-*                        ( selname = 'S_NAME'
-*                            kind = 'S'
-*                            sign = 'I'
-*                            option = 'EQ'
-*                            low = 'ZCL_LOCAL_KS' ) ).
-*
+start-of-selection.
+  break-point.
+  "loop at select-option from screen and save the classes into parameters table
+  loop at s_class reference into data(cl).
+    parameters = value #( base parameters ( selname = c_sel_name-name
+                                                 kind = c_kind-sel_opt
+                                                 sign = cl->sign
+                                                 option = cl->option
+                                                 low = cl->low ) ).
+  endloop.
+
+  "call main metrics program and extract the data
   submit /sdf/cd_custom_code_metric exporting list to memory
       with selection-table parameters and return.
 
-  break-point.
-  loop at parameters reference into data(parameter).
+  "loop at the classes that the user asked for calculation
+  loop at parameters reference into data(parameter) where selname = c_sel_name-name.
     memory_id = |{ z_class_manager=>c_prefix }_{ parameter->low }|.
     class_stamp = z_class_manager=>import_from_memory( memory_id ).
 
@@ -56,6 +86,7 @@ start-of-selection.
     endtry.
   endloop.
 
+  "fixme
   loop at classes reference into data(copy).
     data(metrics_facade) = new z_calc_metrics_facade( class_stamp         = copy->class
                                                       static_object_calls = cb_cbo ).
