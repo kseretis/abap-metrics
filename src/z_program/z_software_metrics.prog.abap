@@ -57,9 +57,9 @@ start-of-selection.
   endloop.
 
   loop at classes reference into data(copy).
-    data(metrics_facade) = new z_calc_metrics_facade( copy->class ).
+    data(metrics_facade) = new z_calc_metrics_facade( class_stamp         = copy->class
+                                                      static_object_calls = cb_cbo ).
     metrics_facade->calculate_metrics( ).
-    break-point.
     data(output) = new z_salv_output( copy->class ).
     try.
         output->build_results_table( ).
