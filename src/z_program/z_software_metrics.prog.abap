@@ -7,10 +7,10 @@ report z_software_metrics.
 
 include z_software_metrics_screen.
 
-types: begin of clasS_struc,
-       class type ref to z_class,
+types: begin of class_struc,
+         class type ref to z_class,
        end of class_struc.
-       types classes_tab_type type standard table of class_struc.
+types classes_tab_type type standard table of class_struc.
 
 data parameters type standard table of rsparams.
 *DATA parameter LIKE LINE OF parameters.
@@ -18,7 +18,7 @@ data class_stamp type z_class_manager=>class_stamp_tab_type.
 *data obj_line type z_object_handler=>object_structure.
 data classes type classes_tab_type.
 data memory_id(60) type c.
-data output type ref to cl_salv_table.
+
 
 start-of-selection.
 
@@ -36,7 +36,7 @@ start-of-selection.
   submit /sdf/cd_custom_code_metric exporting list to memory
       with selection-table parameters and return.
 
-    break-point.
+  break-point.
   loop at parameters reference into data(parameter).
     memory_id = |{ z_class_manager=>c_prefix }_{ parameter->low }|.
     class_stamp = z_class_manager=>import_from_memory( memory_id ).
@@ -52,21 +52,20 @@ start-of-selection.
         insert value #( class = new_class ) into table classes.
 
       catch cx_sy_itab_line_not_found.
-      "catch zcx_static_ks. TODO create exception class
+        "catch zcx_static_ks. TODO create exception class
     endtry.
   endloop.
 
   loop at classes reference into data(copy).
     data(metrics_facade) = new z_calc_metrics_facade( copy->class ).
     metrics_facade->calculate_metrics( ).
+    break-point.
+    data(output) = new z_salv_output( copy->class ).
+    try.
+        output->build_results_table( ).
+        output->initialize_output( ).
+      catch zcx_flow_issue.
+    endtry.
   endloop.
 
-
-*
-*  cl_salv_table=>factory(
-*    importing
-*      r_salv_table = output
-*    changing
-*      t_table      = classes ).
-*
-*  output->display( ).
+  output->display( ).

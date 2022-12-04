@@ -12,19 +12,25 @@
      <SPRSL>E</SPRSL>
      <ARBGB>Z_MESSAGES</ARBGB>
      <MSGNR>001</MSGNR>
-     <TEXT>Class &amp;1 has no methods.</TEXT>
+     <TEXT>Class &amp;1 has no methods</TEXT>
     </T100>
     <T100>
      <SPRSL>E</SPRSL>
      <ARBGB>Z_MESSAGES</ARBGB>
      <MSGNR>002</MSGNR>
-     <TEXT>Method &amp;1 not found.</TEXT>
+     <TEXT>Method &amp;1 not found</TEXT>
     </T100>
     <T100>
      <SPRSL>E</SPRSL>
      <ARBGB>Z_MESSAGES</ARBGB>
      <MSGNR>003</MSGNR>
-     <TEXT>No version list found.</TEXT>
+     <TEXT>No version list found</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>Z_MESSAGES</ARBGB>
+     <MSGNR>004</MSGNR>
+     <TEXT>Salv build failed</TEXT>
     </T100>
    </T100>
   </asx:values>

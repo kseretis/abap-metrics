@@ -25,6 +25,16 @@ class zcx_flow_issue definition public inheriting from cx_static_check final cre
         attr4 type scx_attrname value '',
       end of method_not_found.
 
+    constants:
+      begin of salv_build_failed,
+        msgid type symsgid value 'Z_MESSAGES',
+        msgno type symsgno value '004',
+        attr1 type scx_attrname value '',
+        attr2 type scx_attrname value '',
+        attr3 type scx_attrname value '',
+        attr4 type scx_attrname value '',
+      end of salv_build_failed.
+
     methods constructor
       importing
         !textid   like if_t100_message=>t100key optional
