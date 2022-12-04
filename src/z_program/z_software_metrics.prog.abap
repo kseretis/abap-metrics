@@ -5,39 +5,8 @@
 *&---------------------------------------------------------------------*
 report z_software_metrics.
 
-tables: tadir.
-constants: begin of c_sel_name,
-             complexity type string value 'C_MCCABE',
-             authors    type string value 'C_VRSD',
-             name       type string value 'S_NAME',
-           end of c_sel_name.
-constants: begin of c_kind,
-             param   type c value 'P',
-             sel_opt type c value 'S',
-           end of c_kind.
-constants: begin of c_sign,
-             inclu type c value 'I',
-             exlcy type c value 'E',
-           end of c_sign.
-constants: begin of c_option,
-             equal     type string value 'EQ',
-             not_equal type string value 'NE',
-           end of c_option.
-
+include z_sofware_metrics_top.
 include z_software_metrics_screen.
-
-types: begin of class_struc,
-         class type ref to z_class,
-       end of class_struc.
-types classes_tab_type type standard table of class_struc.
-
-data parameters type standard table of rsparams.
-*DATA parameter LIKE LINE OF parameters.
-data class_stamp type z_class_manager=>class_stamp_tab_type.
-*data obj_line type z_object_handler=>object_structure.
-data classes type classes_tab_type.
-data memory_id(60) type c.
-
 
 initialization.
   parameters = value #( ( selname = c_sel_name-complexity
@@ -49,7 +18,12 @@ initialization.
                             kind = c_kind-param
                             sign = c_sign-inclu
                             option = c_option-equal
-                            low = abap_true ) ).
+                            low = abap_true )
+                         ( selname = c_sel_name-object
+                            kind = c_kind-param
+                            sign = c_sign-inclu
+                            option = c_option-equal
+                            low = 'CLAS' ) ).
 
 start-of-selection.
   break-point.
@@ -86,17 +60,20 @@ start-of-selection.
     endtry.
   endloop.
 
+  data(output) = new z_salv_output( ).
   "fixme
   loop at classes reference into data(copy).
     data(metrics_facade) = new z_calc_metrics_facade( class_stamp         = copy->class
                                                       static_object_calls = cb_cbo ).
     metrics_facade->calculate_metrics( ).
-    data(output) = new z_salv_output( copy->class ).
     try.
-        output->build_results_table( ).
-        output->initialize_output( ).
+        output->insert_methods_to_table( copy->class ).
       catch zcx_flow_issue.
     endtry.
   endloop.
 
-  output->display( ).
+  try.
+      output->initialize_output( ).
+      output->display( ).
+    catch zcx_flow_issue.
+  endtry.
