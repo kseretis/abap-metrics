@@ -13,13 +13,14 @@ endclass.
 class z_cbo_calculator_test implementation.
 
   method setup.
-    instance = new #( value #( ( `METHOD unit_method.` )
-      ( `` )
-      ( `z_class_test=>call_test_method( ).` )
-      ( `DATA(obj) = NEW z_instance_class( ).` )
-      ( `obj->instance_method( ).` )
-      ( `` )
-      ( `ENDMETHOD.` ) ) ).
+    instance = new #( source_code         = value #( ( `METHOD unit_method.` )
+                                                 ( `` )
+                                                 ( `z_class_test=>call_test_method( ).` )
+                                                 ( `DATA(obj) = NEW z_instance_class( ).` )
+                                                 ( `obj->instance_method( ).` )
+                                                 ( `` )
+                                                 ( `ENDMETHOD.` ) )
+                      static_object_calls = abap_false ).
   endmethod.
 
   method get_tokens.
