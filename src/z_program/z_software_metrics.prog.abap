@@ -26,7 +26,7 @@ initialization.
                             low = 'CLAS' ) ).
 
 start-of-selection.
-  break-point.
+
   "loop at select-option from screen and save the classes into parameters table
   loop at s_class reference into data(cl).
     parameters = value #( base parameters ( selname = c_sel_name-name

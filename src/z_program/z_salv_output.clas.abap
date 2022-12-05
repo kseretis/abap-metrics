@@ -2,6 +2,7 @@ class z_salv_output definition public final create public.
 
   public section.
     types output_tab_type type standard table of zst_abap_metrics.
+    class-data default_layout type slis_vari value '/DEFAULT'.
 
     methods constructor.
     methods insert_methods_to_table
@@ -46,6 +47,9 @@ class z_salv_output implementation.
     output->get_functions( )->set_all( abap_true ).
     output->get_columns( )->set_optimize( abap_true ).
     output->get_display_settings( )->set_striped_pattern( abap_true ).
+    output->get_layout( )->set_key( value salv_s_layout_key( report = sy-repid ) ).
+    output->get_layout( )->set_save_restriction( if_salv_c_layout=>restrict_none ).
+    output->get_layout( )->set_initial_layout( default_layout ).
   endmethod.
 
   method insert_methods_to_table.

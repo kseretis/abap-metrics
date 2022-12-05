@@ -11,10 +11,34 @@
     <UCCHECK>X</UCCHECK>
    </PROGDIR>
    <TPOOL>
+   <item>
+     <ID>I</ID>
+     <KEY>001</KEY>
+     <ENTRY>Class Selection</ENTRY>
+     <LENGTH>15</LENGTH>
+    </item>
     <item>
      <ID>R</ID>
      <ENTRY>Calculates software metrics</ENTRY>
      <LENGTH>27</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>CB_CBO</KEY>
+     <ENTRY>Calculate static calls in CBO</ENTRY>
+     <LENGTH>29</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>S_CLASS</KEY>
+     <ENTRY>Class</ENTRY>
+     <LENGTH>5</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>S_PACK</KEY>
+     <ENTRY>Package</ENTRY>
+     <LENGTH>7</LENGTH>
     </item>
    </TPOOL>
   </asx:values>
