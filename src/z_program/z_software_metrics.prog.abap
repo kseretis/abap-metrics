@@ -5,39 +5,43 @@
 *&---------------------------------------------------------------------*
 report z_software_metrics.
 
+include z_sofware_metrics_top.
 include z_software_metrics_screen.
 
-types: begin of clasS_struc,
-       class type ref to z_class,
-       end of class_struc.
-       types classes_tab_type type standard table of class_struc.
-
-data parameters type standard table of rsparams.
-*DATA parameter LIKE LINE OF parameters.
-data class_stamp type z_class_manager=>class_stamp_tab_type.
-*data obj_line type z_object_handler=>object_structure.
-data classes type classes_tab_type.
-data memory_id(60) type c.
-data output type ref to cl_salv_table.
+initialization.
+  parameters = value #( ( selname = c_sel_name-complexity
+                            kind = c_kind-param
+                            sign = c_sign-inclu
+                            option = c_option-equal
+                            low = abap_true )
+                         ( selname = c_sel_name-authors
+                            kind = c_kind-param
+                            sign = c_sign-inclu
+                            option = c_option-equal
+                            low = abap_true )
+                         ( selname = c_sel_name-object
+                            kind = c_kind-param
+                            sign = c_sign-inclu
+                            option = c_option-equal
+                            low = 'CLAS' ) ).
 
 start-of-selection.
+  break-point.
+  "loop at select-option from screen and save the classes into parameters table
+  loop at s_class reference into data(cl).
+    parameters = value #( base parameters ( selname = c_sel_name-name
+                                                 kind = c_kind-sel_opt
+                                                 sign = cl->sign
+                                                 option = cl->option
+                                                 low = cl->low ) ).
+  endloop.
 
-  parameters = value #( ( selname = 'S_NAME'
-                            kind = 'S'
-                            sign = 'I'
-                            option = 'EQ'
-                            low = 'ZCL_UTILITIES' ) ). "'ZCL_LOCAL_KS' )
-*                        ( selname = 'S_NAME'
-*                            kind = 'S'
-*                            sign = 'I'
-*                            option = 'EQ'
-*                            low = 'ZCL_LOCAL_KS' ) ).
-*
+  "call main metrics program and extract the data
   submit /sdf/cd_custom_code_metric exporting list to memory
       with selection-table parameters and return.
 
-    break-point.
-  loop at parameters reference into data(parameter).
+  "loop at the classes that the user asked for calculation
+  loop at parameters reference into data(parameter) where selname = c_sel_name-name.
     memory_id = |{ z_class_manager=>c_prefix }_{ parameter->low }|.
     class_stamp = z_class_manager=>import_from_memory( memory_id ).
 
@@ -52,21 +56,24 @@ start-of-selection.
         insert value #( class = new_class ) into table classes.
 
       catch cx_sy_itab_line_not_found.
-      "catch zcx_static_ks. TODO create exception class
+        "catch zcx_static_ks. TODO create exception class
     endtry.
   endloop.
 
+  data(output) = new z_salv_output( ).
+  "fixme
   loop at classes reference into data(copy).
-    data(metrics_facade) = new z_calc_metrics_facade( copy->class ).
+    data(metrics_facade) = new z_calc_metrics_facade( class_stamp         = copy->class
+                                                      static_object_calls = cb_cbo ).
     metrics_facade->calculate_metrics( ).
+    try.
+        output->insert_methods_to_table( copy->class ).
+      catch zcx_flow_issue.
+    endtry.
   endloop.
 
-
-*
-*  cl_salv_table=>factory(
-*    importing
-*      r_salv_table = output
-*    changing
-*      t_table      = classes ).
-*
-*  output->display( ).
+  try.
+      output->initialize_output( ).
+      output->display( ).
+    catch zcx_flow_issue.
+  endtry.

@@ -2,13 +2,15 @@ class z_calc_metrics_facade definition public final create public.
 
   public section.
     methods constructor
-      importing class_stamp type ref to z_class.
+      importing class_stamp         type ref to z_class
+                static_object_calls type abap_bool.
     methods calculate_metrics.
 
   protected section.
 
   private section.
     data class_stamp type ref to z_class.
+    data static_object_calls type abap_bool.
 
 endclass.
 
@@ -16,6 +18,7 @@ class z_calc_metrics_facade implementation.
 
   method constructor.
     me->class_stamp = class_stamp.
+    me->static_object_calls = static_object_calls.
   endmethod.
 
   method calculate_metrics.
@@ -47,7 +50,8 @@ class z_calc_metrics_facade implementation.
           meth->method->set_complex_weighted_by_decisi( weighted_complex_calculator->calculate( ) ).
 
           "calculate coupling between objects
-          data(coupling) = new z_cbo_calculator( meth->method->get_source_code( ) ).
+          data(coupling) = new z_cbo_calculator( source_code         = meth->method->get_source_code( )
+                                                 static_object_calls = static_object_calls ).
           meth->method->set_coupling_between_obj( coupling->calculate( ) ).
         endloop.
       catch zcx_flow_issue.
