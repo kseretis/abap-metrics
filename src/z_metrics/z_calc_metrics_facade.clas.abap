@@ -53,6 +53,13 @@ class z_calc_metrics_facade implementation.
           data(coupling) = new z_cbo_calculator( source_code         = meth->method->get_source_code( )
                                                  static_object_calls = static_object_calls ).
           meth->method->set_coupling_between_obj( coupling->calculate( ) ).
+
+          "number of authors
+          try.
+              data(authors) = new z_authors_calculator( meth->method->get_full_name( ) ).
+              meth->method->set_number_of_authors( authors->find_authors( ) ).
+            catch zcx_metrics_error.
+          endtry.
         endloop.
       catch zcx_flow_issue.
     endtry.

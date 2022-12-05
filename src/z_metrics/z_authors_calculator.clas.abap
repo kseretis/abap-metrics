@@ -7,7 +7,7 @@ class z_authors_calculator definition public final create public.
       importing full_name type string.
     methods find_authors
       returning value(return) type i
-      raising zcx_metrics_error.
+      raising   zcx_metrics_error.
 
   protected section.
 
@@ -31,7 +31,7 @@ class z_authors_calculator implementation.
     get_versions( ).
     data last_author type string.
     loop at version_list reference into data(version).
-      if sy-index = 1.
+      if sy-tabix = 1.
         last_author = version->author.
         authors += 1.
         continue.
@@ -44,13 +44,14 @@ class z_authors_calculator implementation.
       last_author = version->author.
       authors += 1.
     endloop.
+    return = authors.
   endmethod.
 
   method get_versions.
     data version_managment_list   type standard table of vrsn.
     call function 'SVRS_GET_VERSION_DIRECTORY_46'
       exporting
-        objname                = full_name
+        objname                = conv versobjnam( full_name )
         objtype                = object_type
       tables
         lversno_list           = version_managment_list
