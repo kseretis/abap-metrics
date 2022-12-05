@@ -32,6 +32,12 @@
      <MSGNR>004</MSGNR>
      <TEXT>Salv build failed</TEXT>
     </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>Z_MESSAGES</ARBGB>
+     <MSGNR>005</MSGNR>
+     <TEXT>Package and Class fields can't be both empty</TEXT>
+    </T100>
    </T100>
   </asx:values>
  </asx:abap>

@@ -1,7 +1,7 @@
 *&---------------------------------------------------------------------*
 *& Include Z_SOFWARE_METRICS_TOP
 *&---------------------------------------------------------------------*
-tables: tadir.
+tables: tadir, seoclass.
 constants: begin of c_sel_name,
              complexity type string value 'C_MCCABE',
              authors    type string value 'C_VRSD',
