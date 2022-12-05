@@ -1,21 +1,7 @@
 class z_salv_output definition public final create public.
 
   public section.
-    types: begin of output_struct,
-             package                      type string,
-             class_name                   type string,
-             method_name                  type string,
-             lines_of_code                type i,
-             number_of_comments           type i,
-             number_of_statements         type i,
-             number_of_pragmas            type i,
-             complexity_of_conditions     type i,
-             number_of_authors            type i,
-             complex_weighted_by_decision type i,
-             lack_of_cohesion             type i,
-             coupling_between_object      type i,
-           end of output_struct.
-    types output_tab_type type standard table of output_struct.
+    types output_tab_type type standard table of zst_abap_metrics.
 
     methods constructor.
     methods insert_methods_to_table
@@ -76,7 +62,7 @@ class z_salv_output implementation.
                                     number_of_authors = meth->method->get_number_of_authors( )
                                     complexity_of_conditions = meth->method->get_complexity_of_conditions( )
                                     complex_weighted_by_decision = meth->method->get_complex_weighted_by_decisi( )
-                                    lack_of_cohesion = meth->method->get_lack_of_cohesion( )
+                                    "lack_of_cohesion = meth->method->get_lack_of_cohesion( )
                                     coupling_between_object = meth->method->get_coupling_between_obj( ) ) ).
         endloop.
       catch zcx_flow_issue.
