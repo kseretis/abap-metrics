@@ -16,8 +16,8 @@
     <SCRTEXT_L>Number of statements</SCRTEXT_L>
     <DTELMASTER>E</DTELMASTER>
     <DATATYPE>INT1</DATATYPE>
-    <LENG>000003</LENG>
-    <OUTPUTLEN>000003</OUTPUTLEN>
+    <LENG>000005</LENG>
+    <OUTPUTLEN>000005</OUTPUTLEN>
    </DD04V>
   </asx:values>
  </asx:abap>
