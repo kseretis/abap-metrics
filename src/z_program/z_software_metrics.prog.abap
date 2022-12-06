@@ -26,9 +26,9 @@ initialization.
                             low = 'CLAS' ) ).
 
 at selection-screen.
-    if s_pack is initial and s_class is initial.
-        message e005(z_messages).
-    endif.
+  if s_pack is initial and s_class is initial.
+    message e005(z_messages).
+  endif.
 
 start-of-selection.
 
@@ -79,6 +79,10 @@ start-of-selection.
 
   try.
       output->initialize_output( ).
+      output->set_default_layout( ).
       output->display( ).
     catch zcx_flow_issue.
+    catch cx_salv_not_found.
+    catch cx_salv_existing.
+    catch cx_salv_data_error.
   endtry.

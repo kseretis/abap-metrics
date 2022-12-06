@@ -11,6 +11,11 @@ class z_salv_output definition public final create public.
     methods initialize_output
       raising zcx_flow_issue.
     methods display.
+    methods set_default_layout
+      raising
+        cx_salv_not_found
+        cx_salv_existing
+        cx_salv_data_error.
 
   protected section.
 
@@ -20,13 +25,15 @@ class z_salv_output definition public final create public.
     data output type ref to cl_salv_table.
 
     methods apply_settings.
+    methods set_sorts.
+    methods set_aggregations.
 
 endclass.
 
 class z_salv_output implementation.
 
   method constructor.
-    "
+    "empty constructor
   endmethod.
 
   method initialize_output.
@@ -50,6 +57,49 @@ class z_salv_output implementation.
     output->get_layout( )->set_key( value salv_s_layout_key( report = sy-repid ) ).
     output->get_layout( )->set_save_restriction( if_salv_c_layout=>restrict_none ).
     output->get_layout( )->set_initial_layout( default_layout ).
+  endmethod.
+
+  method set_default_layout.
+    set_sorts( ).
+    set_aggregations( ).
+  endmethod.
+
+  method set_sorts.
+    data(sorts) = output->get_sorts( ).
+    try.
+        sorts->add_sort( columnname = 'PACKAGE'
+                         subtotal   = if_salv_c_bool_sap=>true ).
+        sorts->add_sort( columnname = 'CLASS_NAME'
+                         subtotal   = if_salv_c_bool_sap=>true ).
+      catch cx_salv_not_found.
+      catch cx_salv_existing.
+      catch cx_salv_data_error.
+    endtry.
+  endmethod.
+
+  method set_aggregations.
+    data(aggregations) = output->get_aggregations( ).
+    try.
+        aggregations->add_aggregation( columnname  = 'LINES_OF_CODE'
+                                       aggregation = if_salv_c_aggregation=>total ).
+        aggregations->add_aggregation( columnname  = 'NUMBER_OF_COMMENTS'
+                                       aggregation = if_salv_c_aggregation=>total ).
+        aggregations->add_aggregation( columnname  = 'NUMBER_OF_STATEMENTS'
+                                       aggregation = if_salv_c_aggregation=>total ).
+        aggregations->add_aggregation( columnname  = 'NUMBER_OF_PRAGMAS'
+                                       aggregation = if_salv_c_aggregation=>total ).
+        aggregations->add_aggregation( columnname  = 'COMPLEXITY_OF_CONDITIONS'
+                                       aggregation = if_salv_c_aggregation=>total ).
+        aggregations->add_aggregation( columnname  = 'NUMBER_OF_AUTHORS'
+                                       aggregation = if_salv_c_aggregation=>total ).
+        aggregations->add_aggregation( columnname  = 'COMPLEX_WEIGHTED_BY_DECISION'
+                                       aggregation = if_salv_c_aggregation=>total ).
+        aggregations->add_aggregation( columnname  = 'COUPLING_BETWEEN_OBJECT'
+                                       aggregation = if_salv_c_aggregation=>total ).
+      catch cx_salv_data_error.
+      catch cx_salv_not_found.
+      catch cx_salv_existing.
+    endtry.
   endmethod.
 
   method insert_methods_to_table.
