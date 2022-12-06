@@ -25,8 +25,13 @@ initialization.
                             option = c_option-equal
                             low = 'CLAS' ) ).
 
+at selection-screen.
+  if s_pack is initial and s_class is initial.
+    message e005(z_messages).
+  endif.
+
 start-of-selection.
-  break-point.
+
   "loop at select-option from screen and save the classes into parameters table
   loop at s_class reference into data(cl).
     parameters = value #( base parameters ( selname = c_sel_name-name
@@ -74,6 +79,10 @@ start-of-selection.
 
   try.
       output->initialize_output( ).
+      output->set_default_layout( ).
       output->display( ).
     catch zcx_flow_issue.
+    catch cx_salv_not_found.
+    catch cx_salv_existing.
+    catch cx_salv_data_error.
   endtry.
