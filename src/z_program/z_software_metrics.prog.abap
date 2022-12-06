@@ -25,42 +25,6 @@ initialization.
                             option = c_option-equal
                             low = 'CLAS' ) ).
 
-at selection-screen on value-request for s_class-low.
-
-    data return_Tab type standard table of DDSHRETVAL.
-    call function 'F4IF_FIELD_VALUE_REQUEST'
-      exporting
-        tabname             = 'SEOCLASS'
-        fieldname           = 'CLSNAME'
-        searchhelp          = 'SEO_CLASSES_INTERFACES'
-*        shlpparam           = s_class-low
-*        dynpprog            = space
-*        dynpnr              = space
-*        dynprofield         = space
-*        stepl               = 0
-*        value               = s_class-low
-*        multiple_choice     = space
-*        display             = space
-*        suppress_recordlist = space
-*        callback_program    = space
-*        callback_form       = space
-*        callback_method     = callback_method
-*        selection_screen    = space
-*      importing
-*        user_reset          = user_reset
-      tables
-        return_tab          = return_tab
-*      exceptions
-*        field_not_found     = 1
-*        no_help_for_field   = 2
-*        inconsistent_help   = 3
-*        no_values_found     = 4
-*        others              = 5
-.
-    if sy-subrc = 0.
-        s_class-low = return_tab[ 1 ]-fieldval.
-    endif.
-
 at selection-screen.
     if s_pack is initial and s_class is initial.
         message e005(z_messages).
