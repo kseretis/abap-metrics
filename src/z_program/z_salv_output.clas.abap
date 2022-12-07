@@ -8,6 +8,8 @@ class z_salv_output definition public final create public.
     methods insert_methods_to_table
       importing class_stamp type ref to z_class
       raising   zcx_flow_issue.
+    methods is_table_empty
+      returning value(return) type abap_bool.
     methods initialize_output
       raising zcx_flow_issue.
     methods display.
@@ -21,7 +23,6 @@ class z_salv_output definition public final create public.
 
   private section.
     data results_table type output_tab_type.
-*    data class_stamp type ref to z_class.
     data output type ref to cl_salv_table.
 
     methods apply_settings.
@@ -121,6 +122,10 @@ class z_salv_output implementation.
         endloop.
       catch zcx_flow_issue.
     endtry.
+  endmethod.
+
+  method is_table_empty.
+    return = cond #( when results_table is initial then abap_true else abap_false ).
   endmethod.
 
   method display.

@@ -50,6 +50,12 @@
      <MSGNR>007</MSGNR>
      <TEXT>It does not contain any class/interface</TEXT>
     </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>Z_MESSAGES</ARBGB>
+     <MSGNR>008</MSGNR>
+     <TEXT>No class/interface to be calculated!</TEXT>
+    </T100>
    </T100>
   </asx:values>
  </asx:abap>
