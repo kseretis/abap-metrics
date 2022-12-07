@@ -25,12 +25,43 @@ initialization.
                             option = c_option-equal
                             low = 'CLAS' ) ).
 
-at selection-screen.
-  if s_pack is initial and s_class is initial.
-    message e005(z_messages).
+start-of-selection.
+
+  "input validation
+  data(popup) = new z_popup_window( ).
+
+  loop at s_pack reference into data(package).
+    data object_list type standard table of rseui_set.
+    call function 'RS_GET_OBJECTS_OF_DEVCLASS'
+      exporting
+        devclass   = package->low
+      tables
+        objectlist = object_list.
+
+    "save in the temp table only the classes/interafaces
+    data(object_list_with_classes) = object_list.
+    delete object_list_with_classes where obj_type <> obj_type.
+
+    "if one of the internal tables is empty the we create an error message
+    if object_list is initial.
+      message e006(z_messages) into data(msg).
+      popup->add_message( value #( object = package->low
+                                   message = msg ) ).
+    elseif object_list_with_classes is initial.
+      message e007(z_messages) into msg.
+      popup->add_message( value #( object = package->low
+                                   message = msg ) ).
+    endif.
+  endloop.
+
+  if popup->has_messages( ).
+    popup->build_display( ).
+    popup->display_popup( ).
   endif.
 
-start-of-selection.
+  if popup->get_answer( ) = abap_false.
+    exit.
+  endif.
 
   "loop at select-option from screen and save the classes into parameters table
   loop at s_class reference into data(cl).
