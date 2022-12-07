@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <abapGit version="v1.0.0" serializer="LCL_OBJECT_DTEL" serializer_version="v1.0.0">
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
@@ -11,13 +11,13 @@
     <SCRLEN3>55</SCRLEN3>
     <DDTEXT>Abap metrics - number of comments data element</DDTEXT>
     <REPTEXT>NoC</REPTEXT>
-    <SCRTEXT_S>Number of coms</SCRTEXT_S>
+    <SCRTEXT_S>Number of</SCRTEXT_S>
     <SCRTEXT_M>Number of comments</SCRTEXT_M>
     <SCRTEXT_L>Number of comments</SCRTEXT_L>
     <DTELMASTER>E</DTELMASTER>
     <DATATYPE>INT1</DATATYPE>
-    <LENG>000005</LENG>
-    <OUTPUTLEN>000005</OUTPUTLEN>
+    <LENG>000003</LENG>
+    <OUTPUTLEN>000003</OUTPUTLEN>
    </DD04V>
   </asx:values>
  </asx:abap>

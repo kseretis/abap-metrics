@@ -11,7 +11,7 @@
     <UCCHECK>X</UCCHECK>
    </PROGDIR>
    <TPOOL>
-   <item>
+    <item>
      <ID>I</ID>
      <KEY>001</KEY>
      <ENTRY>Class Selection</ENTRY>
@@ -26,19 +26,19 @@
      <ID>S</ID>
      <KEY>CB_CBO</KEY>
      <ENTRY>Calculate static calls in CBO</ENTRY>
-     <LENGTH>29</LENGTH>
+     <LENGTH>37</LENGTH>
     </item>
     <item>
      <ID>S</ID>
      <KEY>S_CLASS</KEY>
      <ENTRY>Class</ENTRY>
-     <LENGTH>5</LENGTH>
+     <LENGTH>13</LENGTH>
     </item>
     <item>
      <ID>S</ID>
      <KEY>S_PACK</KEY>
      <ENTRY>Package</ENTRY>
-     <LENGTH>7</LENGTH>
+     <LENGTH>15</LENGTH>
     </item>
    </TPOOL>
   </asx:values>

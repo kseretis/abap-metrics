@@ -36,7 +36,7 @@
      <SPRSL>E</SPRSL>
      <ARBGB>Z_MESSAGES</ARBGB>
      <MSGNR>005</MSGNR>
-     <TEXT>Package and Class fields can't be both empty</TEXT>
+     <TEXT>Package and Class fields can&apos;t be both empty</TEXT>
     </T100>
    </T100>
   </asx:values>

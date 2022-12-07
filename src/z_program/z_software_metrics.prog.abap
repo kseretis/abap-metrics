@@ -5,7 +5,7 @@
 *&---------------------------------------------------------------------*
 report z_software_metrics.
 
-include z_sofware_metrics_top.
+include z_software_metrics_top.
 include z_software_metrics_screen.
 
 initialization.
