@@ -9,6 +9,7 @@ include z_software_metrics_top.
 include z_software_metrics_screen.
 
 initialization.
+
   parameters = value #( ( selname = c_sel_name-complexity
                             kind = c_kind-param
                             sign = c_sign-inclu
@@ -26,6 +27,11 @@ initialization.
                             low = obj_type ) ).
 
 start-of-selection.
+
+  if s_pack is initial and s_class is initial.
+    message s005(z_messages) display like 'E'.
+    return.
+  endif.
 
   "input validation
   data(popup) = new z_popup_window( ).
