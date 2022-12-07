@@ -10,11 +10,120 @@
     <LDBNAME>D$S</LDBNAME>
     <UCCHECK>X</UCCHECK>
    </PROGDIR>
+   <CUA>
+    <ADM>
+     <PFKCODE>000001</PFKCODE>
+    </ADM>
+    <STA>
+     <RSMPE_STAT>
+      <CODE>POPUP_WINDOW</CODE>
+      <MODAL>P</MODAL>
+      <PFKCODE>000001</PFKCODE>
+      <BUTCODE>0001</BUTCODE>
+      <INT_NOTE>Popup window for messages</INT_NOTE>
+     </RSMPE_STAT>
+    </STA>
+    <FUN>
+     <RSMPE_FUNT>
+      <CODE>NO</CODE>
+      <TEXTNO>001</TEXTNO>
+      <TEXT_TYPE>S</TEXT_TYPE>
+      <TEXT_NAME>ICON_CANCEL</TEXT_NAME>
+      <ICON_ID>@0W@</ICON_ID>
+      <FUN_TEXT>NO</FUN_TEXT>
+     </RSMPE_FUNT>
+     <RSMPE_FUNT>
+      <CODE>YES</CODE>
+      <TEXTNO>001</TEXTNO>
+      <TEXT_TYPE>S</TEXT_TYPE>
+      <TEXT_NAME>ICON_OKAY</TEXT_NAME>
+      <ICON_ID>@0V@</ICON_ID>
+      <FUN_TEXT>YES</FUN_TEXT>
+     </RSMPE_FUNT>
+    </FUN>
+    <BUT>
+     <RSMPE_BUT>
+      <PFK_CODE>000001</PFK_CODE>
+      <CODE>0001</CODE>
+      <NO>01</NO>
+      <PFNO>00</PFNO>
+     </RSMPE_BUT>
+     <RSMPE_BUT>
+      <PFK_CODE>000001</PFK_CODE>
+      <CODE>0001</CODE>
+      <NO>02</NO>
+      <PFNO>02</PFNO>
+     </RSMPE_BUT>
+    </BUT>
+    <PFK>
+     <RSMPE_PFK>
+      <CODE>000001</CODE>
+      <PFNO>00</PFNO>
+      <FUNCODE>YES</FUNCODE>
+      <FUNNO>001</FUNNO>
+     </RSMPE_PFK>
+     <RSMPE_PFK>
+      <CODE>000001</CODE>
+      <PFNO>02</PFNO>
+      <FUNCODE>NO</FUNCODE>
+      <FUNNO>001</FUNNO>
+     </RSMPE_PFK>
+    </PFK>
+    <SET>
+     <RSMPE_STAF>
+      <STATUS>POPUP_WINDOW</STATUS>
+      <FUNCTION>NO</FUNCTION>
+     </RSMPE_STAF>
+     <RSMPE_STAF>
+      <STATUS>POPUP_WINDOW</STATUS>
+      <FUNCTION>YES</FUNCTION>
+     </RSMPE_STAF>
+    </SET>
+    <DOC>
+     <RSMPE_ATRT>
+      <OBJ_TYPE>P</OBJ_TYPE>
+      <OBJ_CODE>000001</OBJ_CODE>
+      <MODAL>P</MODAL>
+      <INT_NOTE>Popup window for messages</INT_NOTE>
+     </RSMPE_ATRT>
+     <RSMPE_ATRT>
+      <OBJ_TYPE>B</OBJ_TYPE>
+      <OBJ_CODE>000001</OBJ_CODE>
+      <SUB_CODE>0001</SUB_CODE>
+      <MODAL>P</MODAL>
+      <INT_NOTE>Popup window for messages</INT_NOTE>
+     </RSMPE_ATRT>
+    </DOC>
+   </CUA>
    <TPOOL>
+    <item>
+     <ID>I</ID>
+     <KEY>001</KEY>
+     <ENTRY>Class Selection</ENTRY>
+     <LENGTH>15</LENGTH>
+    </item>
     <item>
      <ID>R</ID>
      <ENTRY>Calculates software metrics</ENTRY>
      <LENGTH>27</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>CB_CBO</KEY>
+     <ENTRY>Calculate static calls in CBO</ENTRY>
+     <LENGTH>37</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>S_CLASS</KEY>
+     <ENTRY>Class</ENTRY>
+     <LENGTH>13</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>S_PACK</KEY>
+     <ENTRY>Package</ENTRY>
+     <LENGTH>15</LENGTH>
     </item>
    </TPOOL>
   </asx:values>

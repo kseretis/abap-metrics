@@ -32,6 +32,30 @@
      <MSGNR>004</MSGNR>
      <TEXT>Salv build failed</TEXT>
     </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>Z_MESSAGES</ARBGB>
+     <MSGNR>005</MSGNR>
+     <TEXT>Package and Class fields can&apos;t be both empty</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>Z_MESSAGES</ARBGB>
+     <MSGNR>006</MSGNR>
+     <TEXT>Does not exist</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>Z_MESSAGES</ARBGB>
+     <MSGNR>007</MSGNR>
+     <TEXT>It does not contain any class/interface</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>Z_MESSAGES</ARBGB>
+     <MSGNR>008</MSGNR>
+     <TEXT>No class/interface to be calculated!</TEXT>
+    </T100>
    </T100>
   </asx:values>
  </asx:abap>
