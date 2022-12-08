@@ -2,7 +2,7 @@ class z_popup_window definition public final create public.
 
   public section.
     types: begin of message_struct,
-             object(20)  type c,
+             object(30)  type c,
              message(50) type c,
            end of message_struct .
 
