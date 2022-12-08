@@ -8,19 +8,6 @@ class z_code_scanner definition public abstract create public.
              tokens     type tab_type_stokes,
            end of scan_results.
 
-    constants: begin of token_type,
-                 comment type string value 'C',
-                 pragma  type string value 'P',
-               end of token_type.
-
-    constants: begin of scan_type,
-                 none          type string value 'NONE',
-                 simple        type string value 'SIMPLE',
-                 with_comments type string value 'WITH_COMMENTS',
-                 with_pragmas  type string value 'WITH_PRAGMAS',
-                 with_keywords type string value 'WITH_KEYWORDS',
-               end of scan_type.
-
     methods constructor
       importing scan_type   type string
                 source_code type rswsourcet.

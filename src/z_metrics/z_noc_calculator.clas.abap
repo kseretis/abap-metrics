@@ -15,14 +15,14 @@ endclass.
 class z_noc_calculator implementation.
 
   method constructor.
-    super->constructor( scan_type   = z_code_scanner=>scan_type-with_comments
+    super->constructor( scan_type   = zif_metrics=>scan_type-with_comments
                         source_code = source_code ).
   endmethod.
 
   method calculate.
     loop at get_tokens( ) reference into data(token)
-        where type = z_code_scanner=>token_type-comment
-            or type = z_code_scanner=>token_type-pragma.
+        where type = zif_metrics=>token_type-comment
+            or type = zif_metrics=>token_type-pragma.
       comments += 1.
     endloop.
     return = comments.

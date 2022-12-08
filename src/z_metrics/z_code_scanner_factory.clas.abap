@@ -31,13 +31,13 @@ class z_code_scanner_factory implementation.
   method factory.
     z_code_scanner_factory=>source_code = source_code.
     case scan_type.
-      when z_code_scanner=>scan_type-simple.
+      when zif_metrics=>scan_type-simple.
         simple_scan( ).
-      when z_code_scanner=>scan_type-with_comments.
+      when zif_metrics=>scan_type-with_comments.
         scan_with_comments( ).
-      when z_code_scanner=>scan_type-with_pragmas.
+      when zif_metrics=>scan_type-with_pragmas.
         scan_with_pragmas( ).
-      when z_code_scanner=>scan_type-with_keywords.
+      when zif_metrics=>scan_type-with_keywords.
         scan_with_keywords( ).
     endcase.
     return = scan_results.

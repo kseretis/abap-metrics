@@ -14,7 +14,7 @@ endclass.
 class z_weight_des_calculator implementation.
 
   method constructor.
-    super->constructor( scan_type   = z_code_scanner=>scan_type-with_keywords
+    super->constructor( scan_type   = zif_metrics=>scan_type-with_keywords
                         source_code = source_code ).
   endmethod.
 

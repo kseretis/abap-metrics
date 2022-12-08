@@ -14,7 +14,7 @@ endclass.
 class z_nos_calculator implementation.
 
   method constructor.
-    super->constructor( scan_type   = z_code_scanner=>scan_type-simple
+    super->constructor( scan_type   = zif_metrics=>scan_type-simple
                         source_code = source_code ).
   endmethod.
 

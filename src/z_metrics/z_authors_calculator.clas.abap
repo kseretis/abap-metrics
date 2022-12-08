@@ -1,8 +1,6 @@
 class z_authors_calculator definition public final create public.
 
   public section.
-    constants object_type(4) type c value 'METH'.
-
     methods constructor
       importing full_name type string.
     methods find_authors
@@ -52,7 +50,7 @@ class z_authors_calculator implementation.
     call function 'SVRS_GET_VERSION_DIRECTORY_46'
       exporting
         objname                = conv versobjnam( full_name )
-        objtype                = object_type
+        objtype                = zif_metrics=>obj_type-meth
       tables
         lversno_list           = version_managment_list
         version_list           = version_list
