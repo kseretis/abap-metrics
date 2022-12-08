@@ -11,7 +11,7 @@ interface zif_popup_window public.
              end of screen_status.
 
   constants: begin of labels,
-               object  type scrtext_l value 'Object',
+               object  type scrtext_l value 'Package/Class',
                message type scrtext_l value 'Message',
              end of labels.
 

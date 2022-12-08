@@ -2,9 +2,11 @@ class z_salv_output definition public final create public.
 
   public section.
     types output_tab_type type standard table of zst_abap_metrics.
+    types output_tab_type_by_class type standard table of zst_abap_metrics_by_class with default key.
     class-data default_layout type slis_vari value '/DEFAULT'.
 
-    methods constructor.
+    methods constructor
+      importing calc_by_class type abap_bool.
     methods insert_methods_to_table
       importing class_stamp type ref to z_class
       raising   zcx_flow_issue.
@@ -22,33 +24,55 @@ class z_salv_output definition public final create public.
   protected section.
 
   private section.
-    data results_table type output_tab_type.
+    data results_table_by_method type output_tab_type.
+    data results_table_by_class type output_tab_type_by_class.
+    data calc_by_class type abap_bool.
     data output type ref to cl_salv_table.
 
     methods apply_settings.
     methods set_sorts.
     methods set_aggregations.
+    methods collect_lines
+      returning value(return) type output_tab_type_by_class.
+    methods initialize_salv
+      changing final_table type any
+      raising  zcx_flow_issue.
 
 endclass.
 
 class z_salv_output implementation.
 
   method constructor.
-    "empty constructor
+    me->calc_by_class = calc_by_class.
   endmethod.
 
   method initialize_output.
+    if calc_by_class = abap_true.
+      results_table_by_class = collect_lines( ).
+      initialize_salv( changing final_table = results_table_by_class ).
+    else.
+      initialize_salv( changing final_table = results_table_by_method ).
+    endif.
+  endmethod.
+
+  method initialize_salv.
     try.
         cl_salv_table=>factory(
           importing
             r_salv_table = output
           changing
-            t_table      = results_table ).
+            t_table      = final_table ).
         apply_settings( ).
       catch cx_salv_msg.
         raise exception new zcx_flow_issue( textid = zcx_flow_issue=>salv_build_failed ).
     endtry.
+  endmethod.
 
+  method collect_lines.
+    loop at results_table_by_method assigning field-symbol(<result>).
+      data(line) = corresponding zst_abap_metrics_by_class( <result> ).
+      collect line into return.
+    endloop.
   endmethod.
 
   method apply_settings.
@@ -71,7 +95,8 @@ class z_salv_output implementation.
         sorts->add_sort( columnname = 'PACKAGE'
                          subtotal   = if_salv_c_bool_sap=>true ).
         sorts->add_sort( columnname = 'CLASS_NAME'
-                         subtotal   = if_salv_c_bool_sap=>true ).
+                         subtotal   = cond #( when calc_by_class = abap_false then if_salv_c_bool_sap=>true
+                                                else if_salv_c_bool_sap=>false ) ).
       catch cx_salv_not_found.
       catch cx_salv_existing.
       catch cx_salv_data_error.
@@ -106,26 +131,26 @@ class z_salv_output implementation.
   method insert_methods_to_table.
     try.
         loop at class_stamp->get_methods( ) reference into data(meth).
-          results_table = value #( base results_table
-                                  ( class_name = class_stamp->get_name( )
-                                    package = class_stamp->get_package( )
-                                    method_name = meth->method->get_name( )
-                                    lines_of_code = meth->method->get_lines_of_code( )
-                                    number_of_statements = meth->method->get_number_of_statements( )
-                                    number_of_comments = meth->method->get_number_of_comments( )
-                                    number_of_pragmas = meth->method->get_number_of_pragmas( )
-                                    number_of_authors = meth->method->get_number_of_authors( )
-                                    complexity_of_conditions = meth->method->get_complexity_of_conditions( )
-                                    complex_weighted_by_decision = meth->method->get_complex_weighted_by_decisi( )
-                                    "lack_of_cohesion = meth->method->get_lack_of_cohesion( )
-                                    coupling_between_object = meth->method->get_coupling_between_obj( ) ) ).
+          results_table_by_method = value #( base results_table_by_method
+                                          ( class_name = class_stamp->get_name( )
+                                            package = class_stamp->get_package( )
+                                            method_name = meth->method->get_name( )
+                                            lines_of_code = meth->method->get_lines_of_code( )
+                                            number_of_statements = meth->method->get_number_of_statements( )
+                                            number_of_comments = meth->method->get_number_of_comments( )
+                                            number_of_pragmas = meth->method->get_number_of_pragmas( )
+                                            number_of_authors = meth->method->get_number_of_authors( )
+                                            complexity_of_conditions = meth->method->get_complexity_of_conditions( )
+                                            complex_weighted_by_decision = meth->method->get_complex_weighted_by_decisi( )
+                                            "lack_of_cohesion = meth->method->get_lack_of_cohesion( )
+                                            coupling_between_object = meth->method->get_coupling_between_obj( ) ) ).
         endloop.
       catch zcx_flow_issue.
     endtry.
   endmethod.
 
   method is_table_empty.
-    return = cond #( when results_table is initial then abap_true else abap_false ).
+    return = cond #( when results_table_by_method is initial then abap_true else abap_false ).
   endmethod.
 
   method display.
