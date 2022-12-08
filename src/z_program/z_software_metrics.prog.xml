@@ -99,8 +99,14 @@
     <item>
      <ID>I</ID>
      <KEY>001</KEY>
-     <ENTRY>Class Selection</ENTRY>
-     <LENGTH>15</LENGTH>
+     <ENTRY>Package/Class selection</ENTRY>
+     <LENGTH>23</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
+     <KEY>002</KEY>
+     <ENTRY>Calculation settings</ENTRY>
+     <LENGTH>20</LENGTH>
     </item>
     <item>
      <ID>R</ID>
@@ -112,6 +118,18 @@
      <KEY>CB_CBO</KEY>
      <ENTRY>Calculate static calls in CBO</ENTRY>
      <LENGTH>37</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>RB_CLAS</KEY>
+     <ENTRY>Calculate by class</ENTRY>
+     <LENGTH>30</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>RB_METH</KEY>
+     <ENTRY>Calculate by method</ENTRY>
+     <LENGTH>32</LENGTH>
     </item>
     <item>
      <ID>S</ID>

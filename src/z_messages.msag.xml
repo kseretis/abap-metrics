@@ -54,7 +54,7 @@
      <SPRSL>E</SPRSL>
      <ARBGB>Z_MESSAGES</ARBGB>
      <MSGNR>008</MSGNR>
-     <TEXT>No class/interface to be calculated!</TEXT>
+     <TEXT>No class/package to be calculated!</TEXT>
     </T100>
    </T100>
   </asx:values>
