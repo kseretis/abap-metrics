@@ -100,7 +100,7 @@ start-of-selection.
   submit /sdf/cd_custom_code_metric exporting list to memory
       with selection-table parameters and return.
 
-  data(output) = new z_salv_output( ).
+  data(output) = new z_salv_output( rb_clas ).
   "loop at the classes that the user asked for calculation
   loop at classes_for_calculation reference into data(clas).
 *  loop at parameters reference into data(parameter) where selname = c_sel_name-name.
