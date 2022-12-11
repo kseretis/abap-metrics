@@ -19,7 +19,7 @@ class z_nos_calculator implementation.
   endmethod.
 
   method calculate.
-    return = lines( get_statements( ) ). "probably - 2
+    return = lines( get_statements( ) ).
   endmethod.
 
 endclass.

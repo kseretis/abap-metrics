@@ -11,7 +11,7 @@ class z_authors_calculator definition public final create public.
 
   private section.
     data full_name type string.
-    data version_list      type table of vrsd.
+    data version_list type table of vrsd.
     data authors type i value 0.
 
     methods get_versions
@@ -46,7 +46,7 @@ class z_authors_calculator implementation.
   endmethod.
 
   method get_versions.
-    data version_managment_list   type standard table of vrsn.
+    data version_managment_list type standard table of vrsn.
     call function 'SVRS_GET_VERSION_DIRECTORY_46'
       exporting
         objname                = conv versobjnam( full_name )
