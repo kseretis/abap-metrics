@@ -19,7 +19,18 @@ class z_loc_calculator implementation.
   endmethod.
 
   method calculate.
-    return = lines( get_source_code( ) ). "probably - 2
+    data(lines) = get_source_code( ).
+    data lines_of_code like lines.
+
+    loop at lines into data(line) where table_line is not initial.
+      data(first_char) = condense( line ).
+      first_char = first_char+0(1).
+      if first_char <> '"' and first_char <> '*' .
+        insert line into table lines_of_code.
+      endif.
+    endloop.
+
+    return = lines( lines_of_code ).
   endmethod.
 
 endclass.
