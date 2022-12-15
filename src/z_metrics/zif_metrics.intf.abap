@@ -28,4 +28,10 @@ interface zif_metrics public.
                with_keywords type string value 'WITH_KEYWORDS',
              end of scan_type.
 
+  constants: begin of attribute_decl_level,
+               instance type n value 0,
+               static   type n value 1,
+               constant type n value 2,
+             end of attribute_decl_level.
+
 endinterface.
