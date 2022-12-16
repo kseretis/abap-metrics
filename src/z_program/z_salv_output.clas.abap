@@ -64,7 +64,7 @@ class z_salv_output implementation.
             t_table      = final_table ).
         apply_settings( ).
       catch cx_salv_msg.
-        raise exception new zcx_flow_issue( textid = zcx_flow_issue=>salv_build_failed ).
+        raise exception new zcx_flow_issue( textid = zif_exception_messages=>salv_build_failed ).
     endtry.
   endmethod.
 

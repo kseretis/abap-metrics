@@ -62,7 +62,7 @@ class z_keywords implementation.
     try.
         return = keywords[ open = open_keyword ]-close.
       catch cx_sy_itab_line_not_found.
-        raise exception new zcx_metrics_error( textid = zcx_metrics_error=>no_matching_keyword ).
+        raise exception new zcx_metrics_error( textid = zif_exception_messages=>no_matching_keyword ).
     endtry.
   endmethod.
 

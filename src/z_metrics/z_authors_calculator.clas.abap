@@ -60,7 +60,7 @@ class z_authors_calculator implementation.
         system_failure         = 3
         others                 = 4.
     if sy-subrc <> 0.
-      raise exception new zcx_metrics_error( textid = zcx_metrics_error=>empty_version_list ).
+      raise exception new zcx_metrics_error( textid = zif_exception_messages=>empty_version_list ).
     endif.
   endmethod.
 
