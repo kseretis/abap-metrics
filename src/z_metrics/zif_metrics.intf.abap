@@ -28,12 +28,11 @@ interface zif_metrics public.
                with_keywords type string value 'WITH_KEYWORDS',
              end of scan_type.
 
-  constants: begin of attribute_decl_level,
-               instance type n value 0,
-               static   type n value 1,
-               constant type n value 2,
-             end of attribute_decl_level.
-
   constants cohesive_value type i value 1.
+
+  constants: begin of local_declaration,
+               data_with_type type string value 'DATA',
+               in_line_data   type string value 'DATA(',
+             end of local_declaration.
 
 endinterface.
