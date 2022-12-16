@@ -15,6 +15,16 @@ class zcx_metrics_error definition public inheriting from cx_static_check final 
         attr4 type scx_attrname value '',
       end of empty_version_list.
 
+    constants:
+      begin of no_matching_keyword,
+        msgid type symsgid value 'Z_MESSAGES',
+        msgno type symsgno value '009',
+        attr1 type scx_attrname value '',
+        attr2 type scx_attrname value '',
+        attr3 type scx_attrname value '',
+        attr4 type scx_attrname value '',
+      end of no_matching_keyword.
+
     methods constructor
       importing
         !textid   like if_t100_message=>t100key optional

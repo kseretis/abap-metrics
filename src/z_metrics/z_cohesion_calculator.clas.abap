@@ -34,6 +34,14 @@ class z_cohesion_calculator definition public final create public inheriting fro
 
     methods calculate_cohesion_by_line.
     methods build_cohesion_table.
+    methods search_next_for_attribute
+      importing tokens        type z_code_scanner=>tab_type_stokes
+                variable      type string
+      returning value(return) type abap_bool.
+    methods search_next_for_keyword
+      importing tokens        type z_code_scanner=>tab_type_stokes
+                keyword       type string
+      returning value(return) type abap_bool.
     methods get_attributes.
     methods get_lines_tokens
       importing line          type i
@@ -54,7 +62,7 @@ class z_cohesion_calculator implementation.
     calculate_cohesion_by_line( ).
 
     cohesive_table_simple = corresponding #( cohesion_table ).
-
+    break-point.
     loop at cohesive_table_simple assigning field-symbol(<line>).
       <line>-lcom2 = lcom2.
       collect <line> into lack_of_cohesion.
@@ -73,27 +81,22 @@ class z_cohesion_calculator implementation.
   method calculate_cohesion_by_line.
     build_cohesion_table( ).
     get_attributes( ).
+    break-point.
     loop at cohesion_table reference into data(line).
       data(is_cohesive) = abap_false.
       loop at line->previous_line_tokens assigning field-symbol(<prev_token_line>).
 
-        "check if the token is an attribute or a keyword, if not skip it
-        if not ( <prev_token_line>-str in attributes or keywords->is_keyword( <prev_token_line>-str ) ).
-          "FIXME
-          "potential issue with the keywords(open and close)
-          continue.
+        "if previous token is an attribute then we look up in the next line ONLY for the same attribute
+        if <prev_token_line>-str in attributes.
+          is_cohesive = search_next_for_attribute( tokens   = line->next_line_tokens
+                                                   variable = <prev_token_line>-str ).
+          "else if, it's an open keyword we look up in next line ONLY for the close keyword
+        elseif keywords->is_open_keyword( <prev_token_line>-str ).
+          is_cohesive = search_next_for_keyword( tokens  = line->next_line_tokens
+                                                 keyword = <prev_token_line>-str ).
         endif.
-        "if the attributes are the same or the keywords are matching, set cohesive to 1
-        loop at line->next_line_tokens assigning field-symbol(<next_token_line>).
-          if <prev_token_line>-str = <next_token_line>-str
-             or keywords->are_matching( open_keyword = <prev_token_line>-str
-                                        close_keyword = <next_token_line>-str ).
-            is_cohesive = abap_true.
-            line->cohesive = zif_metrics=>cohesive_value.
-            exit.
-          endif.
-        endloop.
         if is_cohesive = abap_true.
+          line->cohesive = zif_metrics=>cohesive_value.
           exit.
         endif.
       endloop.
@@ -101,6 +104,19 @@ class z_cohesion_calculator implementation.
         line->not_cohesive = zif_metrics=>cohesive_value.
       endif.
     endloop.
+  endmethod.
+
+  method search_next_for_attribute.
+    return = cond #( when line_exists( tokens[ str = variable ] ) then abap_true else abap_false ).
+  endmethod.
+
+  method search_next_for_keyword.
+    try.
+        return = cond #( when line_exists( tokens[ str = keywords->get_close_keyword( keyword ) ] )
+           then abap_true else abap_false ).
+      catch zcx_metrics_error.
+        return = abap_false.
+    endtry.
   endmethod.
 
   method build_cohesion_table.
