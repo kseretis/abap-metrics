@@ -122,6 +122,8 @@ class z_salv_output implementation.
                                        aggregation = if_salv_c_aggregation=>total ).
         aggregations->add_aggregation( columnname  = 'COUPLING_BETWEEN_OBJECT'
                                        aggregation = if_salv_c_aggregation=>total ).
+        aggregations->add_aggregation( columnname  = 'LACK_OF_COHESION'
+                                       aggregation = if_salv_c_aggregation=>total ).
       catch cx_salv_data_error.
       catch cx_salv_not_found.
       catch cx_salv_existing.
@@ -142,7 +144,7 @@ class z_salv_output implementation.
                                             number_of_authors = meth->method->get_number_of_authors( )
                                             complexity_of_conditions = meth->method->get_complexity_of_conditions( )
                                             complex_weighted_by_decision = meth->method->get_complex_weighted_by_decisi( )
-                                            "lack_of_cohesion = meth->method->get_lack_of_cohesion( )
+                                            lack_of_cohesion = meth->method->get_lack_of_cohesion( )
                                             coupling_between_object = meth->method->get_coupling_between_obj( ) ) ).
         endloop.
       catch zcx_flow_issue.

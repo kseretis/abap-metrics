@@ -34,4 +34,6 @@ interface zif_metrics public.
                constant type n value 2,
              end of attribute_decl_level.
 
+  constants cohesive_value type i value 1.
+
 endinterface.
