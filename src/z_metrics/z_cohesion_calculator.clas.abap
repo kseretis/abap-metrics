@@ -62,12 +62,12 @@ class z_cohesion_calculator implementation.
     calculate_cohesion_by_line( ).
 
     cohesive_table_simple = corresponding #( cohesion_table ).
-    break-point.
+
     loop at cohesive_table_simple assigning field-symbol(<line>).
       <line>-lcom2 = lcom2.
       collect <line> into lack_of_cohesion.
     endloop.
-
+    break-point.
     try.
         return = lack_of_cohesion[ 1 ]-not_cohesive - lack_of_cohesion[ 1 ]-cohesive.
         if return < 0.
@@ -81,7 +81,6 @@ class z_cohesion_calculator implementation.
   method calculate_cohesion_by_line.
     build_cohesion_table( ).
     get_attributes( ).
-    break-point.
     loop at cohesion_table reference into data(line).
       data(is_cohesive) = abap_false.
       loop at line->previous_line_tokens assigning field-symbol(<prev_token_line>).
@@ -120,7 +119,8 @@ class z_cohesion_calculator implementation.
   endmethod.
 
   method build_cohesion_table.
-    data(source_code) = get_source_code( ).
+    clean_source_code( ).
+    data(source_code) = get_cleaned_source_code( ).
     loop at source_code assigning field-symbol(<line>).
       "skip first line, because we want to calculate only the body
       if sy-tabix = 1.
@@ -155,7 +155,7 @@ class z_cohesion_calculator implementation.
   endmethod.
 
   method get_lines_tokens.
-    loop at get_tokens(  ) assigning field-symbol(<line>) where row = line.
+    loop at get_cleaned_tokens(  ) assigning field-symbol(<line>) where row = line.
       insert <line> into table return.
     endloop.
   endmethod.
