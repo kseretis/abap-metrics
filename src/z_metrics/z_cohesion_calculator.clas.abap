@@ -3,29 +3,12 @@ class z_cohesion_calculator definition public final create public inheriting fro
   public section.
 
     types begin of token_with_keyword_id_struct.
-    types line_id type i.
-    include type stokes.
-    types keyword_id type i.
-    types is_matched type abap_bool.
+        types line_id type i.
+        include type stokes.
+        types keyword_id type i.
+        types is_matched type abap_bool.
     types end of token_with_keyword_id_struct.
-
-*    types token_with_keyword_id_tab_type type sorted table of token_with_keyword_id_struct with unique key line_id.
-
     types token_with_keyword_id_tab_type type standard table of token_with_keyword_id_struct with default key.
-*    types: begin of tokens_struct,
-**    include type stokes.
-*             keyword_id type i,
-*           end of tokens_struct.
-
-*    types: begin of cohesion_struct_test,
-*             previous_line        type string,
-*             previous_line_tokens type tokens_struct,
-*             next_line            type string,
-*             next_line_tokens     type tokens_struct,
-*             not_cohesive         type i,
-*             cohesive             type i,
-*           end of cohesion_struct_test.
-
 
     types: begin of cohesion_struct,
              previous_line        type string,
