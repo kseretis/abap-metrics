@@ -83,12 +83,9 @@ class z_variables definition public final create public.
     method fetch_attributes.
       try.
           "get class' attributes
-          data(tmp_attributes) = cl_oo_class=>get_instance( class_name )->get_attributes( ).
-          loop at tmp_attributes assigning field-symbol(<attribute>).
-            insert conv #( <attribute>-cmpname ) into table attributes.
-          endloop.
+          attributes = value #( for a in cl_oo_class=>get_instance( class_name )->get_attributes( ) ( conv #( a-cmpname ) ) ).
         catch cx_class_not_existent.
-          "todo
+          "TODO
       endtry.
     endmethod.
   
