@@ -151,7 +151,7 @@ class z_cohesion_calculator implementation.
   method search_next_for_variable.
     return = abap_false.
     loop at tokens assigning field-symbol(<token>).
-      if <token>-str cs variable.
+      if <token>-str = variable or ( <token>-str cs variable and <token>-str cs |{ variable }-| ).
         return = abap_true.
         exit.
       endif.

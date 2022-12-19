@@ -44,4 +44,6 @@ interface zif_metrics public.
                blank             type string value '',
              end of symbols.
 
+  constants this type string value 'ME->'.
+
 endinterface.

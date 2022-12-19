@@ -52,7 +52,11 @@ class z_variables implementation.
   endmethod.
 
   method is_attribute.
-    return = cond #( when line_exists( attributes[ table_line = variable ] ) then abap_true else abap_false ).
+    data(tmp_variable) = cond #( when variable cs zif_metrics=>this
+                                    then substring_after( val = variable
+                                                          sub = zif_metrics=>this )
+                                    else variable ).
+    return = cond #( when line_exists( attributes[ table_line = tmp_variable ] ) then abap_true else abap_false ).
   endmethod.
 
   method is_local_variable.
@@ -63,7 +67,7 @@ class z_variables implementation.
     return = abap_false.
     data(merged_vars) = value table_of_strings( base attributes ( lines of local_variables ) ).
     loop at merged_vars assigning field-symbol(<variable>).
-      if token cs <variable>.
+      if token cs <variable> and ( token cs |({ <variable> })| or token cs |{ <variable> }-| ).
         return = abap_true.
         exit.
       endif.
