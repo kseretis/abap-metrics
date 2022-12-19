@@ -3,10 +3,10 @@ class z_cohesion_calculator definition public final create public inheriting fro
   public section.
 
     types begin of token_with_keyword_id_struct.
-        types line_id type i.
-        include type stokes.
-        types keyword_id type i.
-        types is_matched type abap_bool.
+    types line_id type i.
+    include type stokes.
+    types keyword_id type i.
+    types is_matched type abap_bool.
     types end of token_with_keyword_id_struct.
     types token_with_keyword_id_tab_type type standard table of token_with_keyword_id_struct with default key.
 
@@ -107,10 +107,10 @@ class z_cohesion_calculator implementation.
       data(is_cohesive) = abap_false.
       loop at line->previous_line_tokens assigning field-symbol(<prev_token_line>).
         "if previous token is an attribute then we look up in the next line ONLY for the same attribute
-        if variables->is_attribute( <prev_token_line>-str ).
+        if variables->is_attribute( <prev_token_line>-str ) or variables->is_local_variable( <prev_token_line>-str ).
           is_cohesive = search_next_for_variable( tokens   = line->next_line_tokens
                                                   variable = <prev_token_line>-str ).
-        elseif variables->contains_local_variable( <prev_token_line>-str ).
+        elseif variables->contains_variable( <prev_token_line>-str ).
           is_cohesive = search_next_for_variable( tokens   = line->next_line_tokens
                                                   variable = variables->clear_inline_variable( <prev_token_line>-str ) ).
           "else if, it's an open keyword we look up in next line ONLY for the close keyword
@@ -139,17 +139,23 @@ class z_cohesion_calculator implementation.
         continue.
       endif.
 
-      if <token>-str = zif_metrics=>local_declaration-data_with_type.
+      if <token>-str = zif_metrics=>local_declaration-data or <token>-str = zif_metrics=>local_declaration-field_symbols.
         is_nextone_a_variable = abap_true.
         continue.
-      elseif <token>-str cs zif_metrics=>local_declaration-in_line_data.
+      elseif <token>-str cs zif_metrics=>local_declaration-data or <token>-str cs zif_metrics=>local_declaration-field_symbol.
         variables->append_variable( variables->clear_inline_variable( <token>-str ) ).
       endif.
     endloop.
   endmethod.
 
   method search_next_for_variable.
-    return = cond #( when line_exists( tokens[ str = variable ] ) then abap_true else abap_false ).
+    return = abap_false.
+    loop at tokens assigning field-symbol(<token>).
+      if <token>-str cs variable.
+        return = abap_true.
+        exit.
+      endif.
+    endloop.
   endmethod.
 
   method search_next_for_keyword.

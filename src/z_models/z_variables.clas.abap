@@ -13,7 +13,7 @@ class z_variables definition public final create public.
     methods is_local_variable
       importing variable      type string
       returning value(return) type abap_bool.
-    methods contains_local_variable
+    methods contains_variable
       importing token         type string
       returning value(return) type abap_bool.
     methods append_variable
@@ -30,7 +30,10 @@ class z_variables definition public final create public.
     data local_variables type table_of_strings.
 
     methods fetch_attributes.
-
+    methods remove_characters
+      importing variable      type string
+                character     type string
+      returning value(return) type string.
 endclass.
 
 class z_variables implementation.
@@ -45,7 +48,7 @@ class z_variables implementation.
   endmethod.
 
   method get_local_variables.
-    return = attributes.
+    return = local_variables.
   endmethod.
 
   method is_attribute.
@@ -56,9 +59,10 @@ class z_variables implementation.
     return = cond #( when line_exists( local_variables[ table_line = variable ] ) then abap_true else abap_false ).
   endmethod.
 
-  method contains_local_variable.
+  method contains_variable.
     return = abap_false.
-    loop at local_variables assigning field-symbol(<variable>).
+    data(merged_vars) = value table_of_strings( base attributes ( lines of local_variables ) ).
+    loop at merged_vars assigning field-symbol(<variable>).
       if token cs <variable>.
         return = abap_true.
         exit.
@@ -71,17 +75,35 @@ class z_variables implementation.
   endmethod.
 
   method clear_inline_variable.
-    "remove 'DATA(' from token and then ')' from it too
-    "also @ if exists
+    "remove unnecessary characters from string
+    if variable cs zif_metrics=>local_declaration-field_symbol.
+      return = remove_characters( variable  = variable
+                                  character = zif_metrics=>local_declaration-field_symbols ).
+      return = remove_characters( variable  = return
+                                  character = zif_metrics=>local_declaration-field_symbol ).
+      return = remove_characters( variable  = return
+                                  character = zif_metrics=>symbols-parenthesis_open ).
+      return = remove_characters( variable  = return
+                                  character = zif_metrics=>symbols-parenthesis_close ).
+    elseif variable cs zif_metrics=>local_declaration-data.
+      return = remove_characters( variable  = variable
+                                  character = zif_metrics=>local_declaration-data ).
+      return = remove_characters( variable  = return
+                                  character = zif_metrics=>symbols-parenthesis_open ).
+      return = remove_characters( variable  = return
+                                  character = zif_metrics=>symbols-parenthesis_close ).
+      return = remove_characters( variable  = return
+                                  character = zif_metrics=>symbols-at ).
+    elseif variable cs zif_metrics=>symbols-dash.
+      return = substring_before( val = variable
+                                 sub = zif_metrics=>symbols-dash ).
+    endif.
+  endmethod.
+
+  method remove_characters.
     return = replace( val  = variable
-                      sub  = zif_metrics=>local_declaration-in_line_data
-                      with = '' ).
-    return = replace( val  = return
-                      sub  = ')'
-                      with = '' ).
-    return = replace( val  = return
-                      sub  = '@'
-                      with = '' ).
+                      sub  = character
+                      with = zif_metrics=>symbols-blank ).
   endmethod.
 
   method fetch_attributes.

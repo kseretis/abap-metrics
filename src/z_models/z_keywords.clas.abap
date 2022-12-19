@@ -36,9 +36,11 @@ endclass.
 class z_keywords implementation.
 
   method constructor.
-    "TODO add keywords
     keywords = value #( ( open = 'IF' close = 'ENDIF' )
-                        ( open = 'LOOP' close = 'ENDLOOP' ) ).
+                        ( open = 'LOOP' close = 'ENDLOOP' )
+                        ( open = 'DO' close = 'ENDDO')
+                        ( open = 'WHILE' close = 'ENDWHILE' )
+                        ( open = 'CASE' close = 'ENDCASE' ) ).
   endmethod.
 
   method is_keyword.
