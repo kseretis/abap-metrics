@@ -40,7 +40,8 @@ class z_keywords implementation.
                         ( open = 'LOOP' close = 'ENDLOOP' )
                         ( open = 'DO' close = 'ENDDO')
                         ( open = 'WHILE' close = 'ENDWHILE' )
-                        ( open = 'CASE' close = 'ENDCASE' ) ).
+                        ( open = 'CASE' close = 'ENDCASE' )
+                        ( open = 'TRY' close ='ENDTRY' ) ).
   endmethod.
 
   method is_keyword.

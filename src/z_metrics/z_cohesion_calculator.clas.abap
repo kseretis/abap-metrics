@@ -1,20 +1,26 @@
 class z_cohesion_calculator definition public final create public inheriting from z_code_scanner.
 
   public section.
+    types: begin of parenthesis_id,
+             parenthesis_id         type i,
+             is_parenthesis_matched type abap_bool,
+           end of parenthesis_id.
+    types parenthesis_ids_tab_type type standard table of parenthesis_id with empty key.
 
-    types begin of token_with_keyword_id_struct.
-    types line_id type i.
-    include type stokes.
-    types keyword_id type i.
-    types is_matched type abap_bool.
-    types end of token_with_keyword_id_struct.
-    types token_with_keyword_id_tab_type type standard table of token_with_keyword_id_struct with default key.
+    types: begin of token_with_id_struct,
+             line_id            type i.
+             include    type stokes.
+    types:   keyword_id         type i,
+             is_keyword_matched type abap_bool,
+             parenthesis_ids    type parenthesis_ids_tab_type,
+           end of token_with_id_struct.
+    types token_with_id_tab_type type standard table of token_with_id_struct with default key.
 
     types: begin of cohesion_struct,
              previous_line        type string,
-             previous_line_tokens type token_with_keyword_id_tab_type,
+             previous_line_tokens type token_with_id_tab_type,
              next_line            type string,
-             next_line_tokens     type token_with_keyword_id_tab_type,
+             next_line_tokens     type token_with_id_tab_type,
              not_cohesive         type i,
              cohesive             type i,
            end of cohesion_struct.
@@ -37,32 +43,59 @@ class z_cohesion_calculator definition public final create public inheriting fro
     data class_name type seoclsname.
     data keywords type ref to z_keywords.
     data variables type ref to z_variables.
-    data tokens type token_with_keyword_id_tab_type.
+    data tokens type token_with_id_tab_type.
     data cohesion_table type standard table of cohesion_struct.
     data cohesive_table_simple type standard table of lcom2_struct.
     data lack_of_cohesion type standard table of lcom2_struct.
 
-    methods generate_keywords_ids.
+    methods generate_tokens_ids.
     methods calculate_cohesion_by_line.
     methods build_cohesion_table.
     methods search_for_local_variables.
     methods search_next_for_variable
-      importing tokens        type token_with_keyword_id_tab_type
+      importing tokens        type token_with_id_tab_type
                 variable      type string
       returning value(return) type abap_bool.
     methods search_next_for_keyword
-      importing tokens        type token_with_keyword_id_tab_type
+      importing tokens        type token_with_id_tab_type
                 keyword       type string
                 keyword_id    type i
       returning value(return) type abap_bool.
+    methods search_next_for_parenthesis
+      importing tokens          type token_with_id_tab_type
+                parenthesis_ids type parenthesis_ids_tab_type
+      returning value(return)   type abap_bool.
     methods get_lines_tokens
       importing line          type i
-      returning value(return) type token_with_keyword_id_tab_type.
+      returning value(return) type token_with_id_tab_type.
     methods get_lines_tokens_with_ids
       importing line          type i
-      returning value(return) type token_with_keyword_id_tab_type.
+      returning value(return) type token_with_id_tab_type.
     methods get_latest_keyword_id
       returning value(return) type i.
+    methods get_latest_parenthesis_id
+      returning value(return) type i.
+    methods get_keyword_id
+      importing token         type string
+                line_id       type i
+      returning value(return) type i.
+    methods get_parenthesis_ids
+      importing token         type string
+                line_id       type i
+      returning value(return) type parenthesis_ids_tab_type.
+    methods is_method_call
+      importing token         type string
+      returning value(return) type abap_bool.
+    methods is_method_closing
+      importing token         type string
+      returning value(return) type abap_bool.
+    methods contains_parenthesis
+      importing token         type string
+      returning value(return) type abap_bool.
+    methods are_parenthesis_ids_same
+      importing prev_parenthesis_ids type parenthesis_ids_tab_type
+                next_parenthesis_ids type parenthesis_ids_tab_type
+      returning value(return)        type abap_bool.
 
 endclass.
 
@@ -77,9 +110,9 @@ class z_cohesion_calculator implementation.
   endmethod.
 
   method calculate.
-    clean_source_code( ).
-    generate_keywords_ids( ).
+    clean_source_code( ).break-point.
     search_for_local_variables( ).
+    generate_tokens_ids( ).
     calculate_cohesion_by_line( ).
 
     cohesive_table_simple = corresponding #( cohesion_table ).
@@ -113,7 +146,13 @@ class z_cohesion_calculator implementation.
         elseif variables->contains_variable( <prev_token_line>-str ).
           is_cohesive = search_next_for_variable( tokens   = line->next_line_tokens
                                                   variable = variables->clear_inline_variable( <prev_token_line>-str ) ).
-          "else if, it's an open keyword we look up in next line ONLY for the close keyword
+          if is_cohesive = abap_false.
+            is_cohesive = search_next_for_parenthesis( tokens          = line->next_line_tokens
+                                                       parenthesis_ids = <prev_token_line>-parenthesis_ids ).
+          endif.
+        elseif contains_parenthesis( <prev_token_line>-str ).
+          is_cohesive = search_next_for_parenthesis( tokens          = line->next_line_tokens
+                                                     parenthesis_ids = <prev_token_line>-parenthesis_ids ).
         elseif keywords->is_open_keyword( <prev_token_line>-str ).
           is_cohesive = search_next_for_keyword( tokens     = line->next_line_tokens
                                                  keyword    = <prev_token_line>-str
@@ -158,6 +197,17 @@ class z_cohesion_calculator implementation.
     endloop.
   endmethod.
 
+  method search_next_for_parenthesis.
+    return = abap_false.
+    loop at tokens assigning field-symbol(<token>).
+      if is_method_closing( <token>-str ) and are_parenthesis_ids_same( prev_parenthesis_ids = parenthesis_ids
+                                                                        next_parenthesis_ids = <token>-parenthesis_ids ).
+        return = abap_true.
+        exit.
+      endif.
+    endloop.
+  endmethod.
+
   method search_next_for_keyword.
     try.
         return = cond #( when line_exists( tokens[ str = keywords->get_close_keyword( keyword )
@@ -166,6 +216,16 @@ class z_cohesion_calculator implementation.
       catch zcx_metrics_error.
         return = abap_false.
     endtry.
+  endmethod.
+
+  method are_parenthesis_ids_same.
+    return = abap_false.
+    loop at prev_parenthesis_ids assigning field-symbol(<prev>).
+      loop at next_parenthesis_ids assigning field-symbol(<next>) where parenthesis_id = <prev>-parenthesis_id.
+        return = abap_true.
+        return.
+      endloop.
+    endloop.
   endmethod.
 
   method build_cohesion_table.
@@ -189,29 +249,79 @@ class z_cohesion_calculator implementation.
     endloop.
   endmethod.
 
-  method generate_keywords_ids.
+  method generate_tokens_ids.
     data(line_number) = 1.
     loop at get_cleaned_source_code( ) assigning field-symbol(<line>).
       loop at get_lines_tokens( sy-tabix ) assigning field-symbol(<tok>).
-
-        "set up keywords' IDs
-        data(keyword_id) = cond #( when keywords->is_open_keyword( <tok>-str )
-                                        then line_number
-                                    when keywords->is_close_keyword( <tok>-str )
-                                        then get_latest_keyword_id( )
-                                    else 0 ).
-
         tokens = value #( base tokens ( line_id = line_number
                                            str = <tok>-str
                                            row = <tok>-row
                                            col = <tok>-col
                                            type = <tok>-type
-                                           keyword_id = keyword_id
-                                           is_matched = cond #( when keywords->is_close_keyword( <tok>-str )
-                                                                then abap_true else abap_false ) ) ).
+                                           keyword_id = get_keyword_id( token = <tok>-str
+                                                                        line_id = line_number )
+                                           is_keyword_matched = cond #( when keywords->is_close_keyword( <tok>-str )
+                                                                        then abap_true else abap_false )
+                                           parenthesis_ids = get_parenthesis_ids( token   = <tok>-str
+                                                                                  line_id = line_number ) ) ).
         line_number += 1.
       endloop.
     endloop.
+    break-point.
+  endmethod.
+
+  method get_keyword_id.
+    return = cond #( when keywords->is_open_keyword( token )
+                            then line_id
+                       when keywords->is_close_keyword( token )
+                            then get_latest_keyword_id( )
+                       else 0 ).
+  endmethod.
+
+  method get_parenthesis_ids.
+    if is_method_call( token ).
+      return = value #( base return ( parenthesis_id = line_id
+                                      is_parenthesis_matched = abap_false ) ).
+      return.
+    endif.
+
+    if is_method_closing( token ).
+      data(latest_id) = get_latest_parenthesis_id( ).
+      return = value #( base return ( parenthesis_id = latest_id
+                                      is_parenthesis_matched = abap_true ) ).
+    endif.
+
+    "if contains both ) and (
+    if contains( val = token sub = zif_metrics=>symbols-parenthesis_close )
+        and contains( val = token sub = zif_metrics=>symbols-parenthesis_open ).
+      return = value #( base return ( parenthesis_id = ( 0 - latest_id )
+                                      is_parenthesis_matched = abap_false ) ).
+    endif.
+  endmethod.
+
+  method is_method_call.
+    "for instance method call or static
+    return = cond #(
+        when ( variables->contains_variable( token )
+                and contains( val = token
+                              sub = |{ variables->clear_inline_variable( token ) }{ zif_metrics=>method_call-instance }| ) )
+         or contains( val = token sub = zif_metrics=>method_call-static )
+         then abap_true else abap_false ).
+  endmethod.
+
+  method is_method_closing.
+    try.
+        return = cond #( when substring( val = token off = 0 len = 3 )
+                                = |{ zif_metrics=>symbols-parenthesis_close }{ zif_metrics=>method_call-instance }|
+                         then abap_true else abap_false ).
+      catch cx_sy_range_out_of_bounds.
+        return = cond #( when token = zif_metrics=>symbols-parenthesis_close then abap_true else abap_false ).
+    endtry.
+  endmethod.
+
+  method contains_parenthesis.
+    return = cond #( when contains( val = token sub = zif_metrics=>symbols-parenthesis_open )
+                        then abap_true else abap_false ).
   endmethod.
 
   method get_lines_tokens.
@@ -224,10 +334,28 @@ class z_cohesion_calculator implementation.
 
   method get_latest_keyword_id.
     sort tokens descending by line_id.
-    loop at tokens assigning field-symbol(<token>) where keyword_id <> 0 and is_matched = abap_false.
+    loop at tokens assigning field-symbol(<token>) where keyword_id <> 0 and is_keyword_matched = abap_false.
       return = <token>-keyword_id.
-      <token>-is_matched = abap_true.
+      <token>-is_keyword_matched = abap_true.
       exit.
+    endloop.
+    sort tokens ascending by line_id.
+  endmethod.
+
+  method get_latest_parenthesis_id.
+    data(found) = abap_false.
+    sort tokens descending by line_id.
+    loop at tokens assigning field-symbol(<token>).
+      loop at <token>-parenthesis_ids assigning field-symbol(<par>)
+          where parenthesis_id <> 0 and is_parenthesis_matched = abap_false.
+        return = <par>-parenthesis_id.
+        <par>-is_parenthesis_matched = abap_true.
+        found = abap_true.
+        exit.
+      endloop.
+      if found = abap_true.
+        exit.
+      endif.
     endloop.
     sort tokens ascending by line_id.
   endmethod.
