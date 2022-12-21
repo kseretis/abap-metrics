@@ -9,15 +9,15 @@
     <SCRLEN1>20</SCRLEN1>
     <SCRLEN2>40</SCRLEN2>
     <SCRLEN3>55</SCRLEN3>
-    <DDTEXT>Abap metrics - number of statements data element</DDTEXT>
+    <DDTEXT>Abap metrics - number of statements</DDTEXT>
     <REPTEXT>NoS</REPTEXT>
     <SCRTEXT_S>Number of</SCRTEXT_S>
     <SCRTEXT_M>Number of statements</SCRTEXT_M>
     <SCRTEXT_L>Number of statements</SCRTEXT_L>
     <DTELMASTER>E</DTELMASTER>
-    <DATATYPE>INT1</DATATYPE>
-    <LENG>000003</LENG>
-    <OUTPUTLEN>000003</OUTPUTLEN>
+    <DATATYPE>INT4</DATATYPE>
+    <LENG>000010</LENG>
+    <OUTPUTLEN>000010</OUTPUTLEN>
    </DD04V>
   </asx:values>
  </asx:abap>

@@ -9,15 +9,15 @@
     <SCRLEN1>20</SCRLEN1>
     <SCRLEN2>40</SCRLEN2>
     <SCRLEN3>55</SCRLEN3>
-    <DDTEXT>Abap metrics - complexity of conditions data element</DDTEXT>
+    <DDTEXT>Abap metrics - complexity of conditions</DDTEXT>
     <REPTEXT>ComplxCond</REPTEXT>
     <SCRTEXT_S>Complex of</SCRTEXT_S>
     <SCRTEXT_M>Complexity of condit</SCRTEXT_M>
     <SCRTEXT_L>Complexity of conditions</SCRTEXT_L>
     <DTELMASTER>E</DTELMASTER>
-    <DATATYPE>INT1</DATATYPE>
-    <LENG>000003</LENG>
-    <OUTPUTLEN>000003</OUTPUTLEN>
+    <DATATYPE>INT4</DATATYPE>
+    <LENG>000010</LENG>
+    <OUTPUTLEN>000010</OUTPUTLEN>
    </DD04V>
   </asx:values>
  </asx:abap>
