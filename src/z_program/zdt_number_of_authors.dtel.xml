@@ -9,7 +9,7 @@
     <SCRLEN1>20</SCRLEN1>
     <SCRLEN2>40</SCRLEN2>
     <SCRLEN3>55</SCRLEN3>
-    <DDTEXT>Abap metrics - number of authors data element</DDTEXT>
+    <DDTEXT>Abap metrics - number of authors</DDTEXT>
     <REPTEXT>NumOfAuths</REPTEXT>
     <SCRTEXT_S>Number of</SCRTEXT_S>
     <SCRTEXT_M>Number of authors</SCRTEXT_M>

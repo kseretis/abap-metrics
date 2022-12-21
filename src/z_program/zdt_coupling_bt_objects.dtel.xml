@@ -9,7 +9,7 @@
     <SCRLEN1>20</SCRLEN1>
     <SCRLEN2>40</SCRLEN2>
     <SCRLEN3>55</SCRLEN3>
-    <DDTEXT>Abap metrics - coupling between objects data element</DDTEXT>
+    <DDTEXT>Abap metrics - coupling between objects</DDTEXT>
     <REPTEXT>CBO</REPTEXT>
     <SCRTEXT_S>Coupling b</SCRTEXT_S>
     <SCRTEXT_M>Coupling between obj</SCRTEXT_M>

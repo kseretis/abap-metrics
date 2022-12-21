@@ -62,6 +62,12 @@
      <MSGNR>009</MSGNR>
      <TEXT>No keyword match</TEXT>
     </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>Z_MESSAGES</ARBGB>
+     <MSGNR>010</MSGNR>
+     <TEXT>No class with name &amp;1 found</TEXT>
+    </T100>
    </T100>
   </asx:values>
  </asx:abap>

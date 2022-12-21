@@ -9,7 +9,7 @@
     <SCRLEN1>20</SCRLEN1>
     <SCRLEN2>40</SCRLEN2>
     <SCRLEN3>55</SCRLEN3>
-    <DDTEXT>Abap metrics - lines of code data element</DDTEXT>
+    <DDTEXT>Abap metrics - lines of code</DDTEXT>
     <REPTEXT>LoC</REPTEXT>
     <SCRTEXT_S>Lines of c</SCRTEXT_S>
     <SCRTEXT_M>Lines of code</SCRTEXT_M>

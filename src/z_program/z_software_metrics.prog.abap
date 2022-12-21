@@ -24,7 +24,7 @@ initialization.
                             kind = c_kind-param
                             sign = c_sign-inclu
                             option = c_option-equal
-                            low = obj_type ) ).
+                            low = zif_metrics=>obj_type-clas ) ).
 
 start-of-selection.
 
@@ -49,7 +49,7 @@ start-of-selection.
     "save in the temp table only the classes/interafaces
     clear object_list_with_classes.
     object_list_with_classes = object_list.
-    delete object_list_with_classes where obj_type <> obj_type.
+    delete object_list_with_classes where obj_type <> zif_metrics=>obj_type-clas.
 
     "if one of the internal tables is empty the we create an error message
     if object_list is initial.

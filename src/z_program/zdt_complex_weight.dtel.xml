@@ -9,7 +9,7 @@
     <SCRLEN1>20</SCRLEN1>
     <SCRLEN2>40</SCRLEN2>
     <SCRLEN3>55</SCRLEN3>
-    <DDTEXT>Abap metrics - complexity weighted by decision data element</DDTEXT>
+    <DDTEXT>Abap metrics - complexity weighted by decision</DDTEXT>
     <REPTEXT>CWbD</REPTEXT>
     <SCRTEXT_S>Complex we</SCRTEXT_S>
     <SCRTEXT_M>Complexity weighted</SCRTEXT_M>

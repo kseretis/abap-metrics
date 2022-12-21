@@ -92,7 +92,7 @@ class z_salv_output implementation.
   method set_sorts.
     data(sorts) = output->get_sorts( ).
     try.
-        sorts->add_sort( columnname = 'PACKAGE'
+        sorts->add_sort( columnname = 'PACKAGE_NAME'
                          subtotal   = if_salv_c_bool_sap=>true ).
         sorts->add_sort( columnname = 'CLASS_NAME'
                          subtotal   = cond #( when calc_by_class = abap_false then if_salv_c_bool_sap=>true
@@ -135,7 +135,7 @@ class z_salv_output implementation.
         loop at class_stamp->get_methods( ) reference into data(meth).
           results_table_by_method = value #( base results_table_by_method
                                           ( class_name = class_stamp->get_name( )
-                                            package = class_stamp->get_package( )
+                                            package_name = class_stamp->get_package( )
                                             method_name = meth->method->get_name( )
                                             lines_of_code = meth->method->get_lines_of_code( )
                                             number_of_statements = meth->method->get_number_of_statements( )
