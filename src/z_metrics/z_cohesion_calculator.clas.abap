@@ -24,6 +24,7 @@ class z_cohesion_calculator definition public final create public inheriting fro
              not_cohesive         type i,
              cohesive             type i,
            end of cohesion_struct.
+
     types: begin of lcom2_struct,
              lcom2        type string,
              not_cohesive type i,
@@ -34,7 +35,8 @@ class z_cohesion_calculator definition public final create public inheriting fro
 
     methods constructor
       importing class_name  type seoclsname
-                source_code type rswsourcet.
+                source_code type rswsourcet
+      raising   zcx_metrics_error.
     methods calculate redefinition.
 
   protected section.
@@ -110,7 +112,7 @@ class z_cohesion_calculator implementation.
   endmethod.
 
   method calculate.
-    clean_source_code( ).break-point.
+    clean_source_code( ).
     search_for_local_variables( ).
     generate_tokens_ids( ).
     calculate_cohesion_by_line( ).
@@ -122,7 +124,6 @@ class z_cohesion_calculator implementation.
       collect <line> into lack_of_cohesion.
     endloop.
 
-    break-point.
     try.
         return = lack_of_cohesion[ 1 ]-not_cohesive - lack_of_cohesion[ 1 ]-cohesive.
         if return < 0.
@@ -221,10 +222,12 @@ class z_cohesion_calculator implementation.
   method are_parenthesis_ids_same.
     return = abap_false.
     loop at prev_parenthesis_ids assigning field-symbol(<prev>).
-      loop at next_parenthesis_ids assigning field-symbol(<next>) where parenthesis_id = <prev>-parenthesis_id.
-        return = abap_true.
-        return.
-      endloop.
+      try.
+          return = cond #( when line_exists( next_parenthesis_ids[ parenthesis_id = <prev>-parenthesis_id ] )
+                              then abap_true else abap_false ).
+        catch cx_sy_itab_line_not_found.
+          return = abap_false.
+      endtry.
     endloop.
   endmethod.
 
@@ -267,7 +270,6 @@ class z_cohesion_calculator implementation.
         line_number += 1.
       endloop.
     endloop.
-    break-point.
   endmethod.
 
   method get_keyword_id.

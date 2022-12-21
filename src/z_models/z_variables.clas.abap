@@ -2,7 +2,8 @@ class z_variables definition public final create public.
 
   public section.
     methods constructor
-      importing class_name type seoclsname.
+      importing class_name type seoclsname
+      raising   zcx_metrics_error.
     methods get_attributes
       returning value(return) type table_of_strings.
     methods get_local_variables
@@ -29,7 +30,8 @@ class z_variables definition public final create public.
     data attributes type table_of_strings.
     data local_variables type table_of_strings.
 
-    methods fetch_attributes.
+    methods fetch_attributes
+      raising zcx_metrics_error.
     methods remove_characters
       importing variable      type string
                 character     type string
@@ -115,7 +117,8 @@ class z_variables implementation.
         "get class' attributes
         attributes = value #( for a in cl_oo_class=>get_instance( class_name )->get_attributes( ) ( conv #( a-cmpname ) ) ).
       catch cx_class_not_existent.
-        "TODO
+        raise exception new zcx_metrics_error( textid = zif_exception_messages=>no_class_found
+                                               value = conv #( class_name ) ).
     endtry.
   endmethod.
 

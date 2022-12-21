@@ -45,4 +45,13 @@ interface zif_exception_messages public.
                attr4 type scx_attrname value '',
              end of no_matching_keyword.
 
+  constants: begin of no_class_found,
+               msgid type symsgid value 'Z_MESSAGES',
+               msgno type symsgno value '010',
+               attr1 type scx_attrname value 'VALUE',
+               attr2 type scx_attrname value '',
+               attr3 type scx_attrname value '',
+               attr4 type scx_attrname value '',
+             end of no_class_found.
+
 endinterface.

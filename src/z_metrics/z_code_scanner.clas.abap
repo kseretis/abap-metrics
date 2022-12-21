@@ -76,10 +76,13 @@ class z_code_scanner implementation.
   method clean_source_code.
     loop at source_code assigning field-symbol(<line>) where table_line is not initial.
       data(first_char) = condense( <line> ).
-      first_char = first_char+0(1).
-      if first_char <> '"' and first_char <> '*' .
-        insert <line> into table cleaned_source_code.
-      endif.
+      try.
+          first_char = first_char+0(1).
+          if first_char <> '"' and first_char <> '*' .
+            insert <line> into table cleaned_source_code.
+          endif.
+        catch cx_sy_range_out_of_bounds.
+      endtry.
     endloop.
     "re-calculate tokens and statements based on the cleaned source_code
     data(results) = z_code_scanner_factory=>factory( scan_type   = zif_metrics=>scan_type-simple
