@@ -15,9 +15,9 @@
     <SCRTEXT_M>Complexity weighted</SCRTEXT_M>
     <SCRTEXT_L>Complexity weighted by decision</SCRTEXT_L>
     <DTELMASTER>E</DTELMASTER>
-    <DATATYPE>INT1</DATATYPE>
-    <LENG>000003</LENG>
-    <OUTPUTLEN>000003</OUTPUTLEN>
+    <DATATYPE>INT4</DATATYPE>
+    <LENG>000010</LENG>
+    <OUTPUTLEN>000010</OUTPUTLEN>
    </DD04V>
   </asx:values>
  </asx:abap>
