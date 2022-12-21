@@ -100,7 +100,7 @@ start-of-selection.
   submit /sdf/cd_custom_code_metric exporting list to memory
       with selection-table parameters and return.
 
-  data(output) = new z_salv_output( rb_clas ).
+  data(output) = new z_salv_output( ).
   "loop at the classes that the user asked for calculation
   loop at classes_for_calculation reference into data(clas).
 *  loop at parameters reference into data(parameter) where selname = c_sel_name-name.
@@ -132,12 +132,10 @@ start-of-selection.
     return.
   endif.
 
-  try.
+  try. break-point.
       output->initialize_output( ).
-      output->set_default_layout( ).
+      output->set_default_layout( rb_clas ).
       output->display( ).
-    catch zcx_flow_issue.
-    catch cx_salv_not_found.
-    catch cx_salv_existing.
-    catch cx_salv_data_error.
+    catch zcx_flow_issue into data(ex).
+      ex->display_exception( ).
   endtry.
