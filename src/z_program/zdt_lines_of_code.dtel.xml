@@ -9,15 +9,15 @@
     <SCRLEN1>20</SCRLEN1>
     <SCRLEN2>40</SCRLEN2>
     <SCRLEN3>55</SCRLEN3>
-    <DDTEXT>Abap metrics - lines of code data element</DDTEXT>
+    <DDTEXT>Abap metrics - lines of code</DDTEXT>
     <REPTEXT>LoC</REPTEXT>
     <SCRTEXT_S>Lines of c</SCRTEXT_S>
     <SCRTEXT_M>Lines of code</SCRTEXT_M>
     <SCRTEXT_L>Lines of code</SCRTEXT_L>
     <DTELMASTER>E</DTELMASTER>
-    <DATATYPE>INT1</DATATYPE>
-    <LENG>000003</LENG>
-    <OUTPUTLEN>000003</OUTPUTLEN>
+    <DATATYPE>INT4</DATATYPE>
+    <LENG>000010</LENG>
+    <OUTPUTLEN>000010</OUTPUTLEN>
    </DD04V>
   </asx:values>
  </asx:abap>

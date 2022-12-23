@@ -28,4 +28,22 @@ interface zif_metrics public.
                with_keywords type string value 'WITH_KEYWORDS',
              end of scan_type.
 
+  constants cohesive_value type i value 1.
+
+  constants: begin of local_declaration,
+               data          type string value 'DATA',
+               field_symbols type string value 'FIELD-SYMBOLS',
+               field_symbol  type string value 'FIELD-SYMBOL',
+             end of local_declaration.
+
+  constants: begin of symbols,
+               parenthesis_open  type string value '(',
+               parenthesis_close type string value ')',
+               at                type string value '@',
+               dash              type string value '-',
+               blank             type string value '',
+             end of symbols.
+
+  constants this type string value 'ME->'.
+
 endinterface.

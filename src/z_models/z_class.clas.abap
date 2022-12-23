@@ -50,7 +50,7 @@ class z_class implementation.
 
   method get_methods.
     if methods is initial.
-      raise exception new zcx_flow_issue( textid = zcx_flow_issue=>no_methods
+      raise exception new zcx_flow_issue( textid = zif_exception_messages=>no_methods
                                           value = me->name ).
     endif.
     return = methods.
@@ -63,7 +63,7 @@ class z_class implementation.
         return.
       endif.
     endloop.
-    raise exception new zcx_flow_issue( textid = zcx_flow_issue=>method_not_found
+    raise exception new zcx_flow_issue( textid = zif_exception_messages=>method_not_found
                                      value = name ).
   endmethod.
 

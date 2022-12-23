@@ -19,7 +19,8 @@ class z_loc_calculator implementation.
   endmethod.
 
   method calculate.
-    return = lines( get_source_code( ) ). "probably - 2
+    clean_source_code( ).
+    return = lines( get_cleaned_source_code( ) ).
   endmethod.
 
 endclass.

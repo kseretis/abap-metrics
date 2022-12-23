@@ -1,19 +1,19 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <abapGit version="v1.0.0" serializer="LCL_OBJECT_DTEL" serializer_version="v1.0.0">
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <DD04V>
-    <ROLLNAME>ZDT_NUMBER_OF_STATEMENTS</ROLLNAME>
+    <ROLLNAME>ZDT_LACK_OF_COHESION</ROLLNAME>
     <DDLANGUAGE>E</DDLANGUAGE>
     <HEADLEN>10</HEADLEN>
     <SCRLEN1>20</SCRLEN1>
     <SCRLEN2>40</SCRLEN2>
     <SCRLEN3>55</SCRLEN3>
-    <DDTEXT>Abap metrics - number of statements</DDTEXT>
-    <REPTEXT>NoS</REPTEXT>
-    <SCRTEXT_S>Number of</SCRTEXT_S>
-    <SCRTEXT_M>Number of statements</SCRTEXT_M>
-    <SCRTEXT_L>Number of statements</SCRTEXT_L>
+    <DDTEXT>Abap metrics - lack of cohesion in methods</DDTEXT>
+    <REPTEXT>LCOM2</REPTEXT>
+    <SCRTEXT_S>Lack of cohesion</SCRTEXT_S>
+    <SCRTEXT_M>Lack of cohesion in methods</SCRTEXT_M>
+    <SCRTEXT_L>Lack of cohesion in methods</SCRTEXT_L>
     <DTELMASTER>E</DTELMASTER>
     <DATATYPE>INT4</DATATYPE>
     <LENG>000010</LENG>

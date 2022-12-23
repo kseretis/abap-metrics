@@ -58,8 +58,15 @@ class z_calc_metrics_facade implementation.
           try.
               data(authors) = new z_authors_calculator( meth->method->get_full_name( ) ).
               meth->method->set_number_of_authors( authors->find_authors( ) ).
-            catch zcx_metrics_error.
+
+              "calculate lack of cohesion in methods
+              data(lack_of_cohesion) = new z_cohesion_calculator( class_name  = conv #( class_stamp->get_name( ) )
+                                                                  source_code = meth->method->get_source_code( ) ).
+              meth->method->set_lack_of_cohision( lack_of_cohesion->calculate( ) ).
+            catch zcx_metrics_error into data(ex).
+              ex->display_exception( ).
           endtry.
+
         endloop.
       catch zcx_flow_issue.
     endtry.
