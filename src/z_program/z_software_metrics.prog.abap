@@ -7,8 +7,11 @@ report z_software_metrics.
 
 include z_software_metrics_top.
 include z_software_metrics_screen.
+include z_software_metrics_flow.
 
 initialization.
+
+  data(flow_worker) = flow_worker=>get_instance( ).
 
   parameters = value #( ( selname = c_sel_name-complexity
                             kind = c_kind-param
@@ -26,12 +29,10 @@ initialization.
                             option = c_option-equal
                             low = zif_metrics=>obj_type-clas ) ).
 
-start-of-selection.
+at selection-screen.
+  flow_worker->check_mandatory_fields( ).
 
-  if s_pack is initial and s_class is initial.
-    message s005(z_messages) display like 'E'.
-    return.
-  endif.
+start-of-selection.
 
   "if it's going to be analyzed by package
   if is_pack = abap_true.
@@ -92,12 +93,19 @@ start-of-selection.
   else.
     "loop at select-option from screen and save the classes into parameters table
     loop at s_class reference into data(cl).
-      parameters = value #( base parameters ( selname = c_sel_name-name
-                                                   kind = c_kind-sel_opt
-                                                   sign = cl->sign
-                                                   option = cl->option
-                                                   low = cl->low ) ).
-      insert value #( class_name = cl->low ) into table classes_for_calculation.
+      try.
+          cl_oo_class=>get_instance( cl->low ).
+          parameters = value #( base parameters ( selname = c_sel_name-name
+                                                       kind = c_kind-sel_opt
+                                                       sign = cl->sign
+                                                       option = cl->option
+                                                       low = cl->low ) ).
+          insert value #( class_name = cl->low ) into table classes_for_calculation.
+        catch cx_class_not_existent into data(ex).
+          message s006(z_message) into msg.
+          popup->add_message( value #( object = ex->clsname
+                                       message = msg ) ).
+      endtry.
     endloop.
   endif.
 
@@ -144,6 +152,6 @@ start-of-selection.
       output->initialize_output( ).
       output->set_default_layout( rb_clas ).
       output->display( ).
-    catch zcx_flow_issue into data(ex).
-      ex->display_exception( ).
+    catch zcx_flow_issue into data(e).
+      e->display_exception( ).
   endtry.

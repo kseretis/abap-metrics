@@ -36,6 +36,24 @@ interface zif_exception_messages public.
                attr4 type scx_attrname value '',
              end of salv_build_failed.
 
+  constants: begin of obj_does_not_exist,
+               msgid type symsgid value 'Z_MESSAGES',
+               msgno type symsgno value '006',
+               attr1 type scx_attrname value '',
+               attr2 type scx_attrname value '',
+               attr3 type scx_attrname value '',
+               attr4 type scx_attrname value '',
+             end of obj_does_not_exist.
+
+  constants: begin of empty_package,
+               msgid type symsgid value 'Z_MESSAGES',
+               msgno type symsgno value '007',
+               attr1 type scx_attrname value '',
+               attr2 type scx_attrname value '',
+               attr3 type scx_attrname value '',
+               attr4 type scx_attrname value '',
+             end of empty_package.
+
   constants: begin of no_matching_keyword,
                msgid type symsgid value 'Z_MESSAGES',
                msgno type symsgno value '009',
