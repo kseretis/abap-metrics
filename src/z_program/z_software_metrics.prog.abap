@@ -35,49 +35,22 @@ at selection-screen.
 start-of-selection.
 
   "if it's going to be analyzed by package
-  if is_pack = abap_true.
-    "input validation
-    data(popup) = new z_popup_window( ).
-    data object_list type standard table of rseui_set.
-    data object_list_with_classes like object_list.
-
+  if flow_worker->has_package_selection( ).
     loop at s_pack reference into data(package).
-      clear object_list.
-      call function 'RS_GET_OBJECTS_OF_DEVCLASS'
-        exporting
-          devclass   = package->low
-        tables
-          objectlist = object_list.
-
-      "save in the temp table only the classes/interafaces
-      clear object_list_with_classes.
-      object_list_with_classes = object_list.
-      delete object_list_with_classes where obj_type <> zif_metrics=>obj_type-clas.
-
-      "if one of the internal tables is empty the we create an error message
-      if object_list is initial.
-        message e006(z_messages) into data(msg).
-        popup->add_message( value #( object = package->low
-                                     message = msg ) ).
-      elseif object_list_with_classes is initial.
-        message e007(z_messages) into msg.
-        popup->add_message( value #( object = package->low
-                                     message = msg ) ).
-      else.
-        "append classes/interfaces from packages into main table
-        loop at object_list_with_classes reference into data(temp_cl).
-          insert value #( class_name = temp_cl->obj_name ) into table classes_for_calculation.
-        endloop.
-      endif.
+      try.
+          data(object_list) = flow_worker->get_package( conv #( package->low ) ).
+          loop at object_list reference into data(temp_cl).
+            insert value #( class_name = temp_cl->obj_name ) into table classes_for_calculation.
+          endloop.
+        catch zcx_flow_issue into data(flow_exception).
+          flow_exception->display_exception( ).
+      endtry.
     endloop.
 
-    if popup->has_messages( ).
-      popup->build_display( ).
-      popup->display_popup( ).
-    endif.
-
-    if popup->get_answer( ) = abap_false.
-      return.
+    if flow_worker->get_popup( )->has_messages( ).
+      flow_worker->get_popup( )->build_display( ).
+      flow_worker->display_popup( ).
+      flow_worker->get_popup_answer( ).
     endif.
 
     "loop at select-option from screen and save the packages into parameters table
@@ -101,17 +74,15 @@ start-of-selection.
                                                        option = cl->option
                                                        low = cl->low ) ).
           insert value #( class_name = cl->low ) into table classes_for_calculation.
-        catch cx_class_not_existent into data(ex).
-          message s006(z_message) into msg.
-          popup->add_message( value #( object = ex->clsname
-                                       message = msg ) ).
+        catch cx_class_not_existent into data(no_class_ex).
+          message s006(z_message) into data(msg).
+          flow_worker->add_popup_message( obj = conv #( no_class_ex->clsname )
+                                          msg = msg ).
       endtry.
     endloop.
   endif.
 
-  "call main metrics program and extract the data
-  submit /sdf/cd_custom_code_metric exporting list to memory
-      with selection-table parameters and return.
+  flow_worker->call_standard_metrics_program( ).
 
   data(output) = new z_salv_output( ).
   "loop at the classes that the user asked for calculation
@@ -140,18 +111,9 @@ start-of-selection.
     endtry.
   endloop.
 
-  if output->is_table_empty( ) and is_pack = abap_true.
-    message s008(z_messages) display like 'E'.
-    return.
-  elseif output->is_table_empty( ) and is_class = abap_true.
-    message s011(z_messages) display like 'E'.
-    return.
-  endif.
-
   try.
-      output->initialize_output( ).
-      output->set_default_layout( rb_clas ).
-      output->display( ).
-    catch zcx_flow_issue into data(e).
-      e->display_exception( ).
+      flow_worker->check_if_table_is_empty( output ).
+      flow_worker->display_final_output( ).
+    catch zcx_flow_issue into flow_exception.
+    flow_exception->display_exception( ).
   endtry.

@@ -54,6 +54,15 @@ interface zif_exception_messages public.
                attr4 type scx_attrname value '',
              end of empty_package.
 
+  constants: begin of no_package,
+               msgid type symsgid value 'Z_MESSAGES',
+               msgno type symsgno value '008',
+               attr1 type scx_attrname value '',
+               attr2 type scx_attrname value '',
+               attr3 type scx_attrname value '',
+               attr4 type scx_attrname value '',
+             end of no_package.
+
   constants: begin of no_matching_keyword,
                msgid type symsgid value 'Z_MESSAGES',
                msgno type symsgno value '009',
@@ -71,5 +80,14 @@ interface zif_exception_messages public.
                attr3 type scx_attrname value '',
                attr4 type scx_attrname value '',
              end of no_class_found.
+
+  constants: begin of no_class,
+               msgid type symsgid value 'Z_MESSAGES',
+               msgno type symsgno value '011',
+               attr1 type scx_attrname value '',
+               attr2 type scx_attrname value '',
+               attr3 type scx_attrname value '',
+               attr4 type scx_attrname value '',
+             end of no_class.
 
 endinterface.
