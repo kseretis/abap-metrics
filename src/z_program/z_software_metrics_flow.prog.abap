@@ -59,7 +59,10 @@ class flow_worker implementation.
   endmethod.
 
   method has_package_selection.
-    return = cond #( when s_pack is not initial then abap_true else abap_false ).
+    return = cond #( when s_pack is not initial and is_pack = abap_true
+                        then abap_true
+                     when s_class is not initial and is_class = abap_true
+                        then abap_false ).
   endmethod.
 
   method get_popup.
@@ -76,7 +79,6 @@ class flow_worker implementation.
   endmethod.
 
   method get_package.
-
     data object_list type object_list_tab_type.
     data object_list_with_classes like object_list.
 
@@ -103,7 +105,6 @@ class flow_worker implementation.
     endif.
 
     return = object_list_with_classes.
-
   endmethod.
 
   method display_popup.

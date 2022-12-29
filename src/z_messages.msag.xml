@@ -54,7 +54,7 @@
      <SPRSL>E</SPRSL>
      <ARBGB>Z_MESSAGES</ARBGB>
      <MSGNR>008</MSGNR>
-     <TEXT>No package to be calculated!</TEXT>
+     <TEXT>No package to be analyzed</TEXT>
     </T100>
     <T100>
      <SPRSL>E</SPRSL>
@@ -72,7 +72,7 @@
      <SPRSL>E</SPRSL>
      <ARBGB>Z_MESSAGES</ARBGB>
      <MSGNR>011</MSGNR>
-     <TEXT>No class to be calculated!</TEXT>
+     <TEXT>No class to be analyzed</TEXT>
     </T100>
    </T100>
   </asx:values>
