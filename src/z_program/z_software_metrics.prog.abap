@@ -29,10 +29,9 @@ initialization.
                             option = c_option-equal
                             low = zif_metrics=>obj_type-clas ) ).
 
-at selection-screen.
-  flow_worker->check_mandatory_fields( ).
-
 start-of-selection.
+
+  check flow_worker->check_mandatory_fields( ).
 
   "if it's going to be analyzed by package
   if flow_worker->has_package_selection( ).
@@ -43,15 +42,9 @@ start-of-selection.
             insert value #( class_name = temp_cl->obj_name ) into table classes_for_calculation.
           endloop.
         catch zcx_flow_issue into data(flow_exception).
-          flow_exception->display_exception( ).
+          continue.
       endtry.
     endloop.
-
-    if flow_worker->get_popup( )->has_messages( ).
-      flow_worker->get_popup( )->build_display( ).
-      flow_worker->display_popup( ).
-      flow_worker->get_popup_answer( ).
-    endif.
 
     "loop at select-option from screen and save the packages into parameters table
     loop at s_pack reference into data(pack).
@@ -62,7 +55,7 @@ start-of-selection.
                                                   low = pack->low ) ).
     endloop.
 
-    "if it's going to be analyzed by package
+    "if it's going to be analyzed by class
   else.
     "loop at select-option from screen and save the classes into parameters table
     loop at s_class reference into data(cl).
@@ -75,11 +68,18 @@ start-of-selection.
                                                        low = cl->low ) ).
           insert value #( class_name = cl->low ) into table classes_for_calculation.
         catch cx_class_not_existent into data(no_class_ex).
-          message s006(z_message) into data(msg).
-          flow_worker->add_popup_message( obj = conv #( no_class_ex->clsname )
+          message s006(z_messages) into data(msg).
+          flow_worker->add_popup_message( obj = conv #( cl->low )
                                           msg = msg ).
       endtry.
     endloop.
+  endif.
+
+  if flow_worker->get_popup( )->has_messages( ).
+    flow_worker->get_popup( )->build_display( ).
+    flow_worker->display_popup( ).
+    "if the answer is yes(continue) then we stop the program
+    check flow_worker->get_popup_answer( ).
   endif.
 
   flow_worker->call_standard_metrics_program( ).
@@ -99,7 +99,6 @@ start-of-selection.
                                        package = conv #( class_package ) ).
         new_class->set_methods( class_stamp ).
 
-*        insert value #( class = new_class ) into table classes.
         data(metrics_facade) = new z_calc_metrics_facade( class_stamp         = new_class
                                                           static_object_calls = cb_cbo ).
         metrics_facade->calculate_metrics( ).
@@ -115,5 +114,5 @@ start-of-selection.
       flow_worker->check_if_table_is_empty( output ).
       flow_worker->display_final_output( ).
     catch zcx_flow_issue into flow_exception.
-    flow_exception->display_exception( ).
+      flow_exception->display_exception( ).
   endtry.

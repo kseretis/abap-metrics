@@ -8,7 +8,8 @@ class flow_worker definition create private.
     class-methods get_instance
       returning value(return) type ref to flow_worker.
 
-    methods check_mandatory_fields.
+    methods check_mandatory_fields
+      returning value(return) type abap_bool.
     methods has_package_selection
       returning value(return) type abap_bool.
     methods get_popup
@@ -17,7 +18,8 @@ class flow_worker definition create private.
       importing obj type string
                 msg type string.
     methods display_popup.
-    methods get_popup_answer.
+    methods get_popup_answer
+      returning value(return) type abap_bool.
     methods get_package
       importing pack          type string
       returning value(return) type object_list_tab_type
@@ -49,9 +51,10 @@ class flow_worker implementation.
   endmethod.
 
   method check_mandatory_fields.
+    return = abap_true.
     if s_pack is initial and s_class is initial.
       message s005(z_messages) display like 'E'.
-      leave screen.
+      return = abap_false.
     endif.
   endmethod.
 
@@ -79,7 +82,7 @@ class flow_worker implementation.
 
     call function 'RS_GET_OBJECTS_OF_DEVCLASS'
       exporting
-        devclass   = pack
+        devclass   = conv devclass( pack )
       tables
         objectlist = object_list.
 
@@ -108,9 +111,7 @@ class flow_worker implementation.
   endmethod.
 
   method get_popup_answer.
-    if popup->get_answer( ).
-      return. "exit
-    endif.
+    return = popup->get_answer( ).
   endmethod.
 
   method call_standard_metrics_program.
@@ -129,14 +130,9 @@ class flow_worker implementation.
   endmethod.
 
   method display_final_output.
-*    try.
     output->initialize_output( ).
     output->set_default_layout( rb_clas ).
     output->display( ).
-*      catch zcx_flow_issue into data(e).
-*
-**        raise exception new zcx_flow_issue( textid = e->get_exception( ) ).
-*    endtry.
   endmethod.
 
 endclass.
