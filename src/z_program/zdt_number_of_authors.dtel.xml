@@ -10,8 +10,8 @@
     <SCRLEN2>40</SCRLEN2>
     <SCRLEN3>55</SCRLEN3>
     <DDTEXT>Abap metrics - number of authors</DDTEXT>
-    <REPTEXT>NumOfAuths</REPTEXT>
-    <SCRTEXT_S>Number of</SCRTEXT_S>
+    <REPTEXT>Auths</REPTEXT>
+    <SCRTEXT_S>Number of authors</SCRTEXT_S>
     <SCRTEXT_M>Number of authors</SCRTEXT_M>
     <SCRTEXT_L>Number of authors</SCRTEXT_L>
     <DTELMASTER>E</DTELMASTER>
