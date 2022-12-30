@@ -327,11 +327,15 @@ class z_cohesion_calculator implementation.
   endmethod.
 
   method get_lines_tokens.
-    return = value #( for i in get_cleaned_tokens( ) where ( row = line ) ( corresponding #( i ) ) ).
+*    return = value #( for i in get_cleaned_tokens( ) where ( row = line ) ( corresponding #( i ) ) ).
+    return = corresponding #( get_cleaned_tokens( ) ).
+    delete return where row <> line.
   endmethod.
 
   method get_lines_tokens_with_ids.
-    return = value #( for i in tokens where ( row = line ) ( corresponding #( i ) ) ).
+*    return = value #( for i in tokens where ( row = line ) ( corresponding #( i ) ) ).
+    return = tokens.
+    delete return where row <> line.
   endmethod.
 
   method get_latest_keyword_id.

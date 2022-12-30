@@ -95,7 +95,7 @@ class z_salv_output implementation.
         aggregations->add_aggregation( columnname  = 'COMPLEXITY_OF_CONDITIONS'
                                        aggregation = if_salv_c_aggregation=>total ).
         aggregations->add_aggregation( columnname  = 'NUMBER_OF_AUTHORS'
-                                       aggregation = if_salv_c_aggregation=>total ).
+                                       aggregation = if_salv_c_aggregation=>maximum ).
         aggregations->add_aggregation( columnname  = 'COMPLEX_WEIGHTED_BY_DECISION'
                                        aggregation = if_salv_c_aggregation=>total ).
         aggregations->add_aggregation( columnname  = 'COUPLING_BETWEEN_OBJECT'
