@@ -3,7 +3,7 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <VSEOCLASS>
-    <CLSNAME>Z_WEIGHT_DES_CALCULATOR</CLSNAME>
+    <CLSNAME>Z_DECISION_DEPTH_CALCULATOR</CLSNAME>
     <LANGU>E</LANGU>
     <DESCRIPT>Complex weighted by decision calculator</DESCRIPT>
     <STATE>1</STATE>

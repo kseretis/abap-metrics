@@ -21,11 +21,12 @@ interface zif_metrics public.
              end of tokens.
 
   constants: begin of scan_type,
-               none          type string value 'NONE',
-               simple        type string value 'SIMPLE',
-               with_comments type string value 'WITH_COMMENTS',
-               with_pragmas  type string value 'WITH_PRAGMAS',
-               with_keywords type string value 'WITH_KEYWORDS',
+               none                type string value 'NONE',
+               simple              type string value 'SIMPLE',
+               with_comments       type string value 'WITH_COMMENTS',
+               with_pragmas        type string value 'WITH_PRAGMAS',
+               with_keywords       type string value 'WITH_KEYWORDS',
+               with_keywords_depth type string value 'WITH_KEYWORDS_DEPTH',
              end of scan_type.
 
   constants cohesive_value type i value 1.

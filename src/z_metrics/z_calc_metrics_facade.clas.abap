@@ -46,8 +46,8 @@ class z_calc_metrics_facade implementation.
           meth->method->set_complexity_of_conditions( complex_calculator->calculate( ) ).
 
           "calculate complex weighted by decision
-          data(weighted_complex_calculator) = new z_weight_des_calculator( meth->method->get_source_code( ) ).
-          meth->method->set_complex_weighted_by_decisi( weighted_complex_calculator->calculate( ) ).
+          data(decision_depth) = new z_decision_depth_calculator( meth->method->get_source_code( ) ).
+          meth->method->set_complex_weighted_by_decisi( decision_depth->calculate( ) ).
 
           "calculate coupling between objects
           data(coupling) = new z_cbo_calculator( source_code         = meth->method->get_source_code( )
