@@ -23,7 +23,8 @@ class z_code_scanner definition public abstract create public.
       importing tokens type tab_type_stokes.
     methods calculate abstract
       returning value(return) type i.
-    methods clean_source_code.
+    methods clean_source_code
+      importing value(only_body) type abap_bool default abap_false.
     methods get_cleaned_source_code
       returning value(return) type rswsourcet.
     methods get_cleaned_statements
@@ -74,6 +75,12 @@ class z_code_scanner implementation.
   endmethod.
 
   method clean_source_code.
+    "delete first and last line of source_code if we are calculating lack of cohesion
+    if only_body = abap_true.
+      delete source_code index 1.
+      delete source_code index lines( source_code ).
+    endif.
+
     loop at source_code assigning field-symbol(<line>) where table_line is not initial.
       data(first_char) = condense( <line> ).
       try.

@@ -24,6 +24,7 @@ class z_cohesion_calculator definition public final create public inheriting fro
              not_cohesive         type i,
              cohesive             type i,
            end of cohesion_struct.
+    types: coh_tab type standard table of cohesion_struct with default key.
 
     types: begin of lcom2_struct,
              lcom2        type string,
@@ -32,9 +33,11 @@ class z_cohesion_calculator definition public final create public inheriting fro
            end of lcom2_struct.
 
     constants lcom2 type string value 'LCOM2'.
+    constants line_txt type string value 'Line'.
 
     methods constructor
       importing class_name  type seoclsname
+                method_name type string
                 source_code type rswsourcet
       raising   zcx_metrics_error.
     methods calculate redefinition.
@@ -43,17 +46,16 @@ class z_cohesion_calculator definition public final create public inheriting fro
 
   private section.
     data class_name type seoclsname.
+    data method_name type string.
     data keywords type ref to z_keywords.
     data variables type ref to z_variables.
     data tokens type token_with_id_tab_type.
-    data cohesion_table type standard table of cohesion_struct.
-    data cohesive_table_simple type standard table of lcom2_struct.
-    data lack_of_cohesion type standard table of lcom2_struct.
+    data lack_of_cohesion type lcom2_struct.
 
-    methods generate_tokens_ids.
-    methods calculate_cohesion_by_line.
-    methods build_cohesion_table.
-    methods search_for_local_variables.
+    methods calculate_cohesion
+      changing cohesion_line type cohesion_struct.
+    methods analyze_source_code.
+    methods set_local_vars_n_tokens_ids.
     methods search_next_for_variable
       importing tokens        type token_with_id_tab_type
                 variable      type string
@@ -67,9 +69,6 @@ class z_cohesion_calculator definition public final create public inheriting fro
       importing tokens          type token_with_id_tab_type
                 parenthesis_ids type parenthesis_ids_tab_type
       returning value(return)   type abap_bool.
-    methods get_lines_tokens
-      importing line          type i
-      returning value(return) type token_with_id_tab_type.
     methods get_lines_tokens_with_ids
       importing line          type i
       returning value(return) type token_with_id_tab_type.
@@ -91,6 +90,9 @@ class z_cohesion_calculator definition public final create public inheriting fro
     methods is_method_closing
       importing token         type string
       returning value(return) type abap_bool.
+    methods contains_open_parenthesis
+      importing token         type string
+      returning value(return) type abap_bool.
     methods contains_parenthesis
       importing token         type string
       returning value(return) type abap_bool.
@@ -98,6 +100,14 @@ class z_cohesion_calculator definition public final create public inheriting fro
       importing prev_parenthesis_ids type parenthesis_ids_tab_type
                 next_parenthesis_ids type parenthesis_ids_tab_type
       returning value(return)        type abap_bool.
+    methods contains_key_word
+      importing tokens        type token_with_id_tab_type
+      returning value(return) type abap_bool.
+    methods is_last_char_parenthesis
+      importing token         type string
+      returning value(return) type abap_bool.
+    methods build_cohesion_table
+      returning value(return) type coh_tab.
 
 endclass.
 
@@ -107,91 +117,99 @@ class z_cohesion_calculator implementation.
     super->constructor( scan_type   = zif_metrics=>scan_type-simple
                         source_code = source_code ).
     me->class_name = class_name.
+    me->method_name = method_name.
     variables = new #( class_name ).
     keywords = new #( ).
+    lack_of_cohesion-lcom2 = lcom2.
   endmethod.
 
   method calculate.
-    clean_source_code( ).
-    search_for_local_variables( ).
-    generate_tokens_ids( ).
-    calculate_cohesion_by_line( ).
+    clean_source_code( abap_true ).
+    set_local_vars_n_tokens_ids( ).
+    analyze_source_code( ).
 
-    cohesive_table_simple = corresponding #( cohesion_table ).
-
-    loop at cohesive_table_simple assigning field-symbol(<line>).
-      <line>-lcom2 = lcom2.
-      collect <line> into lack_of_cohesion.
-    endloop.
-
-    try.
-        return = lack_of_cohesion[ 1 ]-not_cohesive - lack_of_cohesion[ 1 ]-cohesive.
-        if return < 0.
-          return = 0.
-        endif.
-      catch cx_sy_itab_line_not_found.
-        return = 0.
-    endtry.
+    return = cond #( when lack_of_cohesion-not_cohesive - lack_of_cohesion-cohesive < 0
+                        then 0 else lack_of_cohesion-not_cohesive - lack_of_cohesion-cohesive ).
+                        break-point.
   endmethod.
 
-  method calculate_cohesion_by_line.
-    build_cohesion_table( ).
-
-    loop at cohesion_table reference into data(line).
-      data(is_cohesive) = abap_false.
-      loop at line->previous_line_tokens assigning field-symbol(<prev_token_line>).
-        "if previous token is an attribute then we look up in the next line ONLY for the same attribute
-        if variables->is_attribute( <prev_token_line>-str ) or variables->is_local_variable( <prev_token_line>-str ).
-          is_cohesive = search_next_for_variable( tokens   = line->next_line_tokens
-                                                  variable = <prev_token_line>-str ).
-        elseif variables->contains_variable( <prev_token_line>-str ).
-          is_cohesive = search_next_for_variable( tokens   = line->next_line_tokens
-                                                  variable = variables->clear_inline_variable( <prev_token_line>-str ) ).
-          if is_cohesive = abap_false.
-            is_cohesive = search_next_for_parenthesis( tokens          = line->next_line_tokens
-                                                       parenthesis_ids = <prev_token_line>-parenthesis_ids ).
-          endif.
-        elseif contains_parenthesis( <prev_token_line>-str ).
-          is_cohesive = search_next_for_parenthesis( tokens          = line->next_line_tokens
+  method calculate_cohesion.
+    data(is_cohesive) = abap_false.
+    loop at cohesion_line-previous_line_tokens assigning field-symbol(<prev_token_line>).
+      "if previous token is an attribute then we look up in the next line ONLY for the same attribute
+      if variables->is_attribute( <prev_token_line>-str ) or variables->is_local_variable( <prev_token_line>-str )
+        or variables->is_parameter( method_name = method_name
+                                    variable = <prev_token_line>-str ).
+        is_cohesive = search_next_for_variable( tokens   = cohesion_line-next_line_tokens
+                                                variable = <prev_token_line>-str ).
+      elseif variables->contains_variable( <prev_token_line>-str ).
+        is_cohesive = search_next_for_variable( tokens   = cohesion_line-next_line_tokens
+                                                variable = variables->clear_inline_variable( <prev_token_line>-str ) ).
+        if is_cohesive = abap_false and is_last_char_parenthesis( <prev_token_line>-str ).
+          is_cohesive = search_next_for_parenthesis( tokens          = cohesion_line-next_line_tokens
                                                      parenthesis_ids = <prev_token_line>-parenthesis_ids ).
-        elseif keywords->is_open_keyword( <prev_token_line>-str ).
-          is_cohesive = search_next_for_keyword( tokens     = line->next_line_tokens
-                                                 keyword    = <prev_token_line>-str
-                                                 keyword_id = <prev_token_line>-keyword_id ).
         endif.
-        if is_cohesive = abap_true.
-          line->cohesive = zif_metrics=>cohesive_value.
-          exit.
-        endif.
-      endloop.
-      if is_cohesive = abap_false.
-        line->not_cohesive = zif_metrics=>cohesive_value.
+      elseif contains_open_parenthesis( <prev_token_line>-str ).
+        is_cohesive = search_next_for_parenthesis( tokens          = cohesion_line-next_line_tokens
+                                                   parenthesis_ids = <prev_token_line>-parenthesis_ids ).
+      elseif keywords->is_open_keyword( <prev_token_line>-str ).
+        is_cohesive = search_next_for_keyword( tokens     = cohesion_line-next_line_tokens
+                                               keyword    = <prev_token_line>-str
+                                               keyword_id = <prev_token_line>-keyword_id ).
+      endif.
+      if is_cohesive = abap_true.
+        cohesion_line-cohesive = zif_metrics=>cohesive_value.
+        exit.
       endif.
     endloop.
+    if is_cohesive = abap_false.
+      cohesion_line-not_cohesive = zif_metrics=>cohesive_value.
+    endif.
   endmethod.
 
-  method search_for_local_variables.
+  method set_local_vars_n_tokens_ids.
     data(is_nextone_a_variable) = abap_false.
+    data(line_number) = 1.
     loop at get_cleaned_tokens( ) assigning field-symbol(<token>).
+      "set tokens id
+      tokens = value #( base tokens ( line_id = line_number
+                                       str = <token>-str
+                                       row = <token>-row
+                                       col = <token>-col
+                                       type = <token>-type
+                                       keyword_id = get_keyword_id( token = <token>-str
+                                                                    line_id = line_number )
+                                       is_keyword_matched = cond #( when keywords->is_close_keyword( <token>-str )
+                                                                    then abap_true else abap_false )
+                                       parenthesis_ids = get_parenthesis_ids( token   = <token>-str
+                                                                              line_id = line_number ) ) ).
+      line_number += 1.
+
+      "scan for local variables
       if is_nextone_a_variable = abap_true.
         variables->append_variable( <token>-str ).
         is_nextone_a_variable = abap_false.
         continue.
       endif.
 
-      if <token>-str = zif_metrics=>local_declaration-data or <token>-str = zif_metrics=>local_declaration-field_symbols.
-        is_nextone_a_variable = abap_true.
-        continue.
-      elseif <token>-str cs zif_metrics=>local_declaration-data or <token>-str cs zif_metrics=>local_declaration-field_symbol.
-        variables->append_variable( variables->clear_inline_variable( <token>-str ) ).
-      endif.
+      try.
+          if <token>-str = zif_metrics=>local_declaration-data or <token>-str = zif_metrics=>local_declaration-field_symbols.
+            is_nextone_a_variable = abap_true.
+            continue.
+          elseif ( substring( val = <token>-str off = 0 len = 5 ) =
+                            |{ zif_metrics=>local_declaration-data }{ zif_metrics=>symbols-parenthesis_open }| )
+                or <token>-str cs zif_metrics=>local_declaration-field_symbol.
+            variables->append_variable( variables->clear_inline_variable( <token>-str ) ).
+          endif.
+        catch cx_sy_range_out_of_bounds.
+      endtry.
     endloop.
   endmethod.
 
   method search_next_for_variable.
     return = abap_false.
     loop at tokens assigning field-symbol(<token>).
-      if <token>-str = variable or ( <token>-str cs variable and <token>-str cs |{ variable }-| ).
+      if <token>-str = variable or ( <token>-str cs |{ variable }-| or <token>-str cs |{ variable }+| ).
         return = abap_true.
         exit.
       endif.
@@ -219,6 +237,15 @@ class z_cohesion_calculator implementation.
     endtry.
   endmethod.
 
+  method is_last_char_parenthesis.
+    try.
+        data(length) = strlen( token ) - 1.
+        return = cond #( when substring( val = token off = length len = 1 ) = zif_metrics=>symbols-parenthesis_open
+                            then abap_true else abap_false ).
+      catch cx_sy_range_out_of_bounds.
+    endtry.
+  endmethod.
+
   method are_parenthesis_ids_same.
     return = abap_false.
     loop at prev_parenthesis_ids assigning field-symbol(<prev>).
@@ -231,44 +258,66 @@ class z_cohesion_calculator implementation.
     endloop.
   endmethod.
 
-  method build_cohesion_table.
+  method analyze_source_code.
     data(source_code) = get_cleaned_source_code( ).
+
+    "test block code, to export the cohesion talbe, TO BE DELETED
+    data(test_coh) = build_cohesion_table( ).
+    loop at test_coh assigning field-symbol(<test>).
+      "calculate cohesion
+      calculate_cohesion( changing cohesion_line = <test> ).
+    endloop.
+
     loop at source_code assigning field-symbol(<line>).
-      "skip first line, because we want to calculate only the body
-      if sy-tabix = 1.
+      data(prev_line_id) = sy-tabix.
+      data(next_line_counter) = prev_line_id + 1.
+
+      data(prev_line_tokens) = get_lines_tokens_with_ids( prev_line_id ).
+      "check if contains key word in the previous line
+      if not contains_key_word( prev_line_tokens ).
+        if sy-tabix <> lines( source_code ).
+          lack_of_cohesion-not_cohesive += lines( source_code ) - next_line_counter - 1.
+        endif.
         continue.
       endif.
-      data(next_line_counter) = sy-tabix + 1.
-      while next_line_counter < lines( source_code ).
-        cohesion_table = value #( base cohesion_table ( previous_line = condense( <line> )
-                                                        previous_line_tokens = get_lines_tokens_with_ids( sy-tabix )
-                                                        next_line = condense( source_code[ next_line_counter ] )
-                                                        next_line_tokens = get_lines_tokens_with_ids( next_line_counter )
-                                                        not_cohesive = 0
-                                                        cohesive = 0 ) ).
+
+      while next_line_counter <= lines( source_code ).
+        data(next_line_tokens) = get_lines_tokens_with_ids( next_line_counter ).
         next_line_counter += 1.
+        "check if contains key word in the next line
+        if not contains_key_word( next_line_tokens ).
+          lack_of_cohesion-not_cohesive += 1.
+          continue.
+        endif.
+
+        data(cohesion_line) = value cohesion_struct( previous_line_tokens = prev_line_tokens
+                                                     next_line_tokens = next_line_tokens ).
+        "calculate cohesion
+        calculate_cohesion( changing cohesion_line = cohesion_line ).
+
+        "sum cohesion
+        lack_of_cohesion-not_cohesive += cohesion_line-not_cohesive.
+        lack_of_cohesion-cohesive += cohesion_line-cohesive.
       endwhile.
-      continue.
+      cl_progress_indicator=>progress_indicate(
+        i_text               = |{ class_name }-{ method_name }, { line_txt }: { sy-tabix }/{ lines( source_code ) }|
+        i_output_immediately = abap_true ).
     endloop.
+    break-point.
+
   endmethod.
 
-  method generate_tokens_ids.
-    data(line_number) = 1.
-    loop at get_cleaned_source_code( ) assigning field-symbol(<line>).
-      loop at get_lines_tokens( sy-tabix ) assigning field-symbol(<tok>).
-        tokens = value #( base tokens ( line_id = line_number
-                                           str = <tok>-str
-                                           row = <tok>-row
-                                           col = <tok>-col
-                                           type = <tok>-type
-                                           keyword_id = get_keyword_id( token = <tok>-str
-                                                                        line_id = line_number )
-                                           is_keyword_matched = cond #( when keywords->is_close_keyword( <tok>-str )
-                                                                        then abap_true else abap_false )
-                                           parenthesis_ids = get_parenthesis_ids( token   = <tok>-str
-                                                                                  line_id = line_number ) ) ).
-        line_number += 1.
-      endloop.
+  method contains_key_word.
+    return = abap_false.
+    loop at tokens assigning field-symbol(<token>).
+      if variables->is_attribute( <token>-str ) or variables->is_local_variable( <token>-str )
+         or variables->is_parameter( method_name = method_name
+                                     variable = <token>-str )
+             or variables->contains_variable( <token>-str ) or contains_parenthesis( <token>-str )
+                or keywords->is_open_keyword( <token>-str ) or keywords->is_close_keyword( <token>-str ).
+        return = abap_true.
+        exit.
+      endif.
     endloop.
   endmethod.
 
@@ -321,21 +370,23 @@ class z_cohesion_calculator implementation.
     endtry.
   endmethod.
 
-  method contains_parenthesis.
+  method contains_open_parenthesis.
     return = cond #( when contains( val = token sub = zif_metrics=>symbols-parenthesis_open )
                         then abap_true else abap_false ).
   endmethod.
 
-  method get_lines_tokens.
-*    return = value #( for i in get_cleaned_tokens( ) where ( row = line ) ( corresponding #( i ) ) ).
-    return = corresponding #( get_cleaned_tokens( ) ).
-    delete return where row <> line.
+  method contains_parenthesis.
+    return = cond #( when contains( val = token sub = zif_metrics=>symbols-parenthesis_open )
+                              or contains( val = token sub = zif_metrics=>symbols-parenthesis_close )
+                          then abap_true else abap_false ).
   endmethod.
 
   method get_lines_tokens_with_ids.
-*    return = value #( for i in tokens where ( row = line ) ( corresponding #( i ) ) ).
     return = tokens.
     delete return where row <> line.
+    sort return ascending by str.
+    delete adjacent duplicates from return comparing str.
+    sort return ascending by line_id.
   endmethod.
 
   method get_latest_keyword_id.
@@ -364,6 +415,23 @@ class z_cohesion_calculator implementation.
       endif.
     endloop.
     sort tokens ascending by line_id.
+  endmethod.
+
+  method build_cohesion_table.
+    data(source_code) = get_cleaned_source_code( ).
+    loop at source_code assigning field-symbol(<line>).
+      data(next_line_counter) = sy-tabix + 1.
+      while next_line_counter <= lines( source_code ).
+        return = value #( base return ( previous_line = condense( <line> )
+                                        previous_line_tokens = get_lines_tokens_with_ids( sy-tabix )
+                                        next_line = condense( source_code[ next_line_counter ] )
+                                        next_line_tokens = get_lines_tokens_with_ids( next_line_counter )
+                                        not_cohesive = 0
+                                        cohesive = 0 ) ).
+        next_line_counter += 1.
+      endwhile.
+      continue.
+    endloop.
   endmethod.
 
 endclass.
