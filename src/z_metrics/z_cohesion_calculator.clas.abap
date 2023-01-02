@@ -130,7 +130,6 @@ class z_cohesion_calculator implementation.
 
     return = cond #( when lack_of_cohesion-not_cohesive - lack_of_cohesion-cohesive < 0
                         then 0 else lack_of_cohesion-not_cohesive - lack_of_cohesion-cohesive ).
-                        break-point.
   endmethod.
 
   method calculate_cohesion.
@@ -261,12 +260,14 @@ class z_cohesion_calculator implementation.
   method analyze_source_code.
     data(source_code) = get_cleaned_source_code( ).
 
+    """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
     "test block code, to export the cohesion talbe, TO BE DELETED
-    data(test_coh) = build_cohesion_table( ).
-    loop at test_coh assigning field-symbol(<test>).
-      "calculate cohesion
-      calculate_cohesion( changing cohesion_line = <test> ).
-    endloop.
+*    data(output_cohesion_table) = build_cohesion_table( ).
+*    loop at output_cohesion_table assigning field-symbol(<test>).
+*      "calculate cohesion
+*      calculate_cohesion( changing cohesion_line = <test> ).
+*    endloop.
+    """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
     loop at source_code assigning field-symbol(<line>).
       data(prev_line_id) = sy-tabix.
@@ -303,8 +304,6 @@ class z_cohesion_calculator implementation.
         i_text               = |{ class_name }-{ method_name }, { line_txt }: { sy-tabix }/{ lines( source_code ) }|
         i_output_immediately = abap_true ).
     endloop.
-    break-point.
-
   endmethod.
 
   method contains_key_word.

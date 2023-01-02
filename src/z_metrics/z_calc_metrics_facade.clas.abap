@@ -23,7 +23,6 @@ class z_calc_metrics_facade implementation.
 
   method calculate_metrics.
     try.
-*        break-point.
         loop at class_stamp->get_methods( ) reference into data(meth).
           "calculate LoC
           data(loc_calculator) = new z_loc_calculator( meth->method->get_source_code( ) ).
