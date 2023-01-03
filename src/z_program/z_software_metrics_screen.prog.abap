@@ -25,6 +25,11 @@ selection-screen begin of block b2 with frame title text-002.
   parameters: cb_cbo as checkbox default abap_false.
 selection-screen end of block b2.
 
+selection-screen begin of block b3 with frame title text-003.
+  parameters: rb_total radiobutton group rbg3 default 'X',
+              rb_avg   radiobutton group rbg3.
+selection-screen end of block b3.
+
 at selection-screen output.
   loop at screen.
     if screen-name = 'S_PACK-LOW'.

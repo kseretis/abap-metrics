@@ -13,6 +13,7 @@ class z_salv_output definition public final create public.
     methods display.
     methods set_default_layout
       importing is_calc_by_class type abap_bool
+                is_aggregation_total type abap_bool
       raising   zcx_flow_issue.
 
   protected section.
@@ -26,6 +27,7 @@ class z_salv_output definition public final create public.
       importing is_calc_by_class type abap_bool
       raising   zcx_flow_issue.
     methods set_aggregations
+        importing is_aggregation_total type abap_bool
       raising zcx_flow_issue.
     methods raise_build_failed_exception
       raising zcx_flow_issue.
@@ -58,7 +60,7 @@ class z_salv_output implementation.
 
   method set_default_layout.
     set_sorts( is_calc_by_class ).
-    set_aggregations( ).
+    set_aggregations( is_aggregation_total ).
   endmethod.
 
   method set_sorts.
@@ -83,25 +85,27 @@ class z_salv_output implementation.
 
   method set_aggregations.
     data(aggregations) = output->get_aggregations( ).
+    data(aggregate_by) = cond #( when is_aggregation_total = abap_true
+                                    then if_salv_c_aggregation=>total else if_salv_c_aggregation=>average ).
     try.
         aggregations->add_aggregation( columnname  = 'LINES_OF_CODE'
-                                       aggregation = if_salv_c_aggregation=>total ).
+                                       aggregation = aggregate_by ).
         aggregations->add_aggregation( columnname  = 'NUMBER_OF_COMMENTS'
-                                       aggregation = if_salv_c_aggregation=>total ).
+                                       aggregation = aggregate_by ).
         aggregations->add_aggregation( columnname  = 'NUMBER_OF_STATEMENTS'
-                                       aggregation = if_salv_c_aggregation=>total ).
+                                       aggregation = aggregate_by ).
         aggregations->add_aggregation( columnname  = 'NUMBER_OF_PRAGMAS'
-                                       aggregation = if_salv_c_aggregation=>total ).
+                                       aggregation = aggregate_by ).
         aggregations->add_aggregation( columnname  = 'COMPLEXITY_OF_CONDITIONS'
-                                       aggregation = if_salv_c_aggregation=>total ).
+                                       aggregation = aggregate_by ).
         aggregations->add_aggregation( columnname  = 'NUMBER_OF_AUTHORS'
                                        aggregation = if_salv_c_aggregation=>maximum ).
         aggregations->add_aggregation( columnname  = 'COMPLEX_WEIGHTED_BY_DECISION'
-                                       aggregation = if_salv_c_aggregation=>total ).
+                                       aggregation = aggregate_by ).
         aggregations->add_aggregation( columnname  = 'COUPLING_BETWEEN_OBJECT'
-                                       aggregation = if_salv_c_aggregation=>total ).
+                                       aggregation = aggregate_by ).
         aggregations->add_aggregation( columnname  = 'LACK_OF_COHESION'
-                                       aggregation = if_salv_c_aggregation=>total ).
+                                       aggregation = aggregate_by ).
       catch cx_salv_data_error.
         raise_build_failed_exception( ).
       catch cx_salv_not_found.

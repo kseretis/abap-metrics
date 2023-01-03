@@ -87,7 +87,6 @@ start-of-selection.
   data(output) = new z_salv_output( ).
   "loop at the classes that the user asked for calculation
   loop at classes_for_calculation reference into data(clas).
-*  loop at parameters reference into data(parameter) where selname = c_sel_name-name.
     memory_id = |{ z_class_manager=>c_prefix }_{ clas->class_name }|.
     class_stamp = z_class_manager=>import_from_memory( memory_id ).
 
@@ -103,7 +102,6 @@ start-of-selection.
                                                           static_object_calls = cb_cbo ).
         metrics_facade->calculate_metrics( ).
         output->insert_methods_to_table( new_class ).
-
       catch cx_sy_itab_line_not_found.
       catch zcx_flow_issue.
         "catch zcx_static_ks. TODO create exception class

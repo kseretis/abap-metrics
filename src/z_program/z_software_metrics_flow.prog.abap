@@ -132,7 +132,8 @@ class flow_worker implementation.
 
   method display_final_output.
     output->initialize_output( ).
-    output->set_default_layout( rb_clas ).
+    output->set_default_layout( is_calc_by_class = rb_clas
+                                is_aggregation_total = rb_total ).
     output->display( ).
   endmethod.
 
