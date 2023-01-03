@@ -35,6 +35,7 @@ interface zif_metrics public.
                data          type string value 'DATA',
                field_symbols type string value 'FIELD-SYMBOLS',
                field_symbol  type string value 'FIELD-SYMBOL',
+               constant      type string value 'CONSTANTS',
              end of local_declaration.
 
   constants: begin of symbols,

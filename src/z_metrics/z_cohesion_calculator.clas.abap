@@ -193,10 +193,11 @@ class z_cohesion_calculator implementation.
       endif.
 
       try.
-          if <token>-str = zif_metrics=>local_declaration-data or <token>-str = zif_metrics=>local_declaration-field_symbols.
+          if <token>-str = zif_metrics=>local_declaration-data or <token>-str = zif_metrics=>local_declaration-field_symbols
+                or <token>-str = zif_metrics=>local_declaration-constant.
             is_nextone_a_variable = abap_true.
             continue.
-          elseif ( substring( val = <token>-str off = 0 len = 5 ) =
+          elseif ( substring( val = <token>-str off = 0 len = 6 ) cs
                             |{ zif_metrics=>local_declaration-data }{ zif_metrics=>symbols-parenthesis_open }| )
                 or <token>-str cs zif_metrics=>local_declaration-field_symbol.
             variables->append_variable( variables->clear_inline_variable( <token>-str ) ).
@@ -209,7 +210,8 @@ class z_cohesion_calculator implementation.
   method search_next_for_variable.
     return = abap_false.
     loop at tokens assigning field-symbol(<token>).
-      if <token>-str = variable or ( <token>-str cs |{ variable }-| or <token>-str cs |{ variable }+| ).
+      if <token>-str = variable or ( <token>-str cs |@{ variable }|
+        or <token>-str cs |{ variable }-| or <token>-str cs |{ variable }+| ).
         return = abap_true.
         exit.
       endif.
@@ -261,15 +263,6 @@ class z_cohesion_calculator implementation.
   method analyze_source_code.
     data(source_code) = get_cleaned_source_code( ).
 
-    """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-    "test block code, to export the cohesion talbe, TO BE DELETED
-*    data(output_cohesion_table) = build_cohesion_table( ).
-*    loop at output_cohesion_table assigning field-symbol(<test>).
-*      "calculate cohesion
-*      calculate_cohesion( changing cohesion_line = <test> ).
-*    endloop.
-    """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
     loop at source_code assigning field-symbol(<line>).
       data(prev_line_id) = sy-tabix.
       data(next_line_counter) = prev_line_id + 1.
@@ -278,7 +271,7 @@ class z_cohesion_calculator implementation.
       "check if contains key word in the previous line
       if not contains_key_word( prev_line_tokens ).
         if sy-tabix <> lines( source_code ).
-          lack_of_cohesion-not_cohesive += lines( source_code ) - next_line_counter - 1.
+          lack_of_cohesion-not_cohesive += lines( source_code ) - prev_line_id.
         endif.
         continue.
       endif.

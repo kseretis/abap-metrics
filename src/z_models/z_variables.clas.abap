@@ -75,9 +75,9 @@ class z_variables implementation.
   endmethod.
 
   method get_merged_variables.
-    return = value table_of_strings( for i in parameters ( i-parameter_name )
-                                        ( lines of attributes  )
-                                        ( lines of local_variables ) ).
+    return = value #( for i in parameters ( i-parameter_name ) ).
+    return = value #( base return ( lines of attributes )
+                                  ( lines of local_variables ) ).
     sort return ascending.
     delete adjacent duplicates from return.
   endmethod.
@@ -102,8 +102,8 @@ class z_variables implementation.
   method contains_variable.
     return = abap_false.
     loop at get_merged_variables( ) assigning field-symbol(<variable>).
-      if token cs <variable> and ( token cs |({ <variable> })|
-        or token cs |{ <variable> }-| or token cs |{ <variable> }+| ).
+      if token cs |({ <variable> })| or token cs |@{ <variable> }|
+        or token cs |{ <variable> }-| or token cs |{ <variable> }+| .
         return = abap_true.
         exit.
       endif.
@@ -137,6 +137,9 @@ class z_variables implementation.
     elseif variable cs zif_metrics=>symbols-dash.
       return = substring_before( val = variable
                                  sub = zif_metrics=>symbols-dash ).
+    elseif variable cs zif_metrics=>symbols-at.
+      return = substring_after( val = variable
+                                sub = zif_metrics=>symbols-at ).
     endif.
   endmethod.
 
