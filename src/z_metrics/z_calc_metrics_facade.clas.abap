@@ -4,7 +4,8 @@ class z_calc_metrics_facade definition public final create public.
     methods constructor
       importing class_stamp         type ref to z_class
                 static_object_calls type abap_bool.
-    methods calculate_metrics.
+    methods calculate_metrics
+      importing export_cohesion_tab type abap_bool default abap_false.
 
   protected section.
 
@@ -63,6 +64,10 @@ class z_calc_metrics_facade implementation.
                                                                   method_name = meth->method->get_name( )
                                                                   source_code = meth->method->get_source_code( ) ).
               meth->method->set_lack_of_cohision( lack_of_cohesion->calculate( ) ).
+              "test run
+              if export_cohesion_tab = abap_true.
+                lack_of_cohesion->export_cohesion_table( ).
+              endif.
             catch zcx_metrics_error into data(ex).
               ex->display_exception( ).
           endtry.

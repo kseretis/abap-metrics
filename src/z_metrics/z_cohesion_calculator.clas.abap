@@ -41,6 +41,7 @@ class z_cohesion_calculator definition public final create public inheriting fro
                 source_code type rswsourcet
       raising   zcx_metrics_error.
     methods calculate redefinition.
+    methods export_cohesion_table.
 
   protected section.
 
@@ -431,6 +432,40 @@ class z_cohesion_calculator implementation.
       endwhile.
       continue.
     endloop.
+  endmethod.
+
+  method export_cohesion_table.
+    constants base type string value 'C:\Users\kseretis\OneDrive - Deloitte (O365D)\Documents\Thesis\test results\'.
+    constants name type string value 'test_results'.
+    constants suffix type string value '.xlsx'.
+
+    types: begin of tmp_cohesion_struct,
+             previous_line type string,
+             next_line     type string,
+             not_cohesive  type i,
+             cohesive      type i,
+           end of tmp_cohesion_struct,
+           tmp_cohesion_tab_type type standard table of tmp_cohesion_struct with empty key.
+
+    data(coh_tab) = build_cohesion_table( ).
+    loop at coh_tab assigning field-symbol(<line>).
+      calculate_cohesion( changing cohesion_line = <line> ).
+    endloop.
+
+    data(tmp_cohesion_tab) = corresponding tmp_cohesion_tab_type( coh_tab ).
+
+    data(bin_data) = cl_fdt_xl_spreadsheet=>if_fdt_doc_spreadsheet~create_document(
+      itab         = ref #( tmp_cohesion_tab )
+      iv_call_type = if_fdt_doc_spreadsheet=>gc_call_dec_table ).
+    data(raw_data) = cl_bcs_convert=>xstring_to_solix( iv_xstring = bin_data ).
+
+    cl_gui_frontend_services=>gui_download(
+      exporting
+        filename     = |{ base }{ name }_{ method_name }{ suffix }|
+        filetype     = 'BIN'
+        bin_filesize = xstrlen( bin_data )
+      changing
+        data_tab     = raw_data ).
   endmethod.
 
 endclass.

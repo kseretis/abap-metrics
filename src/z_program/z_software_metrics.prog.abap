@@ -100,7 +100,7 @@ start-of-selection.
 
         data(metrics_facade) = new z_calc_metrics_facade( class_stamp         = new_class
                                                           static_object_calls = cb_cbo ).
-        metrics_facade->calculate_metrics( ).
+        metrics_facade->calculate_metrics( cb_test ).
         output->insert_methods_to_table( new_class ).
       catch cx_sy_itab_line_not_found.
       catch zcx_flow_issue.

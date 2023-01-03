@@ -22,7 +22,8 @@ selection-screen end of block b1.
 selection-screen begin of block b2 with frame title text-002.
   parameters: rb_meth radiobutton group rbg1 default 'X',
               rb_clas radiobutton group rbg1.
-  parameters: cb_cbo as checkbox default abap_false.
+  parameters: cb_cbo  as checkbox default abap_false,
+              cb_test as checkbox default abap_false.
 selection-screen end of block b2.
 
 selection-screen begin of block b3 with frame title text-003.
