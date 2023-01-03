@@ -3,6 +3,7 @@ interface zif_metrics public.
   constants: begin of obj_type,
                meth(4) type c value 'METH',
                clas(4) type c value 'CLAS',
+               pack(4) type c value 'DEVC',
              end of obj_type.
 
   constants: begin of method_call,

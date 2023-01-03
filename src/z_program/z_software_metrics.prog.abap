@@ -38,9 +38,10 @@ start-of-selection.
     loop at s_pack reference into data(package).
       try.
           data(object_list) = flow_worker->get_package( conv #( package->low ) ).
-          loop at object_list reference into data(temp_cl).
-            insert value #( class_name = temp_cl->obj_name ) into table classes_for_calculation.
-          endloop.
+*          loop at object_list reference into data(temp_cl).
+*            insert value #( class_name = temp_cl->obj_name ) into table classes_for_calculation.
+*          endloop.
+          classes_for_calculation = value #( for i in object_list ( class_name = i-obj_name ) ).
         catch zcx_flow_issue into data(flow_exception).
           continue.
       endtry.
@@ -53,6 +54,14 @@ start-of-selection.
                                                   sign = pack->sign
                                                   option = pack->option
                                                   low = pack->low ) ).
+    endloop.
+
+    loop at flow_worker->get_sub_packages( ) into data(sub_pack).
+      parameters = value #( base parameters ( selname = c_sel_name-package
+                                                kind = c_kind-sel_opt
+                                                sign = c_sign-inclu
+                                                option = c_option-equal
+                                                low = sub_pack ) ).
     endloop.
 
     "if it's going to be analyzed by class
