@@ -24,6 +24,8 @@ class flow_worker definition create private.
       importing pack          type string
       returning value(return) type object_list_tab_type
       raising   zcx_flow_issue.
+    methods get_sub_packages
+      returning value(return) type table_of_strings.
     methods call_standard_metrics_program.
     methods check_if_table_is_empty
       importing output        type ref to z_salv_output
@@ -38,6 +40,11 @@ class flow_worker definition create private.
     class-data instance type ref to flow_worker.
     data popup type ref to z_popup_window.
     data output type ref to z_salv_output.
+    data sub_packages type table_of_strings.
+
+    methods fetch_sub_packages
+      importing pack          type sobj_name
+      returning value(return) type table_of_strings.
 
 endclass.
 
@@ -82,11 +89,20 @@ class flow_worker implementation.
     data object_list type object_list_tab_type.
     data object_list_with_classes like object_list.
 
-    call function 'RS_GET_OBJECTS_OF_DEVCLASS'
-      exporting
-        devclass   = conv devclass( pack )
-      tables
-        objectlist = object_list.
+    "if the package is a super package then we retrieve the child packages
+    data(packages) = fetch_sub_packages( conv #( pack ) ).
+
+    loop at packages assigning field-symbol(<pack>).
+      data tmp_object_list like object_list.
+      call function 'RS_GET_OBJECTS_OF_DEVCLASS'
+        exporting
+          devclass   = conv devclass( <pack> )
+        tables
+          objectlist = tmp_object_list.
+      "append the temp object list to the main one
+      object_list = value #( base object_list
+                            ( lines of tmp_object_list ) ).
+    endloop.
 
     object_list_with_classes = object_list.
     delete object_list_with_classes where obj_type <> zif_metrics=>obj_type-clas.
@@ -105,6 +121,24 @@ class flow_worker implementation.
     endif.
 
     return = object_list_with_classes.
+  endmethod.
+
+  method fetch_sub_packages.
+    data sub_packages type standard table of senvi.
+    call function 'REPOSITORY_ENVIRONMENT_SET'
+      exporting
+        obj_type    = conv seu_obj( zif_metrics=>obj_type-pack )
+        object_name = pack
+      tables
+        environment = sub_packages.
+    me->sub_packages = value #( base return for i in sub_packages
+                                    where ( type = zif_metrics=>obj_type-pack ) ( conv #( i-object ) ) ).
+    return = value #( ( conv #( pack ) )
+                        ( lines of me->sub_packages ) ).
+  endmethod.
+
+  method get_sub_packages.
+    return = sub_packages.
   endmethod.
 
   method display_popup.
@@ -132,7 +166,8 @@ class flow_worker implementation.
 
   method display_final_output.
     output->initialize_output( ).
-    output->set_default_layout( rb_clas ).
+    output->set_default_layout( is_calc_by_class     = rb_clas
+                                is_aggregation_total = rb_total ).
     output->display( ).
   endmethod.
 

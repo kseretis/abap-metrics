@@ -21,7 +21,6 @@ constants: begin of c_option,
              equal     type string value 'EQ',
              not_equal type string value 'NE',
            end of c_option.
-constants obj_type type string value 'CLAS'.
 
 types: begin of class_struc,
          class type ref to z_class,

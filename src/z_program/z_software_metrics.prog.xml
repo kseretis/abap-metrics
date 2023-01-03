@@ -109,6 +109,12 @@
      <LENGTH>20</LENGTH>
     </item>
     <item>
+     <ID>I</ID>
+     <KEY>003</KEY>
+     <ENTRY>Aggregation</ENTRY>
+     <LENGTH>11</LENGTH>
+    </item>
+    <item>
      <ID>R</ID>
      <ENTRY>Calculates software metrics</ENTRY>
      <LENGTH>27</LENGTH>
@@ -122,13 +128,13 @@
     <item>
      <ID>S</ID>
      <KEY>RB_CLAS</KEY>
-     <ENTRY>Calculate by class</ENTRY>
+     <ENTRY>Calculate on Class Level</ENTRY>
      <LENGTH>30</LENGTH>
     </item>
     <item>
      <ID>S</ID>
      <KEY>RB_METH</KEY>
-     <ENTRY>Calculate by method</ENTRY>
+     <ENTRY>Calculate on Method Level</ENTRY>
      <LENGTH>32</LENGTH>
     </item>
     <item>
@@ -141,6 +147,30 @@
      <ID>S</ID>
      <KEY>S_PACK</KEY>
      <ENTRY>Package</ENTRY>
+     <LENGTH>15</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>IS_PACK</KEY>
+     <ENTRY>Analyze Package/Packages</ENTRY>
+     <LENGTH>24</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>IS_CLASS</KEY>
+     <ENTRY>Analyze Class/Classes</ENTRY>
+     <LENGTH>21</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>RB_AVG</KEY>
+     <ENTRY>Average</ENTRY>
+     <LENGTH>15</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>RB_TOTAL</KEY>
+     <ENTRY>Total</ENTRY>
      <LENGTH>15</LENGTH>
     </item>
    </TPOOL>

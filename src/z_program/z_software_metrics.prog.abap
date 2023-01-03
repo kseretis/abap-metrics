@@ -38,9 +38,10 @@ start-of-selection.
     loop at s_pack reference into data(package).
       try.
           data(object_list) = flow_worker->get_package( conv #( package->low ) ).
-          loop at object_list reference into data(temp_cl).
-            insert value #( class_name = temp_cl->obj_name ) into table classes_for_calculation.
-          endloop.
+*          loop at object_list reference into data(temp_cl).
+*            insert value #( class_name = temp_cl->obj_name ) into table classes_for_calculation.
+*          endloop.
+          classes_for_calculation = value #( for i in object_list ( class_name = i-obj_name ) ).
         catch zcx_flow_issue into data(flow_exception).
           continue.
       endtry.
@@ -53,6 +54,14 @@ start-of-selection.
                                                   sign = pack->sign
                                                   option = pack->option
                                                   low = pack->low ) ).
+    endloop.
+
+    loop at flow_worker->get_sub_packages( ) into data(sub_pack).
+      parameters = value #( base parameters ( selname = c_sel_name-package
+                                                kind = c_kind-sel_opt
+                                                sign = c_sign-inclu
+                                                option = c_option-equal
+                                                low = sub_pack ) ).
     endloop.
 
     "if it's going to be analyzed by class
@@ -87,7 +96,6 @@ start-of-selection.
   data(output) = new z_salv_output( ).
   "loop at the classes that the user asked for calculation
   loop at classes_for_calculation reference into data(clas).
-*  loop at parameters reference into data(parameter) where selname = c_sel_name-name.
     memory_id = |{ z_class_manager=>c_prefix }_{ clas->class_name }|.
     class_stamp = z_class_manager=>import_from_memory( memory_id ).
 
@@ -101,9 +109,8 @@ start-of-selection.
 
         data(metrics_facade) = new z_calc_metrics_facade( class_stamp         = new_class
                                                           static_object_calls = cb_cbo ).
-        metrics_facade->calculate_metrics( ).
+        metrics_facade->calculate_metrics( cb_test ).
         output->insert_methods_to_table( new_class ).
-
       catch cx_sy_itab_line_not_found.
       catch zcx_flow_issue.
         "catch zcx_static_ks. TODO create exception class
