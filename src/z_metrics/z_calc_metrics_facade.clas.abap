@@ -29,13 +29,7 @@ class z_calc_metrics_facade implementation.
   method calculate_metrics.
     try.
         loop at class_stamp->get_methods( ) reference into data(meth).
-          "update indicator
-          z_progress_indicator=>update_indicator( value1 = class_stamp->get_name( )
-                                                  value2 = meth->method->get_name( ) ).
-
-          "calculate LoC
-          data(loc_calculator) = new z_loc_calculator( meth->method->get_source_code( ) ).
-          meth->method->set_lines_of_code( loc_calculator->calculate( ) ).
+          "LoC is being calculated outside from the facade
 
           "calculate NoC
           data(noc_calculator) = new z_noc_calculator( meth->method->get_source_code( ) ).

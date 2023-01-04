@@ -31,7 +31,10 @@ class flow_worker definition create private.
       importing output        type ref to z_salv_output
       returning value(return) type abap_bool
       raising   zcx_flow_issue.
-    methods initialize_indicator.
+    methods calc_total_lines_per_class
+      importing clas          type ref to z_class
+      returning value(return) type i
+      raising   zcx_flow_issue.
     methods display_final_output
       raising zcx_flow_issue.
 
@@ -165,11 +168,14 @@ class flow_worker implementation.
     endif.
   endmethod.
 
-  method initialize_indicator.
-*    loop at classes_for_calculation reference into data(cl).
-*        cl->class_name
-*    endloop.
-*    z_progress_indicator=>initialize_indicator(  ).
+  method calc_total_lines_per_class.
+    loop at clas->get_methods( ) reference into data(meth).
+      "calculate LoC
+      data(loc_calculator) = new z_loc_calculator( meth->method->get_source_code( ) ).
+      meth->method->set_lines_of_code( loc_calculator->calculate( ) ).
+      "return the loc - the first and last line
+      return += meth->method->get_lines_of_code( ) - 2.
+    endloop.
   endmethod.
 
   method display_final_output.

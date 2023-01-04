@@ -264,6 +264,10 @@ class z_cohesion_calculator implementation.
     data(source_code) = get_cleaned_source_code( ).
 
     loop at source_code assigning field-symbol(<line>).
+
+      "update progress indicator
+      z_progress_indicator=>update_indicator( value1 = conv #( class_name )
+                                              value2 = method_name ).
       data(prev_line_id) = sy-tabix.
       data(next_line_counter) = prev_line_id + 1.
 
@@ -294,10 +298,6 @@ class z_cohesion_calculator implementation.
         lack_of_cohesion-not_cohesive += cohesion_line-not_cohesive.
         lack_of_cohesion-cohesive += cohesion_line-cohesive.
       endwhile.
-*      cl_progress_indicator=>progress_indicate(
-*        i_text               = |{ class_name }-{ method_name }, { line_txt }: { sy-tabix }/{ lines( source_code ) }|
-*        i_output_immediately = abap_true
-*        i_total = 100 ).
     endloop.
   endmethod.
 

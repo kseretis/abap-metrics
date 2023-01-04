@@ -88,7 +88,7 @@ start-of-selection.
   flow_worker->call_standard_metrics_program( ).
 
   data(output) = new z_salv_output( ).
-  data(total_methods) = 0.
+  data(total) = 0.
   "retrieve the class and the source code from the memory and initialize the class references
   loop at classes_for_calculation reference into data(clas).
     memory_id = |{ z_class_manager=>c_prefix }_{ clas->class_name }|.
@@ -102,17 +102,20 @@ start-of-selection.
         new_class->set_methods( class_stamp ).
         clas->class_ref = new_class.
 
-        total_methods += lines( new_class->get_methods( ) ).
+        "calculate total lines per class
+        total += flow_worker->calc_total_lines_per_class( new_class ).
       catch cx_sy_itab_line_not_found.
+      catch zcx_flow_issue.
     endtry.
   endloop.
 
   "update total methods counter for the progress indicator bar
-  z_progress_indicator=>initialize_indicator( total_methods ).
+  z_progress_indicator=>initialize_indicator( total ).
 
   "create facade object and calculate metrics for each class reference found.
   "it's the core loop of the program
   loop at classes_for_calculation reference into clas.
+    data(count) = sy-tabix.
     try.
         data(metrics_facade) = new z_calc_metrics_facade( class_stamp         = clas->class_ref
                                                           static_object_calls = cb_cbo ).
