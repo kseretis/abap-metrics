@@ -3,7 +3,8 @@ class z_calc_metrics_facade definition public final create public.
   public section.
     methods constructor
       importing class_stamp         type ref to z_class
-                static_object_calls type abap_bool.
+                static_object_calls type abap_bool
+      raising   zcx_metrics_error.
     methods calculate_metrics
       importing export_cohesion_tab type abap_bool default abap_false.
 
@@ -18,6 +19,9 @@ endclass.
 class z_calc_metrics_facade implementation.
 
   method constructor.
+    if class_stamp is not bound.
+      raise exception new zcx_metrics_error( textid = zif_exception_messages=>no_class_found ).
+    endif.
     me->class_stamp = class_stamp.
     me->static_object_calls = static_object_calls.
   endmethod.
@@ -25,6 +29,10 @@ class z_calc_metrics_facade implementation.
   method calculate_metrics.
     try.
         loop at class_stamp->get_methods( ) reference into data(meth).
+          "update indicator
+          z_progress_indicator=>update_indicator( value1 = class_stamp->get_name( )
+                                                  value2 = meth->method->get_name( ) ).
+
           "calculate LoC
           data(loc_calculator) = new z_loc_calculator( meth->method->get_source_code( ) ).
           meth->method->set_lines_of_code( loc_calculator->calculate( ) ).

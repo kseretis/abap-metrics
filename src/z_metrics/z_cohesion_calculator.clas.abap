@@ -294,9 +294,10 @@ class z_cohesion_calculator implementation.
         lack_of_cohesion-not_cohesive += cohesion_line-not_cohesive.
         lack_of_cohesion-cohesive += cohesion_line-cohesive.
       endwhile.
-      cl_progress_indicator=>progress_indicate(
-        i_text               = |{ class_name }-{ method_name }, { line_txt }: { sy-tabix }/{ lines( source_code ) }|
-        i_output_immediately = abap_true ).
+*      cl_progress_indicator=>progress_indicate(
+*        i_text               = |{ class_name }-{ method_name }, { line_txt }: { sy-tabix }/{ lines( source_code ) }|
+*        i_output_immediately = abap_true
+*        i_total = 100 ).
     endloop.
   endmethod.
 

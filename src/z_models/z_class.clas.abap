@@ -2,7 +2,6 @@ class z_class definition public final create public.
 
   public section.
     types: begin of method_struct,
-*             name   type string,
              method type ref to z_method,
            end of method_struct.
     types methods_tab_type type standard table of method_struct with default key.

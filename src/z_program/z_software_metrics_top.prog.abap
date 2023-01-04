@@ -29,6 +29,7 @@ types classes_tab_type type standard table of class_struc.
 
 types: begin of classes_for_calc_struct,
          class_name type string,
+         class_ref type ref to z_class,
        end of classes_for_calc_struct.
 
 data parameters type standard table of rsparams.

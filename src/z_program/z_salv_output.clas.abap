@@ -55,7 +55,6 @@ class z_salv_output implementation.
     output->get_display_settings( )->set_striped_pattern( abap_true ).
     output->get_layout( )->set_key( value salv_s_layout_key( report = sy-repid ) ).
     output->get_layout( )->set_save_restriction( if_salv_c_layout=>restrict_none ).
-*    output->get_layout( )->set_initial_layout( default_layout ).
   endmethod.
 
   method set_default_layout.

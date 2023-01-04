@@ -38,31 +38,25 @@ start-of-selection.
     loop at s_pack reference into data(package).
       try.
           data(object_list) = flow_worker->get_package( conv #( package->low ) ).
-*          loop at object_list reference into data(temp_cl).
-*            insert value #( class_name = temp_cl->obj_name ) into table classes_for_calculation.
-*          endloop.
           classes_for_calculation = value #( for i in object_list ( class_name = i-obj_name ) ).
         catch zcx_flow_issue into data(flow_exception).
           continue.
       endtry.
     endloop.
 
-    "loop at select-option from screen and save the packages into parameters table
-    loop at s_pack reference into data(pack).
-      parameters = value #( base parameters ( selname = c_sel_name-package
-                                                  kind = c_kind-sel_opt
-                                                  sign = pack->sign
-                                                  option = pack->option
-                                                  low = pack->low ) ).
-    endloop.
-
-    loop at flow_worker->get_sub_packages( ) into data(sub_pack).
-      parameters = value #( base parameters ( selname = c_sel_name-package
-                                                kind = c_kind-sel_opt
-                                                sign = c_sign-inclu
-                                                option = c_option-equal
-                                                low = sub_pack ) ).
-    endloop.
+    "save the packages from selection-screen in parameters
+    parameters = value #( base parameters for j in s_pack ( selname = c_sel_name-package
+                                                              kind = c_kind-sel_opt
+                                                              sign = j-sign
+                                                              option = j-option
+                                                              low = j-low ) ).
+    "if the package is a super package then fetch the sub-packages
+    parameters = value #( base parameters for k in flow_worker->get_sub_packages( )
+                                                    ( selname = c_sel_name-package
+                                                      kind = c_kind-sel_opt
+                                                      sign = c_sign-inclu
+                                                      option = c_option-equal
+                                                      low = k ) ).
 
     "if it's going to be analyzed by class
   else.
@@ -94,11 +88,11 @@ start-of-selection.
   flow_worker->call_standard_metrics_program( ).
 
   data(output) = new z_salv_output( ).
-  "loop at the classes that the user asked for calculation
+  data(total_methods) = 0.
+  "retrieve the class and the source code from the memory and initialize the class references
   loop at classes_for_calculation reference into data(clas).
     memory_id = |{ z_class_manager=>c_prefix }_{ clas->class_name }|.
     class_stamp = z_class_manager=>import_from_memory( memory_id ).
-
     try.
         data(class_name) = class_stamp[ 1 ]-obj_name.
         data(class_package) = class_stamp[ 1 ]-devclass.
@@ -106,14 +100,25 @@ start-of-selection.
         data(new_class) = new z_class( name    = conv #( class_name )
                                        package = conv #( class_package ) ).
         new_class->set_methods( class_stamp ).
+        clas->class_ref = new_class.
 
-        data(metrics_facade) = new z_calc_metrics_facade( class_stamp         = new_class
+        total_methods += lines( new_class->get_methods( ) ).
+      catch cx_sy_itab_line_not_found.
+    endtry.
+  endloop.
+
+  "update total methods counter for the progress indicator bar
+  z_progress_indicator=>initialize_indicator( total_methods ).
+
+  "create facade object and calculate metrics for each class reference found.
+  "it's the core loop of the program
+  loop at classes_for_calculation reference into clas.
+    try.
+        data(metrics_facade) = new z_calc_metrics_facade( class_stamp         = clas->class_ref
                                                           static_object_calls = cb_cbo ).
         metrics_facade->calculate_metrics( cb_test ).
-        output->insert_methods_to_table( new_class ).
-      catch cx_sy_itab_line_not_found.
-      catch zcx_flow_issue.
-        "catch zcx_static_ks. TODO create exception class
+        output->insert_methods_to_table( clas->class_ref ).
+      catch zcx_metrics_error.
     endtry.
   endloop.
 

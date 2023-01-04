@@ -4,7 +4,7 @@
 class flow_worker definition create private.
 
   public section.
-    types object_list_tab_type type standard table of rseui_set with empty key.
+    types object_list_tab_type type standard table of rseui_set with default key.
     class-methods get_instance
       returning value(return) type ref to flow_worker.
 
@@ -31,6 +31,7 @@ class flow_worker definition create private.
       importing output        type ref to z_salv_output
       returning value(return) type abap_bool
       raising   zcx_flow_issue.
+    methods initialize_indicator.
     methods display_final_output
       raising zcx_flow_issue.
 
@@ -106,6 +107,8 @@ class flow_worker implementation.
 
     object_list_with_classes = object_list.
     delete object_list_with_classes where obj_type <> zif_metrics=>obj_type-clas.
+    sort object_list_with_classes ascending by obj_name.
+    delete adjacent duplicates from object_list_with_classes.
 
     "if one of the internal tables is empty the we create an error message
     if object_list is initial.
@@ -124,17 +127,15 @@ class flow_worker implementation.
   endmethod.
 
   method fetch_sub_packages.
-    data sub_packages type standard table of senvi.
-    call function 'REPOSITORY_ENVIRONMENT_SET'
-      exporting
-        obj_type    = conv seu_obj( zif_metrics=>obj_type-pack )
-        object_name = pack
-      tables
-        environment = sub_packages.
-    me->sub_packages = value #( base return for i in sub_packages
-                                    where ( type = zif_metrics=>obj_type-pack ) ( conv #( i-object ) ) ).
+    "fetch from db the sub-packages if they exist.
+    select devclass
+        from tdevc
+        into table @sub_packages
+        where parentcl = @pack.
+
+    "return the super package too
     return = value #( ( conv #( pack ) )
-                        ( lines of me->sub_packages ) ).
+                      ( lines of sub_packages ) ).
   endmethod.
 
   method get_sub_packages.
@@ -162,6 +163,13 @@ class flow_worker implementation.
     elseif me->output->is_table_empty( ) and is_class = abap_true.
       raise exception new zcx_flow_issue( textid = zif_exception_messages=>no_class ).
     endif.
+  endmethod.
+
+  method initialize_indicator.
+*    loop at classes_for_calculation reference into data(cl).
+*        cl->class_name
+*    endloop.
+*    z_progress_indicator=>initialize_indicator(  ).
   endmethod.
 
   method display_final_output.
