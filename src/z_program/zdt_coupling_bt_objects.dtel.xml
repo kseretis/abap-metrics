@@ -5,19 +5,19 @@
    <DD04V>
     <ROLLNAME>ZDT_COUPLING_BT_OBJECTS</ROLLNAME>
     <DDLANGUAGE>E</DDLANGUAGE>
-    <HEADLEN>10</HEADLEN>
-    <SCRLEN1>20</SCRLEN1>
-    <SCRLEN2>40</SCRLEN2>
-    <SCRLEN3>55</SCRLEN3>
+    <HEADLEN>55</HEADLEN>
+    <SCRLEN1>10</SCRLEN1>
+    <SCRLEN2>20</SCRLEN2>
+    <SCRLEN3>40</SCRLEN3>
     <DDTEXT>Abap metrics - coupling between objects</DDTEXT>
-    <REPTEXT>CBO</REPTEXT>
-    <SCRTEXT_S>Coupling b</SCRTEXT_S>
+    <REPTEXT>Coupling between objects</REPTEXT>
+    <SCRTEXT_S>CBO</SCRTEXT_S>
     <SCRTEXT_M>Coupling between obj</SCRTEXT_M>
     <SCRTEXT_L>Coupling between objects</SCRTEXT_L>
     <DTELMASTER>E</DTELMASTER>
     <DATATYPE>INT4</DATATYPE>
     <LENG>000010</LENG>
-    <OUTPUTLEN>000010</OUTPUTLEN>
+    <OUTPUTLEN>000011</OUTPUTLEN>
    </DD04V>
   </asx:values>
  </asx:abap>

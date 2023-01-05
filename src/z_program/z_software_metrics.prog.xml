@@ -127,15 +127,45 @@
     </item>
     <item>
      <ID>S</ID>
+     <KEY>CB_TEST</KEY>
+     <ENTRY>Test run</ENTRY>
+     <LENGTH>16</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>IS_CLASS</KEY>
+     <ENTRY>Analyze Class/Classes</ENTRY>
+     <LENGTH>29</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>IS_PACK</KEY>
+     <ENTRY>Analyze Package/Packages</ENTRY>
+     <LENGTH>32</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>RB_AVG</KEY>
+     <ENTRY>Average</ENTRY>
+     <LENGTH>15</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
      <KEY>RB_CLAS</KEY>
      <ENTRY>Calculate on Class Level</ENTRY>
-     <LENGTH>30</LENGTH>
+     <LENGTH>32</LENGTH>
     </item>
     <item>
      <ID>S</ID>
      <KEY>RB_METH</KEY>
      <ENTRY>Calculate on Method Level</ENTRY>
-     <LENGTH>32</LENGTH>
+     <LENGTH>33</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>RB_TOTAL</KEY>
+     <ENTRY>Total</ENTRY>
+     <LENGTH>15</LENGTH>
     </item>
     <item>
      <ID>S</ID>
@@ -147,30 +177,6 @@
      <ID>S</ID>
      <KEY>S_PACK</KEY>
      <ENTRY>Package</ENTRY>
-     <LENGTH>15</LENGTH>
-    </item>
-    <item>
-     <ID>S</ID>
-     <KEY>IS_PACK</KEY>
-     <ENTRY>Analyze Package/Packages</ENTRY>
-     <LENGTH>24</LENGTH>
-    </item>
-    <item>
-     <ID>S</ID>
-     <KEY>IS_CLASS</KEY>
-     <ENTRY>Analyze Class/Classes</ENTRY>
-     <LENGTH>21</LENGTH>
-    </item>
-    <item>
-     <ID>S</ID>
-     <KEY>RB_AVG</KEY>
-     <ENTRY>Average</ENTRY>
-     <LENGTH>15</LENGTH>
-    </item>
-    <item>
-     <ID>S</ID>
-     <KEY>RB_TOTAL</KEY>
-     <ENTRY>Total</ENTRY>
      <LENGTH>15</LENGTH>
     </item>
    </TPOOL>
