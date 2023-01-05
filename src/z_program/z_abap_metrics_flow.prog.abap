@@ -1,5 +1,5 @@
 *&---------------------------------------------------------------------*
-*& Include Z_SOFTWARE_METRICS_FLOW
+*& Include z_abap_metrics_flow
 *&---------------------------------------------------------------------*
 class flow_worker definition create private.
 

@@ -110,9 +110,12 @@ class z_cohesion_calculator definition public final create public inheriting fro
     methods build_cohesion_table
       returning value(return) type coh_tab.
 
-endclass.
+ENDCLASS.
 
-class z_cohesion_calculator implementation.
+
+
+CLASS Z_COHESION_CALCULATOR IMPLEMENTATION.
+
 
   method constructor.
     super->constructor( scan_type   = zif_metrics=>scan_type-simple
@@ -124,6 +127,7 @@ class z_cohesion_calculator implementation.
     lack_of_cohesion-lcom2 = lcom2.
   endmethod.
 
+
   method calculate.
     clean_source_code( abap_true ).
     set_local_vars_n_tokens_ids( ).
@@ -132,6 +136,7 @@ class z_cohesion_calculator implementation.
     return = cond #( when lack_of_cohesion-not_cohesive - lack_of_cohesion-cohesive < 0
                         then 0 else lack_of_cohesion-not_cohesive - lack_of_cohesion-cohesive ).
   endmethod.
+
 
   method calculate_cohesion.
     data(is_cohesive) = abap_false.
@@ -166,6 +171,7 @@ class z_cohesion_calculator implementation.
       cohesion_line-not_cohesive = zif_metrics=>cohesive_value.
     endif.
   endmethod.
+
 
   method set_local_vars_n_tokens_ids.
     data(is_nextone_a_variable) = abap_false.
@@ -207,6 +213,7 @@ class z_cohesion_calculator implementation.
     endloop.
   endmethod.
 
+
   method search_next_for_variable.
     return = abap_false.
     loop at tokens assigning field-symbol(<token>).
@@ -217,6 +224,7 @@ class z_cohesion_calculator implementation.
       endif.
     endloop.
   endmethod.
+
 
   method search_next_for_parenthesis.
     return = abap_false.
@@ -229,6 +237,7 @@ class z_cohesion_calculator implementation.
     endloop.
   endmethod.
 
+
   method search_next_for_keyword.
     try.
         return = cond #( when line_exists( tokens[ str = keywords->get_close_keyword( keyword )
@@ -239,6 +248,7 @@ class z_cohesion_calculator implementation.
     endtry.
   endmethod.
 
+
   method is_last_char_parenthesis.
     try.
         data(length) = strlen( token ) - 1.
@@ -247,6 +257,7 @@ class z_cohesion_calculator implementation.
       catch cx_sy_range_out_of_bounds.
     endtry.
   endmethod.
+
 
   method are_parenthesis_ids_same.
     return = abap_false.
@@ -259,6 +270,7 @@ class z_cohesion_calculator implementation.
       endtry.
     endloop.
   endmethod.
+
 
   method analyze_source_code.
     data(source_code) = get_cleaned_source_code( ).
@@ -301,6 +313,7 @@ class z_cohesion_calculator implementation.
     endloop.
   endmethod.
 
+
   method contains_key_word.
     return = abap_false.
     loop at tokens assigning field-symbol(<token>).
@@ -315,6 +328,7 @@ class z_cohesion_calculator implementation.
     endloop.
   endmethod.
 
+
   method get_keyword_id.
     return = cond #( when keywords->is_open_keyword( token )
                             then line_id
@@ -322,6 +336,7 @@ class z_cohesion_calculator implementation.
                             then get_latest_keyword_id( )
                        else 0 ).
   endmethod.
+
 
   method get_parenthesis_ids.
     if is_method_call( token ).
@@ -344,6 +359,7 @@ class z_cohesion_calculator implementation.
     endif.
   endmethod.
 
+
   method is_method_call.
     "for instance method call or static
     return = cond #(
@@ -353,6 +369,7 @@ class z_cohesion_calculator implementation.
          or contains( val = token sub = zif_metrics=>method_call-static )
          then abap_true else abap_false ).
   endmethod.
+
 
   method is_method_closing.
     try.
@@ -364,16 +381,19 @@ class z_cohesion_calculator implementation.
     endtry.
   endmethod.
 
+
   method contains_open_parenthesis.
     return = cond #( when contains( val = token sub = zif_metrics=>symbols-parenthesis_open )
                         then abap_true else abap_false ).
   endmethod.
+
 
   method contains_parenthesis.
     return = cond #( when contains( val = token sub = zif_metrics=>symbols-parenthesis_open )
                               or contains( val = token sub = zif_metrics=>symbols-parenthesis_close )
                           then abap_true else abap_false ).
   endmethod.
+
 
   method get_lines_tokens_with_ids.
     return = tokens.
@@ -382,6 +402,7 @@ class z_cohesion_calculator implementation.
     delete adjacent duplicates from return comparing str.
     sort return ascending by line_id.
   endmethod.
+
 
   method get_latest_keyword_id.
     sort tokens descending by line_id.
@@ -392,6 +413,7 @@ class z_cohesion_calculator implementation.
     endloop.
     sort tokens ascending by line_id.
   endmethod.
+
 
   method get_latest_parenthesis_id.
     data(found) = abap_false.
@@ -411,6 +433,7 @@ class z_cohesion_calculator implementation.
     sort tokens ascending by line_id.
   endmethod.
 
+
   method build_cohesion_table.
     data(source_code) = get_cleaned_source_code( ).
     loop at source_code assigning field-symbol(<line>).
@@ -428,10 +451,15 @@ class z_cohesion_calculator implementation.
     endloop.
   endmethod.
 
+
   method export_cohesion_table.
-    constants base type string value 'C:\Users\kseretis\OneDrive - Deloitte (O365D)\Documents\Thesis\test results\'.
+    CONSTANTS dialog_title type string value 'Chose destination folder'.
     constants name type string value 'test_results'.
-    constants suffix type string value '.xlsx'.
+    constants extension type string value 'xlsx'.
+
+    data filename type string.
+    data path type string.
+    data fullpath type string.
 
     types: begin of tmp_cohesion_struct,
              previous_line type string,
@@ -440,6 +468,16 @@ class z_cohesion_calculator implementation.
              cohesive      type i,
            end of tmp_cohesion_struct,
            tmp_cohesion_tab_type type standard table of tmp_cohesion_struct with empty key.
+
+  cl_gui_frontend_services=>file_save_dialog(
+    exporting
+      window_title              = dialog_title
+      default_extension         = extension
+    default_file_name = name
+  CHANGING
+    filename                  = filename
+    path                      = path
+    fullpath                  = fullpath ).
 
     data(coh_tab) = build_cohesion_table( ).
     loop at coh_tab assigning field-symbol(<line>).
@@ -455,11 +493,11 @@ class z_cohesion_calculator implementation.
 
     cl_gui_frontend_services=>gui_download(
       exporting
-        filename     = |{ base }{ name }_{ method_name }{ suffix }|
+*        filename     = |{ base }{ name }_{ method_name }{ suffix }|
+        filename     = |{ path }{ name }_{ method_name }.{ extension }|
         filetype     = 'BIN'
         bin_filesize = xstrlen( bin_data )
       changing
         data_tab     = raw_data ).
   endmethod.
-
-endclass.
+ENDCLASS.

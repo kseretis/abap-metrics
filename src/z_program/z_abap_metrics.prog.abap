@@ -1,13 +1,13 @@
 *&---------------------------------------------------------------------*
-*& Report z_software_metrics
+*& Program z_abap_metrics
 *&---------------------------------------------------------------------*
 *&
 *&---------------------------------------------------------------------*
-report z_software_metrics.
+program z_abap_metrics.
 
-include z_software_metrics_top.
-include z_software_metrics_screen.
-include z_software_metrics_flow.
+include z_abap_metrics_top.
+include z_abap_metrics_screen.
+include z_abap_metrics_flow.
 
 initialization.
 

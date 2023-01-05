@@ -1,5 +1,5 @@
 *&---------------------------------------------------------------------*
-*& Include Z_SOFWARE_METRICS_TOP
+*& Include z_abap_metrics_top
 *&---------------------------------------------------------------------*
 tables: tadir, seoclass.
 constants: begin of c_sel_name,
@@ -29,7 +29,7 @@ types classes_tab_type type standard table of class_struc.
 
 types: begin of classes_for_calc_struct,
          class_name type string,
-         class_ref type ref to z_class,
+         class_ref  type ref to z_class,
        end of classes_for_calc_struct.
 
 data parameters type standard table of rsparams.
