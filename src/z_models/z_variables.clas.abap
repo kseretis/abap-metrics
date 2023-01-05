@@ -165,7 +165,7 @@ class z_variables implementation.
         parameters = value #( for a in cl_oo_class=>get_instance( class_name )->method_parameters
                                 ( parameter_name = conv #( a-sconame )
                                   method_name = conv #( a-cmpname ) ) ).
-      catch cx_class_not_existent.
+      catch cx_class_not_existent ##NO_HANDLER.
     endtry.
   endmethod.
 

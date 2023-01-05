@@ -57,22 +57,22 @@ class z_class implementation.
   endmethod.
 
   method get_method.
-    loop at methods reference into data(meth).
-      if name = meth->method->get_name( ).
-        return = meth->method.
+    loop at methods assigning field-symbol(<meth>).
+      if name = <meth>-method->get_name( ).
+        return = <meth>-method.
         return.
       endif.
     endloop.
     raise exception new zcx_flow_issue( textid = zif_exception_messages=>method_not_found
-                                     value = name ).
+                                        value = name ).
   endmethod.
 
   method set_methods.
-    loop at unstructred_methods reference into data(meth).
-      data(method) = new z_method( name        = conv #( meth->sub_name )
-                                   source_code = meth->source ).
-      method->set_full_name( meth->sobj_name ).
-      insert value #( name = meth->sub_name
+    loop at unstructred_methods assigning field-symbol(<meth>).
+      data(method) = new z_method( name        = conv #( <meth>-sub_name )
+                                   source_code = <meth>-source ).
+      method->set_full_name( <meth>-sobj_name ).
+      insert value #( name = <meth>-sub_name
                       method = method ) into table methods.
     endloop.
   endmethod.

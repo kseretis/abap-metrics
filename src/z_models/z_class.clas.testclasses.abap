@@ -5,11 +5,12 @@ class z_class_test definition final for testing duration short risk level harmle
     data instance type ref to z_class.
     data unstruct_methods type z_class_manager=>class_stamp_tab_type.
     data exp_methods type z_class=>methods_tab_type.
+    data method1 type ref to z_method.
+    data method2 type ref to z_method.
 
     methods setup.
     methods get_name for testing.
     methods get_package for testing.
-    methods set_methods for testing.
     methods get_methods for testing.
     methods get_method for testing.
 
@@ -21,42 +22,31 @@ class z_class_test implementation.
     instance = new #( name    = 'Unit_class'
                       package = 'ZUNIT' ).
 
-    data unstruct_method1 type z_class_manager=>class_stamp_struct.
-    data unstruct_method2 type z_class_manager=>class_stamp_struct.
-
-
-    unstruct_method1 = value #( sub_name = 'unit_method1'
-                                source = value #( ( `METHOD unit_method1.` )
+    unstruct_methods = value #( ( sub_name = 'unit_method1'
+                                  source = value #( ( `METHOD unit_method1.` )
                                                     ( `` )
                                                     ( `z_class_test=>call_test_method( ).` )
                                                     ( `` )
-                                                    ( `ENDMETHOD.` ) ) ).
-
-    unstruct_method2 = value #( sub_name = 'unit_method2'
-                                source = value #( ( `METHOD unit_method2.` )
+                                                    ( `ENDMETHOD.` ) ) )
+                                ( sub_name = 'unit_method2'
+                                  source = value #( ( `METHOD unit_method2.` )
                                                     ( `` )
                                                     ( `z_class_test=>call_test_method( ).` )
                                                     ( `` )
-                                                    ( `ENDMETHOD.` ) ) ).
+                                                    ( `ENDMETHOD.` ) ) ) ).
 
-    insert unstruct_method1 into table unstruct_methods.
-    insert unstruct_method2 into table unstruct_methods.
+    instance->set_methods( unstruct_methods ).
 
-    data(method1) = new z_method( name        = 'unit_method1'
-                                  source_code = value #( ( `METHOD unit_method1.` )
-                                                         ( `` )
-                                                         ( `z_class_test=>call_test_method( ).` )
-                                                         ( `` )
-                                                         ( `ENDMETHOD.` ) ) ).
-    data(method2) = new z_method( name        = 'unit_method2'
-                                  source_code = value #( ( `METHOD unit_method2.` )
-                                                         ( `` )
-                                                         ( `z_class_test=>call_test_method( ).` )
-                                                         ( `` )
-                                                         ( `ENDMETHOD.` ) ) ).
+    method1 = new z_method( name        = 'unit_method1'
+                            source_code = corresponding #( unstruct_methods[ 1 ]-source ) ).
 
-    exp_methods = value #( ( method = method1 )
-                           ( method = method2 ) ).
+    method2 = new z_method( name        = 'unit_method2'
+                            source_code = corresponding #( unstruct_methods[ 2 ]-source ) ).
+
+    exp_methods = value #( ( name = method1->get_name( )
+                             method = method1 )
+                           ( name = method2->get_name( )
+                             method = method2 ) ).
   endmethod.
 
   method get_name.
@@ -69,35 +59,21 @@ class z_class_test implementation.
                                         exp = 'ZUNIT' ).
   endmethod.
 
-  method set_methods.
-    instance->set_methods( unstruct_methods ).
-    try.
-        data(methods) = instance->get_methods( ).
-        cl_abap_unit_assert=>assert_equals( act = methods
-                                            exp = exp_methods ).
-      catch zcx_flow_issue.
-    endtry.
-  endmethod.
-
   method get_methods.
     try.
         instance->set_methods( unstruct_methods ).
-        data(methods) = instance->get_methods( ).
-        cl_abap_unit_assert=>assert_equals( act = methods
-                                            exp = exp_methods ).
-      catch zcx_flow_issue.
+        data(meths) = instance->get_methods( ).
+        cl_abap_unit_assert=>assert_equals( act = meths[ 2 ]-method->get_name( )
+                                            exp = method2->get_name( ) ).
+      catch zcx_flow_issue ##NO_HANDLER.
     endtry.
   endmethod.
 
   method get_method.
     try.
-        instance->set_methods( unstruct_methods ).
-        data(exp_method) = exp_methods[ 1 ].
-        data(method) = instance->get_method( 'unit_method1' ).
-        cl_abap_unit_assert=>assert_equals( act = method
-                                            exp = exp_method ).
-      catch cx_sy_itab_line_not_found.
-      catch zcx_flow_issue.
+        cl_abap_unit_assert=>assert_equals( act = instance->get_method( 'unit_method1' )->get_name( )
+                                            exp = exp_methods[ 1 ]-method->get_name( ) ).
+      catch zcx_flow_issue ##NO_HANDLER.
     endtry.
   endmethod.
 

@@ -2,8 +2,6 @@
 class z_method_test definition final for testing duration short risk level harmless.
 
   private section.
-    data name type string.
-    data source_code type rswsourcet.
     data instance type ref to z_method.
     methods setup.
     methods get_name for testing.

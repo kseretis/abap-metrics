@@ -71,7 +71,7 @@ class z_calc_metrics_facade_test implementation.
   endmethod.
 
   method complex_weighted.
-    cl_abap_unit_assert=>assert_equals( act = meth->get_complex_weighted_by_decisi( )
+    cl_abap_unit_assert=>assert_equals( act = meth->get_complex_decision_depth( )
                                         exp = 2 ).
   endmethod.
 

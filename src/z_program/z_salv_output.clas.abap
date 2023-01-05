@@ -127,7 +127,7 @@ class z_salv_output implementation.
                                             number_of_pragmas = meth->method->get_number_of_pragmas( )
                                             number_of_authors = meth->method->get_number_of_authors( )
                                             complexity_of_conditions = meth->method->get_complexity_of_conditions( )
-                                            complex_weighted_by_decision = meth->method->get_complex_weighted_by_decisi( )
+                                            complex_weighted_by_decision = meth->method->get_complex_decision_depth( )
                                             lack_of_cohesion = meth->method->get_lack_of_cohesion( )
                                             coupling_between_object = meth->method->get_coupling_between_obj( ) ) ).
         endloop.
