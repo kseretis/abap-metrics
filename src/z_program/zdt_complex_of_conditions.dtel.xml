@@ -5,19 +5,19 @@
    <DD04V>
     <ROLLNAME>ZDT_COMPLEX_OF_CONDITIONS</ROLLNAME>
     <DDLANGUAGE>E</DDLANGUAGE>
-    <HEADLEN>10</HEADLEN>
-    <SCRLEN1>20</SCRLEN1>
-    <SCRLEN2>40</SCRLEN2>
-    <SCRLEN3>55</SCRLEN3>
+    <HEADLEN>55</HEADLEN>
+    <SCRLEN1>10</SCRLEN1>
+    <SCRLEN2>20</SCRLEN2>
+    <SCRLEN3>40</SCRLEN3>
     <DDTEXT>Abap metrics - complexity of conditions</DDTEXT>
-    <REPTEXT>COM</REPTEXT>
-    <SCRTEXT_S>Complex of cond</SCRTEXT_S>
-    <SCRTEXT_M>Complexity of condit</SCRTEXT_M>
-    <SCRTEXT_L>Complexity of conditions(AND, OR)</SCRTEXT_L>
+    <REPTEXT>Complexity of conditions(AND, OR)</REPTEXT>
+    <SCRTEXT_S>COM</SCRTEXT_S>
+    <SCRTEXT_M>Complexity of cond</SCRTEXT_M>
+    <SCRTEXT_L>Complexity of conditions</SCRTEXT_L>
     <DTELMASTER>E</DTELMASTER>
     <DATATYPE>INT4</DATATYPE>
     <LENG>000010</LENG>
-    <OUTPUTLEN>000010</OUTPUTLEN>
+    <OUTPUTLEN>000011</OUTPUTLEN>
    </DD04V>
   </asx:values>
  </asx:abap>

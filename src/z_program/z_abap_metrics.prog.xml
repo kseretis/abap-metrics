@@ -3,9 +3,10 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <PROGDIR>
-    <NAME>Z_SOFTWARE_METRICS</NAME>
+    <NAME>Z_ABAP_METRICS</NAME>
     <DBAPL>S</DBAPL>
     <SUBC>1</SUBC>
+    <RLOAD>E</RLOAD>
     <FIXPT>X</FIXPT>
     <LDBNAME>D$S</LDBNAME>
     <UCCHECK>X</UCCHECK>
@@ -116,7 +117,7 @@
     </item>
     <item>
      <ID>R</ID>
-     <ENTRY>Calculates software metrics</ENTRY>
+     <ENTRY>Abap metrics program</ENTRY>
      <LENGTH>27</LENGTH>
     </item>
     <item>
@@ -127,15 +128,45 @@
     </item>
     <item>
      <ID>S</ID>
+     <KEY>CB_TEST</KEY>
+     <ENTRY>Test run</ENTRY>
+     <LENGTH>16</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>IS_CLASS</KEY>
+     <ENTRY>Analyze Class/Classes</ENTRY>
+     <LENGTH>29</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>IS_PACK</KEY>
+     <ENTRY>Analyze Package/Packages</ENTRY>
+     <LENGTH>32</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>RB_AVG</KEY>
+     <ENTRY>Average</ENTRY>
+     <LENGTH>15</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
      <KEY>RB_CLAS</KEY>
      <ENTRY>Calculate on Class Level</ENTRY>
-     <LENGTH>30</LENGTH>
+     <LENGTH>32</LENGTH>
     </item>
     <item>
      <ID>S</ID>
      <KEY>RB_METH</KEY>
      <ENTRY>Calculate on Method Level</ENTRY>
-     <LENGTH>32</LENGTH>
+     <LENGTH>33</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>RB_TOTAL</KEY>
+     <ENTRY>Total</ENTRY>
+     <LENGTH>15</LENGTH>
     </item>
     <item>
      <ID>S</ID>
@@ -147,30 +178,6 @@
      <ID>S</ID>
      <KEY>S_PACK</KEY>
      <ENTRY>Package</ENTRY>
-     <LENGTH>15</LENGTH>
-    </item>
-    <item>
-     <ID>S</ID>
-     <KEY>IS_PACK</KEY>
-     <ENTRY>Analyze Package/Packages</ENTRY>
-     <LENGTH>24</LENGTH>
-    </item>
-    <item>
-     <ID>S</ID>
-     <KEY>IS_CLASS</KEY>
-     <ENTRY>Analyze Class/Classes</ENTRY>
-     <LENGTH>21</LENGTH>
-    </item>
-    <item>
-     <ID>S</ID>
-     <KEY>RB_AVG</KEY>
-     <ENTRY>Average</ENTRY>
-     <LENGTH>15</LENGTH>
-    </item>
-    <item>
-     <ID>S</ID>
-     <KEY>RB_TOTAL</KEY>
-     <ENTRY>Total</ENTRY>
      <LENGTH>15</LENGTH>
     </item>
    </TPOOL>

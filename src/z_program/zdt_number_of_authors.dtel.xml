@@ -5,19 +5,19 @@
    <DD04V>
     <ROLLNAME>ZDT_NUMBER_OF_AUTHORS</ROLLNAME>
     <DDLANGUAGE>E</DDLANGUAGE>
-    <HEADLEN>10</HEADLEN>
-    <SCRLEN1>20</SCRLEN1>
-    <SCRLEN2>40</SCRLEN2>
-    <SCRLEN3>55</SCRLEN3>
+    <HEADLEN>55</HEADLEN>
+    <SCRLEN1>10</SCRLEN1>
+    <SCRLEN2>20</SCRLEN2>
+    <SCRLEN3>40</SCRLEN3>
     <DDTEXT>Abap metrics - number of authors</DDTEXT>
-    <REPTEXT>Auths</REPTEXT>
-    <SCRTEXT_S>Number of authors</SCRTEXT_S>
+    <REPTEXT>Number of authors</REPTEXT>
+    <SCRTEXT_S>Auths</SCRTEXT_S>
     <SCRTEXT_M>Number of authors</SCRTEXT_M>
     <SCRTEXT_L>Number of authors</SCRTEXT_L>
     <DTELMASTER>E</DTELMASTER>
     <DATATYPE>INT4</DATATYPE>
     <LENG>000010</LENG>
-    <OUTPUTLEN>000010</OUTPUTLEN>
+    <OUTPUTLEN>000011</OUTPUTLEN>
    </DD04V>
   </asx:values>
  </asx:abap>

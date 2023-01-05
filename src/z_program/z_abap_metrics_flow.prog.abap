@@ -1,10 +1,10 @@
 *&---------------------------------------------------------------------*
-*& Include Z_SOFTWARE_METRICS_FLOW
+*& Include z_abap_metrics_flow
 *&---------------------------------------------------------------------*
 class flow_worker definition create private.
 
   public section.
-    types object_list_tab_type type standard table of rseui_set with empty key.
+    types object_list_tab_type type standard table of rseui_set with default key.
     class-methods get_instance
       returning value(return) type ref to flow_worker.
 
@@ -30,6 +30,10 @@ class flow_worker definition create private.
     methods check_if_table_is_empty
       importing output        type ref to z_salv_output
       returning value(return) type abap_bool
+      raising   zcx_flow_issue.
+    methods calc_total_lines_per_class
+      importing clas          type ref to z_class
+      returning value(return) type i
       raising   zcx_flow_issue.
     methods display_final_output
       raising zcx_flow_issue.
@@ -106,6 +110,8 @@ class flow_worker implementation.
 
     object_list_with_classes = object_list.
     delete object_list_with_classes where obj_type <> zif_metrics=>obj_type-clas.
+    sort object_list_with_classes ascending by obj_name.
+    delete adjacent duplicates from object_list_with_classes.
 
     "if one of the internal tables is empty the we create an error message
     if object_list is initial.
@@ -124,17 +130,15 @@ class flow_worker implementation.
   endmethod.
 
   method fetch_sub_packages.
-    data sub_packages type standard table of senvi.
-    call function 'REPOSITORY_ENVIRONMENT_SET'
-      exporting
-        obj_type    = conv seu_obj( zif_metrics=>obj_type-pack )
-        object_name = pack
-      tables
-        environment = sub_packages.
-    me->sub_packages = value #( base return for i in sub_packages
-                                    where ( type = zif_metrics=>obj_type-pack ) ( conv #( i-object ) ) ).
+    "fetch from db the sub-packages if they exist.
+    select devclass
+        from tdevc
+        into table @sub_packages
+        where parentcl = @pack.
+
+    "return the super package too
     return = value #( ( conv #( pack ) )
-                        ( lines of me->sub_packages ) ).
+                      ( lines of sub_packages ) ).
   endmethod.
 
   method get_sub_packages.
@@ -162,6 +166,16 @@ class flow_worker implementation.
     elseif me->output->is_table_empty( ) and is_class = abap_true.
       raise exception new zcx_flow_issue( textid = zif_exception_messages=>no_class ).
     endif.
+  endmethod.
+
+  method calc_total_lines_per_class.
+    loop at clas->get_methods( ) reference into data(meth).
+      "calculate LoC
+      data(loc_calculator) = new z_loc_calculator( meth->method->get_source_code( ) ).
+      meth->method->set_lines_of_code( loc_calculator->calculate( ) ).
+      "return the loc - the first and last line
+      return += meth->method->get_lines_of_code( ) - 2.
+    endloop.
   endmethod.
 
   method display_final_output.

@@ -1,5 +1,5 @@
 *&---------------------------------------------------------------------*
-*& Include Z_SOFTWARE_METRICS_SCREEN
+*& Include z_abap_metrics_screen
 *&---------------------------------------------------------------------*
 selection-screen begin of block b1 with frame title text-001.
 
@@ -22,8 +22,14 @@ selection-screen end of block b1.
 selection-screen begin of block b2 with frame title text-002.
   parameters: rb_meth radiobutton group rbg1 default 'X',
               rb_clas radiobutton group rbg1.
-  parameters: cb_cbo  as checkbox default abap_false,
-              cb_test as checkbox default abap_false.
+  parameters cb_cbo  as checkbox default abap_false.
+
+  selection-screen begin of line.
+    selection-screen comment 20(12) for field cb_test.
+    parameters cb_test as checkbox default abap_false.
+    selection-screen comment 38(60) com1.
+  selection-screen end of line.
+
 selection-screen end of block b2.
 
 selection-screen begin of block b3 with frame title text-003.
@@ -32,6 +38,7 @@ selection-screen begin of block b3 with frame title text-003.
 selection-screen end of block b3.
 
 at selection-screen output.
+  com1 = 'Export cohesion table(xlsx) - It might take much more time!'.
   loop at screen.
     if screen-name = 'S_PACK-LOW'.
       screen-input = cond #( when is_pack = abap_true then 1 else 0 ).

@@ -2,7 +2,7 @@ class z_class definition public final create public.
 
   public section.
     types: begin of method_struct,
-*             name   type string,
+             name   type string,
              method type ref to z_method,
            end of method_struct.
     types methods_tab_type type standard table of method_struct with default key.
@@ -72,7 +72,8 @@ class z_class implementation.
       data(method) = new z_method( name        = conv #( meth->sub_name )
                                    source_code = meth->source ).
       method->set_full_name( meth->sobj_name ).
-      insert value #( method = method ) into table methods.
+      insert value #( name = meth->sub_name
+                      method = method ) into table methods.
     endloop.
   endmethod.
 
