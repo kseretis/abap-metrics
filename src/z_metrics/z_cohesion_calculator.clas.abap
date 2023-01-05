@@ -52,6 +52,8 @@ class z_cohesion_calculator definition public final create public inheriting fro
     data variables type ref to z_variables.
     data tokens type token_with_id_tab_type.
     data lack_of_cohesion type lcom2_struct.
+    data path type string.
+    data path_memory_id type c length 60 value 'path_memory_id'.
 
     methods calculate_cohesion
       changing cohesion_line type cohesion_struct.
@@ -110,11 +112,11 @@ class z_cohesion_calculator definition public final create public inheriting fro
     methods build_cohesion_table
       returning value(return) type coh_tab.
 
-ENDCLASS.
+endclass.
 
 
 
-CLASS Z_COHESION_CALCULATOR IMPLEMENTATION.
+class z_cohesion_calculator implementation.
 
 
   method constructor.
@@ -453,13 +455,9 @@ CLASS Z_COHESION_CALCULATOR IMPLEMENTATION.
 
 
   method export_cohesion_table.
-    CONSTANTS dialog_title type string value 'Chose destination folder'.
+    constants dialog_title type string value 'Chose destination folder'.
     constants name type string value 'test_results'.
     constants extension type string value 'xlsx'.
-
-    data filename type string.
-    data path type string.
-    data fullpath type string.
 
     types: begin of tmp_cohesion_struct,
              previous_line type string,
@@ -469,15 +467,26 @@ CLASS Z_COHESION_CALCULATOR IMPLEMENTATION.
            end of tmp_cohesion_struct,
            tmp_cohesion_tab_type type standard table of tmp_cohesion_struct with empty key.
 
-  cl_gui_frontend_services=>file_save_dialog(
-    exporting
-      window_title              = dialog_title
-      default_extension         = extension
-    default_file_name = name
-  CHANGING
-    filename                  = filename
-    path                      = path
-    fullpath                  = fullpath ).
+    data filename type string.
+    data fullpath type string.
+
+    "get from cache the path
+    import path_memory to path from memory id path_memory_id.
+
+    if path is initial.
+      "if path is initial, get the destination from the dialog
+      cl_gui_frontend_services=>file_save_dialog(
+        exporting
+          window_title      = dialog_title
+          default_extension = extension
+          default_file_name = name
+        changing
+          filename          = filename
+          path              = path
+          fullpath          = fullpath ).
+      "save to cache the path
+      export path_memory from path to memory id path_memory_id.
+    endif.
 
     data(coh_tab) = build_cohesion_table( ).
     loop at coh_tab assigning field-symbol(<line>).
@@ -486,18 +495,20 @@ CLASS Z_COHESION_CALCULATOR IMPLEMENTATION.
 
     data(tmp_cohesion_tab) = corresponding tmp_cohesion_tab_type( coh_tab ).
 
+    "create xlsx file based on cohesion table
     data(bin_data) = cl_fdt_xl_spreadsheet=>if_fdt_doc_spreadsheet~create_document(
       itab         = ref #( tmp_cohesion_tab )
       iv_call_type = if_fdt_doc_spreadsheet=>gc_call_dec_table ).
     data(raw_data) = cl_bcs_convert=>xstring_to_solix( iv_xstring = bin_data ).
 
+    "export the xlsx file
     cl_gui_frontend_services=>gui_download(
       exporting
-*        filename     = |{ base }{ name }_{ method_name }{ suffix }|
         filename     = |{ path }{ name }_{ method_name }.{ extension }|
         filetype     = 'BIN'
         bin_filesize = xstrlen( bin_data )
       changing
         data_tab     = raw_data ).
   endmethod.
-ENDCLASS.
+
+endclass.
