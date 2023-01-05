@@ -17,7 +17,7 @@ class zcx_flow_issue definition public inheriting from cx_static_check final cre
   protected section.
 
   private section.
-    data value type i.
+    data value type string ##NEEDED.
 
 endclass.
 

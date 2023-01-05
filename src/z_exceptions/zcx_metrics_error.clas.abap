@@ -17,7 +17,8 @@ class zcx_metrics_error definition public inheriting from cx_static_check final 
   protected section.
 
   private section.
-    data value type string.
+    data value type string ##NEEDED.
+
 endclass.
 
 class zcx_metrics_error implementation.

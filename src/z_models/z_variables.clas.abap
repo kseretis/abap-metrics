@@ -100,6 +100,7 @@ class z_variables implementation.
   endmethod.
 
   method contains_variable.
+    "check the merged table if contains the token passed
     return = abap_false.
     loop at get_merged_variables( ) assigning field-symbol(<variable>).
       if token cs |({ <variable> })| or token cs |@{ <variable> }|

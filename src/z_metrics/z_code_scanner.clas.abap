@@ -88,7 +88,7 @@ class z_code_scanner implementation.
           if first_char <> '"' and first_char <> '*' .
             insert <line> into table cleaned_source_code.
           endif.
-        catch cx_sy_range_out_of_bounds.
+        catch cx_sy_range_out_of_bounds ##NO_HANDLER.
       endtry.
     endloop.
     "re-calculate tokens and statements based on the cleaned source_code

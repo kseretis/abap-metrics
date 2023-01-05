@@ -74,7 +74,7 @@ class z_calc_metrics_facade implementation.
               ex->display_exception( ).
           endtry.
         endloop.
-      catch zcx_flow_issue.
+      catch zcx_flow_issue ##NO_HANDLER.
     endtry.
   endmethod.
 
