@@ -456,7 +456,7 @@ class z_cohesion_calculator implementation.
 
   method export_cohesion_table.
     constants dialog_title type string value 'Chose destination folder'.
-    constants name type string value 'test_results'.
+    constants name type string value 'cohesion_tab'.
     constants extension type string value 'xlsx'.
 
     types: begin of tmp_cohesion_struct,
@@ -504,7 +504,7 @@ class z_cohesion_calculator implementation.
     "export the xlsx file
     cl_gui_frontend_services=>gui_download(
       exporting
-        filename     = |{ path }{ name }_{ method_name }.{ extension }|
+        filename     = |{ path }{ name }_{ class_name }-{ method_name }.{ extension }|
         filetype     = 'BIN'
         bin_filesize = xstrlen( bin_data )
       changing

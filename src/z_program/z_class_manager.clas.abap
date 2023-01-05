@@ -27,7 +27,6 @@ class z_class_manager definition public final create private.
       importing class_stamp_id type memory_id_type
       returning value(return)  type class_stamp_tab_type.
 
-
   protected section.
 
   private section.

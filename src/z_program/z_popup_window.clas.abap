@@ -53,16 +53,18 @@ class z_popup_window implementation.
     "set title
     output->get_display_settings( )->set_list_header( zif_popup_window=>title ).
 
-    "set header label
-    data(header) = new cl_salv_form_layout_grid( ).
-    data(header_label) = header->create_label( row = 1 column = 1 ).
-    header_label->set_text( zif_popup_window=>header-title ).
-
     "set header text
-    data(header_text) = header->create_flow( row = 2 column = 1 ).
-    header_text->create_text( text = zif_popup_window=>header-text ).
+    data(header) = new cl_salv_form_layout_grid( ).
+    data(header_text) = header->create_label( row = 1 column = 1 ).
+    header_text->set_text( zif_popup_window=>header ).
+
+    "set footer text
+    data(footer) = new cl_salv_form_layout_grid( ).
+    data(footer_text) = footer->create_label( row = 1 column = 1 ).
+    footer_text->set_text( zif_popup_window=>footer ).
 
     output->set_top_of_list( header ).
+    output->set_end_of_list( footer ).
 
     "optimize
     output->get_columns( )->set_optimize( abap_true ).

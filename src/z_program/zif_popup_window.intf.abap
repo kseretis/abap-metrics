@@ -6,7 +6,7 @@ interface zif_popup_window public.
              end of answers.
 
   constants: begin of screen_status,
-               program type syrepid value 'Z_SOFTWARE_METRICS',
+               program type syrepid value 'Z_ABAP_METRICS',
                status  type sypfkey value 'POPUP_WINDOW',
              end of screen_status.
 
@@ -17,10 +17,8 @@ interface zif_popup_window public.
 
   constants title type lvc_title value 'Error messages'.
 
-  constants: begin of header,
-               title type string value 'There was some issue/issues with the following objects.',
-               text  type string value 'If you want to continue without their calculation, press OK.',
-             end of header.
+  constants header type string value 'The objects bellow couldn''t be found!'.
+  constants footer type string value 'Do you want to continue without their analysis?'.
 
   constants: begin of window_size,
                start_column type i value 1,
