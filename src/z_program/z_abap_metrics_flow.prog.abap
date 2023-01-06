@@ -157,7 +157,11 @@ class flow_worker implementation.
       packs = value #( base packs
                        ( lines of tmp_packs ) ).
     endwhile.
+    "return all packages
     return = value #( for i in packs ( i-pack ) ).
+    "set only sub-packages
+    delete packs where pack = pack.
+    sub_packages = value #( for i in packs ( i-pack ) ).
   endmethod.
 
   method fetch_sub_packages.
