@@ -5,6 +5,12 @@ class flow_worker definition final create private.
 
   public section.
     types object_list_tab_type type standard table of rseui_set with default key.
+    types: begin of package_struct,
+             pack    type string,
+             checked type abap_bool,
+           end of package_struct.
+    types package_tab_type type standard table of package_struct with default key.
+
     class-methods get_instance
       returning value(return) type ref to flow_worker.
 
@@ -46,9 +52,9 @@ class flow_worker definition final create private.
 
     methods fetch_sub_packages
       importing pack          type sobj_name
-      returning value(return) type table_of_strings.
+      returning value(return) type package_tab_type.
     methods retrieve_sub_packages
-      importing pack          type string
+      importing pack          type sobj_name
       returning value(return) type table_of_strings.
 
 endclass.
@@ -95,10 +101,7 @@ class flow_worker implementation.
     data object_list_with_classes like object_list.
 
     "if the package is a super package then we retrieve the child packages
-
-
-    data(packages) = retrieve_sub_packages( pack ).
-
+    data(packages) = retrieve_sub_packages( conv #( pack ) ).
 
     loop at packages assigning field-symbol(<pack>).
       data tmp_object_list like object_list.
@@ -134,25 +137,35 @@ class flow_worker implementation.
   endmethod.
 
   method retrieve_sub_packages.
-    field-symbols <packages> type table_of_strings.
-    insert pack into table <packages>.
+    data tmp_packs type package_tab_type.
 
-    loop at <packages> assigning field-symbol(<package>).
-        <packages> = fetch_sub_packages( conv #( <package> ) ).
-    endloop.
+    "scan super package for sub-packages
+    data(packs) = value package_tab_type( ( pack = pack
+                                            checked = abap_true )
+                                          ( lines of fetch_sub_packages( pack ) ) ).
 
+    "while there are lines that haven't been checked yet, keep scanning
+    while line_exists( packs[ checked = abap_false ] ).
+      clear tmp_packs.
+      loop at packs assigning field-symbol(<package>) where checked = abap_false.
+        tmp_packs = value #( base tmp_packs
+                            ( lines of fetch_sub_packages( conv #( <package>-pack ) ) ) ).
+        <package>-checked = abap_true.
+      endloop.
+
+      "update packages table
+      packs = value #( base packs
+                       ( lines of tmp_packs ) ).
+    endwhile.
+    return = value #( for i in packs ( i-pack ) ).
   endmethod.
 
   method fetch_sub_packages.
     "fetch from db the sub-packages if they exist.
-    select devclass
+    select devclass as pack, @abap_false as checked
         from tdevc                                    "#EC CI_SGLSELECT
-        into table @sub_packages
+        into corresponding fields of table @return
         where parentcl = @pack.
-
-    "return the super package too
-    return = value #( ( conv #( pack ) )
-                      ( lines of sub_packages ) ).
   endmethod.
 
   method get_sub_packages.
