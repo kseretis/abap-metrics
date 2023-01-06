@@ -39,7 +39,7 @@ class z_code_scanner_factory_test implementation.
     data(scan_results) = z_code_scanner_factory=>factory( scan_type   = zif_metrics=>scan_type-simple
                                                           source_code = source_code ).
     try.
-        data(value) = scan_results-tokens[ str = '"first comment' ].
+       data(value) = scan_results-tokens[ str = '"first comment' ] ##NEEDED.
       catch cx_sy_itab_line_not_found into data(ex).
         cl_abap_unit_assert=>assert_not_initial( ex ).
     endtry.
@@ -67,7 +67,7 @@ class z_code_scanner_factory_test implementation.
     data(scan_results) = z_code_scanner_factory=>factory( scan_type   = zif_metrics=>scan_type-with_keywords_depth
                                                           source_code = source_code ).
     try.
-        data(value) = scan_results-tokens[ str = 'CHECK' ].
+        data(value) = scan_results-tokens[ str = 'CHECK' ] ##NEEDED.
       catch cx_sy_itab_line_not_found into data(ex).
         cl_abap_unit_assert=>assert_not_initial( ex ).
     endtry.

@@ -91,7 +91,7 @@ class z_code_scanner_factory implementation.
   endmethod.
 
   method scan_with_keywords.
-    data structures_tab type standard table of sstruc.
+    data structures_tab type standard table of sstruc ##NEEDED.
     initialize_keywords( scan_type ).
     scan abap-source source_code
         keywords   from keywords

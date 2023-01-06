@@ -110,7 +110,7 @@ start-of-selection.
   endloop.
 
   "update total methods counter for the progress indicator bar
-  z_progress_indicator=>initialize_indicator( total ).
+  z_progress_indicator=>get_instance( )->initialize_indicator( total ).
 
   "create facade object and calculate metrics for each class reference found.
   "it's the core loop of the program

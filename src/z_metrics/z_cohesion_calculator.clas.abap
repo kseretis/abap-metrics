@@ -32,8 +32,8 @@ class z_cohesion_calculator definition public final create public inheriting fro
              cohesive     type i,
            end of lcom2_struct.
 
-    constants lcom2 type string value 'LCOM2'.
-    constants line_txt type string value 'Line'.
+    constants lcom2 type string value 'LCOM2' ##NO_TEXT.
+    constants line_txt type string value 'Line' ##NO_TEXT.
 
     methods constructor
       importing class_name  type seoclsname
@@ -53,7 +53,7 @@ class z_cohesion_calculator definition public final create public inheriting fro
     data tokens type token_with_id_tab_type.
     data lack_of_cohesion type lcom2_struct.
     data path type string.
-    data path_memory_id type c length 60 value 'path_memory_id'.
+    data path_memory_id type c length 60 value 'path_memory_id' ##NO_TEXT.
 
     methods calculate_cohesion
       changing cohesion_line type cohesion_struct.
@@ -210,7 +210,7 @@ class z_cohesion_calculator implementation.
                 or <token>-str cs zif_metrics=>local_declaration-field_symbol.
             variables->append_variable( variables->clear_inline_variable( <token>-str ) ).
           endif.
-        catch cx_sy_range_out_of_bounds.
+        catch cx_sy_range_out_of_bounds ##NO_HANDLER.
       endtry.
     endloop.
   endmethod.
@@ -256,7 +256,7 @@ class z_cohesion_calculator implementation.
         data(length) = strlen( token ) - 1.
         return = cond #( when substring( val = token off = length len = 1 ) = zif_metrics=>symbols-parenthesis_open
                             then abap_true else abap_false ).
-      catch cx_sy_range_out_of_bounds.
+      catch cx_sy_range_out_of_bounds ##NO_HANDLER.
     endtry.
   endmethod.
 
@@ -279,9 +279,13 @@ class z_cohesion_calculator implementation.
 
     loop at source_code assigning field-symbol(<line>).
 
-      "update progress indicator
-      z_progress_indicator=>update_indicator( value1 = conv #( class_name )
-                                              value2 = method_name ).
+      try.
+          "update progress indicator
+          z_progress_indicator=>get_instance( )->update_indicator( value1 = conv #( class_name )
+                                                                   value2 = method_name ).
+        catch zcx_flow_issue into data(ex).
+          ex->display_exception( ).
+      endtry.
       data(prev_line_id) = sy-tabix.
       data(next_line_counter) = prev_line_id + 1.
 
@@ -453,11 +457,10 @@ class z_cohesion_calculator implementation.
     endloop.
   endmethod.
 
-
   method export_cohesion_table.
-    constants dialog_title type string value 'Chose destination folder'.
-    constants name type string value 'cohesion_tab'.
-    constants extension type string value 'xlsx'.
+    constants dialog_title type string value 'Chose destination folder' ##NO_TEXT.
+    constants name type string value 'cohesion_tab' ##NO_TEXT.
+    constants extension type string value 'xlsx' ##NO_TEXT.
 
     types: begin of tmp_cohesion_struct,
              previous_line type string,

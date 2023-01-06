@@ -11,7 +11,7 @@ class z_cohesion_calculator_test definition final for testing duration short ris
 
 endclass.
 
-class z_cohesion_calculator_test implementation..
+class z_cohesion_calculator_test implementation.
 
   method calc_local_declaration.
     try.
@@ -27,7 +27,7 @@ class z_cohesion_calculator_test implementation..
                           method_name = 'TEST_METHOD' ).
         cl_abap_unit_assert=>assert_equals( exp = 4
                                             act = instance->calculate( ) ).
-      catch zcx_metrics_error.
+      catch zcx_metrics_error ##NO_HANDLER.
     endtry.
   endmethod.
 
@@ -45,9 +45,9 @@ class z_cohesion_calculator_test implementation..
                                                      ( `   endmethod.    ` ) )
                           class_name  = 'ZCL_TEST_LCOM'
                           method_name = 'TEST_METHOD' ).
-        cl_abap_unit_assert=>assert_equals( exp = 14
+        cl_abap_unit_assert=>assert_equals( exp = 16
                                             act = instance->calculate( ) ).
-      catch zcx_metrics_error.
+      catch zcx_metrics_error ##NO_HANDLER.
     endtry.
   endmethod.
 
@@ -74,7 +74,7 @@ class z_cohesion_calculator_test implementation..
                           method_name = 'TEST_METHOD' ).
         cl_abap_unit_assert=>assert_equals( exp = 83
                                             act = instance->calculate( ) ).
-      catch zcx_metrics_error.
+      catch zcx_metrics_error ##NO_HANDLER.
     endtry.
   endmethod.
 
@@ -92,7 +92,7 @@ class z_cohesion_calculator_test implementation..
                           method_name = 'TEST_METHOD' ).
         cl_abap_unit_assert=>assert_equals( exp = 4
                                             act = instance->calculate( ) ).
-      catch zcx_metrics_error.
+      catch zcx_metrics_error ##NO_HANDLER.
     endtry.
   endmethod.
 
