@@ -6,21 +6,19 @@ interface zif_popup_window public.
              end of answers.
 
   constants: begin of screen_status,
-               program type syrepid value 'Z_SOFTWARE_METRICS',
+               program type syrepid value 'Z_ABAP_METRICS',
                status  type sypfkey value 'POPUP_WINDOW',
              end of screen_status.
 
   constants: begin of labels,
-               object  type scrtext_l value 'Package/Class',
-               message type scrtext_l value 'Message',
+               object  type scrtext_l value 'Package/Class' ##NO_TEXT,
+               message type scrtext_l value 'Message' ##NO_TEXT,
              end of labels.
 
-  constants title type lvc_title value 'Error messages'.
+  constants title type lvc_title value 'Error messages' ##NO_TEXT.
 
-  constants: begin of header,
-               title type string value 'There was some issue/issues with the following objects.',
-               text  type string value 'If you want to continue without their calculation, press OK.',
-             end of header.
+  constants header type string value 'The objects bellow couldn''t be found!' ##NO_TEXT.
+  constants footer type string value 'Do you want to continue without their analysis?' ##NO_TEXT.
 
   constants: begin of window_size,
                start_column type i value 1,

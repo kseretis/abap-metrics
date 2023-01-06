@@ -32,9 +32,9 @@ class z_metrics definition public create public.
     methods set_number_of_authors
       importing value type i.
 
-    methods get_complex_weighted_by_decisi
+    methods get_complex_decision_depth
       returning value(return) type i.
-    methods set_complex_weighted_by_decisi
+    methods set_complex_decision_depth
       importing value type i.
 
     methods get_coupling_between_obj
@@ -56,7 +56,7 @@ class z_metrics definition public create public.
     data number_of_pragmas type i.
     data complexity_of_conditions type i.
     data number_of_authors type i.
-    data complex_weighted_by_decision type i.
+    data complex_decision_depth type i.
     data lack_of_cohesion type i.
     data coupling_between_object type i.
 
@@ -112,12 +112,12 @@ class z_metrics implementation.
     me->number_of_authors = value.
   endmethod.
 
-  method get_complex_weighted_by_decisi.
-    return = complex_weighted_by_decision.
+  method get_complex_decision_depth.
+    return = complex_decision_depth.
   endmethod.
 
-  method set_complex_weighted_by_decisi.
-    me->complex_weighted_by_decision = value.
+  method set_complex_decision_depth.
+    me->complex_decision_depth = value.
   endmethod.
 
   method get_coupling_between_obj.

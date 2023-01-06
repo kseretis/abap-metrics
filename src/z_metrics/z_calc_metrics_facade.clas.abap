@@ -49,7 +49,7 @@ class z_calc_metrics_facade implementation.
 
           "calculate complex weighted by decision
           data(decision_depth) = new z_decision_depth_calculator( meth->method->get_source_code( ) ).
-          meth->method->set_complex_weighted_by_decisi( decision_depth->calculate( ) ).
+          meth->method->set_complex_decision_depth( decision_depth->calculate( ) ).
 
           "calculate coupling between objects
           data(coupling) = new z_cbo_calculator( source_code         = meth->method->get_source_code( )
@@ -74,7 +74,7 @@ class z_calc_metrics_facade implementation.
               ex->display_exception( ).
           endtry.
         endloop.
-      catch zcx_flow_issue.
+      catch zcx_flow_issue ##NO_HANDLER.
     endtry.
   endmethod.
 

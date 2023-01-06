@@ -100,6 +100,7 @@ class z_variables implementation.
   endmethod.
 
   method contains_variable.
+    "check the merged table if contains the token passed
     return = abap_false.
     loop at get_merged_variables( ) assigning field-symbol(<variable>).
       if token cs |({ <variable> })| or token cs |@{ <variable> }|
@@ -165,7 +166,7 @@ class z_variables implementation.
         parameters = value #( for a in cl_oo_class=>get_instance( class_name )->method_parameters
                                 ( parameter_name = conv #( a-sconame )
                                   method_name = conv #( a-cmpname ) ) ).
-      catch cx_class_not_existent.
+      catch cx_class_not_existent ##NO_HANDLER.
     endtry.
   endmethod.
 

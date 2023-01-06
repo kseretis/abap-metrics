@@ -20,9 +20,8 @@ class z_noc_calculator implementation.
   endmethod.
 
   method calculate.
-    loop at get_tokens( ) reference into data(token)
-        where type = zif_metrics=>token_type-comment
-            or type = zif_metrics=>token_type-pragma.
+    loop at get_tokens( ) reference into data(token) ##NEEDED
+        where type = zif_metrics=>token_type-comment or type = zif_metrics=>token_type-pragma.
       comments += 1.
     endloop.
     return = comments.

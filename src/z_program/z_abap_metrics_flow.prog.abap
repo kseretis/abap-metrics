@@ -1,10 +1,16 @@
 *&---------------------------------------------------------------------*
 *& Include z_abap_metrics_flow
 *&---------------------------------------------------------------------*
-class flow_worker definition create private.
+class flow_worker definition final create private.
 
   public section.
     types object_list_tab_type type standard table of rseui_set with default key.
+    types: begin of package_struct,
+             pack    type string,
+             checked type abap_bool,
+           end of package_struct.
+    types package_tab_type type standard table of package_struct with default key.
+
     class-methods get_instance
       returning value(return) type ref to flow_worker.
 
@@ -38,8 +44,6 @@ class flow_worker definition create private.
     methods display_final_output
       raising zcx_flow_issue.
 
-  protected section.
-
   private section.
     class-data instance type ref to flow_worker.
     data popup type ref to z_popup_window.
@@ -47,6 +51,9 @@ class flow_worker definition create private.
     data sub_packages type table_of_strings.
 
     methods fetch_sub_packages
+      importing pack          type sobj_name
+      returning value(return) type package_tab_type.
+    methods retrieve_sub_packages
       importing pack          type sobj_name
       returning value(return) type table_of_strings.
 
@@ -94,7 +101,7 @@ class flow_worker implementation.
     data object_list_with_classes like object_list.
 
     "if the package is a super package then we retrieve the child packages
-    data(packages) = fetch_sub_packages( conv #( pack ) ).
+    data(packages) = retrieve_sub_packages( conv #( pack ) ).
 
     loop at packages assigning field-symbol(<pack>).
       data tmp_object_list like object_list.
@@ -129,16 +136,40 @@ class flow_worker implementation.
     return = object_list_with_classes.
   endmethod.
 
+  method retrieve_sub_packages.
+    data tmp_packs type package_tab_type.
+
+    "scan super package for sub-packages
+    data(packs) = value package_tab_type( ( pack = pack
+                                            checked = abap_true )
+                                          ( lines of fetch_sub_packages( pack ) ) ).
+
+    "while there are lines that haven't been checked yet, keep scanning
+    while line_exists( packs[ checked = abap_false ] ).
+      clear tmp_packs.
+      loop at packs assigning field-symbol(<package>) where checked = abap_false.
+        tmp_packs = value #( base tmp_packs
+                            ( lines of fetch_sub_packages( conv #( <package>-pack ) ) ) ).
+        <package>-checked = abap_true.
+      endloop.
+
+      "update packages table
+      packs = value #( base packs
+                       ( lines of tmp_packs ) ).
+    endwhile.
+    "return all packages
+    return = value #( for i in packs ( i-pack ) ).
+    "set only sub-packages
+    delete packs where pack = pack.
+    sub_packages = value #( for i in packs ( i-pack ) ).
+  endmethod.
+
   method fetch_sub_packages.
     "fetch from db the sub-packages if they exist.
-    select devclass
-        from tdevc
-        into table @sub_packages
+    select devclass as pack, @abap_false as checked
+        from tdevc                                    "#EC CI_SGLSELECT
+        into corresponding fields of table @return
         where parentcl = @pack.
-
-    "return the super package too
-    return = value #( ( conv #( pack ) )
-                      ( lines of sub_packages ) ).
   endmethod.
 
   method get_sub_packages.
@@ -155,7 +186,7 @@ class flow_worker implementation.
 
   method call_standard_metrics_program.
     "call main metrics program and extract the data
-    submit /sdf/cd_custom_code_metric exporting list to memory
+    submit /sdf/cd_custom_code_metric exporting list to memory "#EC CI_SUBMIT
         with selection-table parameters and return.
   endmethod.
 
