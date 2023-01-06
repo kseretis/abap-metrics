@@ -18,7 +18,7 @@ class z_class_manager definition public final create private.
     types class_stamp_tab_type type standard table of class_stamp_struct with default key.
     types memory_id_type(60) type c.
 
-    constants c_prefix type string value 'CLASS'.
+    constants prefix type string value 'CLASS' ##NEEDED.
 
     class-methods export_to_memory
       importing class_stamp type class_stamp_tab_type.
@@ -53,15 +53,15 @@ class z_class_manager implementation.
   endmethod.
 
   method is_exported.
-    data existing_in_memory type class_stamp_tab_type.
+    data existing_in_memory type class_stamp_tab_type ##NEEDED.
     import exporting_object to existing_in_memory from memory id memory_id.
     return = cond #( when sy-subrc = 0 then abap_true else abap_false ).
   endmethod.
 
   method set_memory_id.
     try.
-        memory_id = |{ c_prefix }_{ class_stamp[ 1 ]-obj_name }|.
-      catch cx_sy_itab_line_not_found.
+        memory_id = |{ prefix }_{ class_stamp[ 1 ]-obj_name }|.
+      catch cx_sy_itab_line_not_found ##NO_HANDLER.
     endtry.
   endmethod.
 

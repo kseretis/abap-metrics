@@ -70,7 +70,7 @@ start-of-selection.
                                                        option = cl->option
                                                        low = cl->low ) ).
           insert value #( class_name = cl->low ) into table classes_for_calculation.
-        catch cx_class_not_existent into data(no_class_ex).
+        catch cx_class_not_existent ##NO_HANDLER.
           message s006(z_messages) into data(msg).
           flow_worker->add_popup_message( obj = conv #( cl->low )
                                           msg = msg ).
@@ -91,7 +91,7 @@ start-of-selection.
   data(total) = 0.
   "retrieve the class and the source code from the memory and initialize the class references
   loop at classes_for_calculation reference into data(clas).
-    memory_id = |{ z_class_manager=>c_prefix }_{ clas->class_name }|.
+    memory_id = |{ z_class_manager=>prefix }_{ clas->class_name }|.
     class_stamp = z_class_manager=>import_from_memory( memory_id ).
     try.
         data(class_name) = class_stamp[ 1 ]-obj_name.
@@ -104,8 +104,8 @@ start-of-selection.
 
         "calculate total lines per class
         total += flow_worker->calc_total_lines_per_class( new_class ).
-      catch cx_sy_itab_line_not_found.
-      catch zcx_flow_issue.
+      catch cx_sy_itab_line_not_found ##NO_HANDLER.
+      catch zcx_flow_issue ##NO_HANDLER.
     endtry.
   endloop.
 
@@ -115,13 +115,12 @@ start-of-selection.
   "create facade object and calculate metrics for each class reference found.
   "it's the core loop of the program
   loop at classes_for_calculation reference into clas.
-    data(count) = sy-tabix.
     try.
         data(metrics_facade) = new z_calc_metrics_facade( class_stamp         = clas->class_ref
                                                           static_object_calls = cb_cbo ).
         metrics_facade->calculate_metrics( cb_test ).
         output->insert_methods_to_table( clas->class_ref ).
-      catch zcx_metrics_error.
+      catch zcx_metrics_error ##NO_HANDLER.
     endtry.
   endloop.
 

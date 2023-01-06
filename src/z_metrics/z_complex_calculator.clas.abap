@@ -20,7 +20,7 @@ class z_complex_calculator implementation.
   endmethod.
 
   method calculate.
-    loop at get_tokens( ) reference into data(token)
+    loop at get_tokens( ) reference into data(token) ##NEEDED
         where str = zif_metrics=>tokens-or or str = zif_metrics=>tokens-and.
       com_sum += 1.
     endloop.

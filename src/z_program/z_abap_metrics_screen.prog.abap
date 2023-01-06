@@ -20,7 +20,7 @@ selection-screen begin of block b1 with frame title text-001.
 selection-screen end of block b1.
 
 selection-screen begin of block b2 with frame title text-002.
-  parameters: rb_meth radiobutton group rbg1 default 'X',
+  parameters: rb_meth radiobutton group rbg1 default 'X' ##NEEDED,
               rb_clas radiobutton group rbg1.
   parameters cb_cbo  as checkbox default abap_false.
 
@@ -34,11 +34,12 @@ selection-screen end of block b2.
 
 selection-screen begin of block b3 with frame title text-003.
   parameters: rb_total radiobutton group rbg3 default 'X',
-              rb_avg   radiobutton group rbg3.
+              rb_avg   radiobutton group rbg3 ##NEEDED.
 selection-screen end of block b3.
 
 at selection-screen output.
-  com1 = 'Export cohesion table(xlsx) - It might take much more time!'.
+  "TO DELETE
+  com1 = 'Export cohesion table(xlsx) - It might take much more time!' ##NO_TEXT.
   loop at screen.
     if screen-name = 'S_PACK-LOW'.
       screen-input = cond #( when is_pack = abap_true then 1 else 0 ).

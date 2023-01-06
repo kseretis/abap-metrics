@@ -11,14 +11,14 @@ interface zif_popup_window public.
              end of screen_status.
 
   constants: begin of labels,
-               object  type scrtext_l value 'Package/Class',
-               message type scrtext_l value 'Message',
+               object  type scrtext_l value 'Package/Class' ##NO_TEXT,
+               message type scrtext_l value 'Message' ##NO_TEXT,
              end of labels.
 
-  constants title type lvc_title value 'Error messages'.
+  constants title type lvc_title value 'Error messages' ##NO_TEXT.
 
-  constants header type string value 'The objects bellow couldn''t be found!'.
-  constants footer type string value 'Do you want to continue without their analysis?'.
+  constants header type string value 'The objects bellow couldn''t be found!' ##NO_TEXT.
+  constants footer type string value 'Do you want to continue without their analysis?' ##NO_TEXT.
 
   constants: begin of window_size,
                start_column type i value 1,

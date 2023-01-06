@@ -12,7 +12,7 @@ class z_salv_output definition public final create public.
       raising zcx_flow_issue.
     methods display.
     methods set_default_layout
-      importing is_calc_by_class type abap_bool
+      importing is_calc_by_class     type abap_bool
                 is_aggregation_total type abap_bool
       raising   zcx_flow_issue.
 
@@ -27,8 +27,8 @@ class z_salv_output definition public final create public.
       importing is_calc_by_class type abap_bool
       raising   zcx_flow_issue.
     methods set_aggregations
-        importing is_aggregation_total type abap_bool
-      raising zcx_flow_issue.
+      importing is_aggregation_total type abap_bool
+      raising   zcx_flow_issue.
     methods raise_build_failed_exception
       raising zcx_flow_issue.
 
@@ -115,24 +115,21 @@ class z_salv_output implementation.
   endmethod.
 
   method insert_methods_to_table.
-    try.
-        loop at class_stamp->get_methods( ) reference into data(meth).
-          results_table = value #( base results_table
-                                          ( class_name = class_stamp->get_name( )
-                                            package_name = class_stamp->get_package( )
-                                            method_name = meth->method->get_name( )
-                                            lines_of_code = meth->method->get_lines_of_code( )
-                                            number_of_statements = meth->method->get_number_of_statements( )
-                                            number_of_comments = meth->method->get_number_of_comments( )
-                                            number_of_pragmas = meth->method->get_number_of_pragmas( )
-                                            number_of_authors = meth->method->get_number_of_authors( )
-                                            complexity_of_conditions = meth->method->get_complexity_of_conditions( )
-                                            complex_weighted_by_decision = meth->method->get_complex_decision_depth( )
-                                            lack_of_cohesion = meth->method->get_lack_of_cohesion( )
-                                            coupling_between_object = meth->method->get_coupling_between_obj( ) ) ).
-        endloop.
-      catch zcx_flow_issue.
-    endtry.
+    loop at class_stamp->get_methods( ) reference into data(meth).
+      results_table = value #( base results_table
+                                      ( class_name = class_stamp->get_name( )
+                                        package_name = class_stamp->get_package( )
+                                        method_name = meth->method->get_name( )
+                                        lines_of_code = meth->method->get_lines_of_code( )
+                                        number_of_statements = meth->method->get_number_of_statements( )
+                                        number_of_comments = meth->method->get_number_of_comments( )
+                                        number_of_pragmas = meth->method->get_number_of_pragmas( )
+                                        number_of_authors = meth->method->get_number_of_authors( )
+                                        complexity_of_conditions = meth->method->get_complexity_of_conditions( )
+                                        complex_weighted_by_decision = meth->method->get_complex_decision_depth( )
+                                        lack_of_cohesion = meth->method->get_lack_of_cohesion( )
+                                        coupling_between_object = meth->method->get_coupling_between_obj( ) ) ).
+    endloop.
   endmethod.
 
   method is_table_empty.

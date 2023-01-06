@@ -46,8 +46,8 @@ class z_popup_window implementation.
         "change columns' labels
         output->get_columns( )->get_column( 'OBJECT' )->set_long_text( zif_popup_window=>labels-object ).
         output->get_columns( )->get_column( 'MESSAGE' )->set_long_text( zif_popup_window=>labels-message ).
-      catch cx_salv_msg.
-      catch cx_salv_not_found.
+      catch cx_salv_msg ##NO_HANDLER.
+      catch cx_salv_not_found ##NO_HANDLER.
     endtry.
 
     "set title

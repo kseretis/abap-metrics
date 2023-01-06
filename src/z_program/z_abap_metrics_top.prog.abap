@@ -22,10 +22,9 @@ constants: begin of c_option,
              not_equal type string value 'NE',
            end of c_option.
 
-types: begin of class_struc,
-         class type ref to z_class,
-       end of class_struc.
-types classes_tab_type type standard table of class_struc.
+*types: begin of class_struc,
+*         class type ref to z_class,
+*       end of class_struc.
 
 types: begin of classes_for_calc_struct,
          class_name type string,

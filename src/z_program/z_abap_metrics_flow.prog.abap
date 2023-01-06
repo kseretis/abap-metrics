@@ -1,7 +1,7 @@
 *&---------------------------------------------------------------------*
 *& Include z_abap_metrics_flow
 *&---------------------------------------------------------------------*
-class flow_worker definition create private.
+class flow_worker definition final create private.
 
   public section.
     types object_list_tab_type type standard table of rseui_set with default key.
@@ -37,8 +37,6 @@ class flow_worker definition create private.
       raising   zcx_flow_issue.
     methods display_final_output
       raising zcx_flow_issue.
-
-  protected section.
 
   private section.
     class-data instance type ref to flow_worker.
@@ -132,7 +130,7 @@ class flow_worker implementation.
   method fetch_sub_packages.
     "fetch from db the sub-packages if they exist.
     select devclass
-        from tdevc
+        from tdevc                                    "#EC CI_SGLSELECT
         into table @sub_packages
         where parentcl = @pack.
 
@@ -155,7 +153,7 @@ class flow_worker implementation.
 
   method call_standard_metrics_program.
     "call main metrics program and extract the data
-    submit /sdf/cd_custom_code_metric exporting list to memory
+    submit /sdf/cd_custom_code_metric exporting list to memory "#EC CI_SUBMIT
         with selection-table parameters and return.
   endmethod.
 
