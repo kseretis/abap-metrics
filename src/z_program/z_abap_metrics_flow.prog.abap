@@ -47,6 +47,9 @@ class flow_worker definition final create private.
     methods fetch_sub_packages
       importing pack          type sobj_name
       returning value(return) type table_of_strings.
+    methods retrieve_sub_packages
+      importing pack          type string
+      returning value(return) type table_of_strings.
 
 endclass.
 
@@ -92,7 +95,10 @@ class flow_worker implementation.
     data object_list_with_classes like object_list.
 
     "if the package is a super package then we retrieve the child packages
-    data(packages) = fetch_sub_packages( conv #( pack ) ).
+
+
+    data(packages) = retrieve_sub_packages( pack ).
+
 
     loop at packages assigning field-symbol(<pack>).
       data tmp_object_list like object_list.
@@ -125,6 +131,16 @@ class flow_worker implementation.
     endif.
 
     return = object_list_with_classes.
+  endmethod.
+
+  method retrieve_sub_packages.
+    field-symbols <packages> type table_of_strings.
+    insert pack into table <packages>.
+
+    loop at <packages> assigning field-symbol(<package>).
+        <packages> = fetch_sub_packages( conv #( <package> ) ).
+    endloop.
+
   endmethod.
 
   method fetch_sub_packages.

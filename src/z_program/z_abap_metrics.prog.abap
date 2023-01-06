@@ -121,6 +121,7 @@ start-of-selection.
         metrics_facade->calculate_metrics( cb_test ).
         output->insert_methods_to_table( clas->class_ref ).
       catch zcx_metrics_error ##NO_HANDLER.
+      catch zcx_flow_issue ##NO_HANDLER.
     endtry.
   endloop.
 
