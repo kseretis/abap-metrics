@@ -81,7 +81,7 @@ class z_popup_window implementation.
   endmethod.
 
   method has_messages.
-    return = cond #( when messages is initial then abap_false else abap_true ).
+    return = xsdbool(  messages is not initial ).
   endmethod.
 
   method on_click_handler.

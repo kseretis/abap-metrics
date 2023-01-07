@@ -133,7 +133,7 @@ class z_salv_output implementation.
   endmethod.
 
   method is_table_empty.
-    return = cond #( when results_table is initial then abap_true else abap_false ).
+    return = xsdbool( results_table is initial ).
   endmethod.
 
   method display.

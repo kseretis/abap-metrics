@@ -45,21 +45,19 @@ class z_keywords implementation.
   endmethod.
 
   method is_keyword.
-    return = cond #( when line_exists( keywords[ open = keyword ] ) or line_exists( keywords[ close = keyword ] )
-        then abap_true else abap_false ).
+    return = xsdbool( line_exists( keywords[ open = keyword ] ) or line_exists( keywords[ close = keyword ] ) ).
   endmethod.
 
   method is_open_keyword.
-    return = cond #( when line_exists( keywords[ open = keyword ] ) then abap_true else abap_false ).
+    return = xsdbool( line_exists( keywords[ open = keyword ] ) ).
   endmethod.
 
   method is_close_keyword.
-    return = cond #( when line_exists( keywords[ close = keyword ] ) then abap_true else abap_false ).
+    return = xsdbool( line_exists( keywords[ close = keyword ] ) ).
   endmethod.
 
   method are_matching.
-    return = cond #( when line_exists( keywords[ open = open_keyword close = close_keyword ] )
-        then abap_true else abap_false ).
+    return = xsdbool( line_exists( keywords[ open = open_keyword close = close_keyword ] ) ).
   endmethod.
 
   method get_close_keyword.

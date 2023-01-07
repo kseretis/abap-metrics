@@ -87,16 +87,15 @@ class z_variables implementation.
                                     then substring_after( val = variable
                                                           sub = zif_metrics=>this )
                                     else variable ).
-    return = cond #( when line_exists( attributes[ table_line = tmp_variable ] ) then abap_true else abap_false ).
+    return = xsdbool( line_exists( attributes[ table_line = tmp_variable ] ) ).
   endmethod.
 
   method is_local_variable.
-    return = cond #( when line_exists( local_variables[ table_line = variable ] ) then abap_true else abap_false ).
+    return = xsdbool( line_exists( local_variables[ table_line = variable ] ) ).
   endmethod.
 
   method is_parameter.
-    return = cond #( when line_exists( parameters[ method_name = method_name parameter_name = variable ] )
-                        then abap_true else abap_false ).
+    return = xsdbool( line_exists( parameters[ method_name = method_name parameter_name = variable ] ) ).
   endmethod.
 
   method contains_variable.

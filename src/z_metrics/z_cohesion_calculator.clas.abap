@@ -187,8 +187,7 @@ class z_cohesion_calculator implementation.
                                        type = <token>-type
                                        keyword_id = get_keyword_id( token = <token>-str
                                                                     line_id = line_number )
-                                       is_keyword_matched = cond #( when keywords->is_close_keyword( <token>-str )
-                                                                    then abap_true else abap_false )
+                                       is_keyword_matched = xsdbool( keywords->is_close_keyword( <token>-str ) )
                                        parenthesis_ids = get_parenthesis_ids( token   = <token>-str
                                                                               line_id = line_number ) ) ).
       line_number += 1.
@@ -242,9 +241,8 @@ class z_cohesion_calculator implementation.
 
   method search_next_for_keyword.
     try.
-        return = cond #( when line_exists( tokens[ str = keywords->get_close_keyword( keyword )
-                                                   keyword_id = keyword_id ] )
-           then abap_true else abap_false ).
+        return = xsdbool( line_exists( tokens[ str = keywords->get_close_keyword( keyword )
+                                               keyword_id = keyword_id ] ) ).
       catch zcx_metrics_error.
         return = abap_false.
     endtry.
@@ -254,8 +252,7 @@ class z_cohesion_calculator implementation.
   method is_last_char_parenthesis.
     try.
         data(length) = strlen( token ) - 1.
-        return = cond #( when substring( val = token off = length len = 1 ) = zif_metrics=>symbols-parenthesis_open
-                            then abap_true else abap_false ).
+        return = xsdbool( substring( val = token off = length len = 1 ) = zif_metrics=>symbols-parenthesis_open ).
       catch cx_sy_range_out_of_bounds ##NO_HANDLER.
     endtry.
   endmethod.
@@ -265,8 +262,7 @@ class z_cohesion_calculator implementation.
     return = abap_false.
     loop at prev_parenthesis_ids assigning field-symbol(<prev>).
       try.
-          return = cond #( when line_exists( next_parenthesis_ids[ parenthesis_id = <prev>-parenthesis_id ] )
-                              then abap_true else abap_false ).
+          return = xsdbool( line_exists( next_parenthesis_ids[ parenthesis_id = <prev>-parenthesis_id ] ) ).
         catch cx_sy_itab_line_not_found.
           return = abap_false.
       endtry.
@@ -368,36 +364,31 @@ class z_cohesion_calculator implementation.
 
   method is_method_call.
     "for instance method call or static
-    return = cond #(
-        when ( variables->contains_variable( token )
-                and contains( val = token
-                              sub = |{ variables->clear_inline_variable( token ) }{ zif_metrics=>method_call-instance }| ) )
-         or contains( val = token sub = zif_metrics=>method_call-static )
-         then abap_true else abap_false ).
+    return = xsdbool( ( variables->contains_variable( token )
+                            and contains( val = token
+                                          sub = |{ variables->clear_inline_variable( token ) }{ zif_metrics=>method_call-instance }| ) )
+                       or contains( val = token sub = zif_metrics=>method_call-static ) ).
   endmethod.
 
 
   method is_method_closing.
     try.
-        return = cond #( when substring( val = token off = 0 len = 3 )
-                                = |{ zif_metrics=>symbols-parenthesis_close }{ zif_metrics=>method_call-instance }|
-                         then abap_true else abap_false ).
+        return = xsdbool( substring( val = token off = 0 len = 3 )
+                                       = |{ zif_metrics=>symbols-parenthesis_close }{ zif_metrics=>method_call-instance }| ).
       catch cx_sy_range_out_of_bounds.
-        return = cond #( when token = zif_metrics=>symbols-parenthesis_close then abap_true else abap_false ).
+        return = xsdbool( token = zif_metrics=>symbols-parenthesis_close ).
     endtry.
   endmethod.
 
 
   method contains_open_parenthesis.
-    return = cond #( when contains( val = token sub = zif_metrics=>symbols-parenthesis_open )
-                        then abap_true else abap_false ).
+    return = xsdbool( contains( val = token sub = zif_metrics=>symbols-parenthesis_open ) ).
   endmethod.
 
 
   method contains_parenthesis.
-    return = cond #( when contains( val = token sub = zif_metrics=>symbols-parenthesis_open )
-                              or contains( val = token sub = zif_metrics=>symbols-parenthesis_close )
-                          then abap_true else abap_false ).
+    return = xsdbool( contains( val = token sub = zif_metrics=>symbols-parenthesis_open )
+                        or contains( val = token sub = zif_metrics=>symbols-parenthesis_close ) ).
   endmethod.
 
 
