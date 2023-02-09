@@ -1,5 +1,5 @@
 # Abap Metrics Program (abap-metrics)
-This porject contains a program written in SAP ABAP that calculates important metrics for software engineering projects. The purpose of the program is to provide a convenient and automated way to measure key aspects of software development, such as code complexity, maintainability, and efficiency.
+This project contains a program written in SAP ABAP that calculates important metrics for software engineering projects. The purpose of the program is to provide a convenient and automated way to measure key aspects of software development, such as code complexity, maintainability, and efficiency.
 
 ## Metrics
 The program takes into account a variety of factors, such as:
