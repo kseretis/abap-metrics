@@ -58,21 +58,6 @@
         "ssst": "^Z",
         "shlp": "^Z"
       },
-      "selection_screen_naming": {
-        "exclude": [],
-        "severity": "Error",
-        "patternKind": "required",
-        "ignoreNames": [],
-        "ignorePatterns": [],
-        "parameter": "^P_.+$",
-        "selectOption": "^S_.+$",
-        "screenElement": "^SC_.+$"
-      },
-      "types_naming": {
-        "exclude": [],
-        "severity": "Error",
-        "pattern": "^TY_.+$"
-      },
       "unused_variables": true
     }
   }
